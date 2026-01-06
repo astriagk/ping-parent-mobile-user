@@ -1,9 +1,9 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/developerpc/development/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/developerpc/Documents/GitHub/taxify_user_ui"
+export "FLUTTER_ROOT=D:\Software\flutter_windows_3.38.5-stable\flutter"
+export "FLUTTER_APPLICATION_PATH=D:\astria\Ping Parent\ping-parent-mobile-user"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-export "FLUTTER_TARGET=lib/main.dart"
+export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
 export "FLUTTER_BUILD_NUMBER=1"

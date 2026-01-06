@@ -1,0 +1,22 @@
+build/
+.dart_tool/
+.idea/
+.vscode/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins
+.metadata
+.DS_Store
+*.iml
+pubspec.lock (optional, for packages)
+local.properties
+ios/Flutter/Flutter.podspec
+Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/Pods/
+Runner.xcworkspace
+ios/Podfile.lock
+
+android/.kotlin/errors/
+build/
