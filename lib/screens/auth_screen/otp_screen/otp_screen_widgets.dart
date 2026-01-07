@@ -10,7 +10,6 @@ class OTPScreenWidgets {
               focusNode: otpCtrl.focusNode,
               isCursorAnimationEnabled: false,
               validator: (value) {
-                print('Validating OTP: $value');
                 if (value!.isEmpty) {
                   return appFonts.pleaseFillTheOTP;
                 }

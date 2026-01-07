@@ -9,5 +9,6 @@ class Endpoints {
   static const String login = '$baseUrl/login';
   static const String sendOtp = '$baseUrl/auth/login/send-otp';
   static const String verifyOtp = '$baseUrl/auth/login/verify-otp';
+  static const String verifyToken = '$baseUrl/auth/verify-token';
   // Add more endpoints as needed
 }

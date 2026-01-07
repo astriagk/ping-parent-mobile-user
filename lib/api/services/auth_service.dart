@@ -3,10 +3,12 @@ import '../endpoints.dart';
 import '../models/send_otp_response.dart';
 import '../models/verify_otp_response.dart';
 import '../interfaces/auth_service_interface.dart';
+import 'storage_service.dart';
 import 'dart:convert';
 
 class AuthService implements AuthServiceInterface {
   final ApiClient _apiClient;
+  final StorageService _storage = StorageService();
 
   AuthService(this._apiClient);
 
@@ -32,10 +34,55 @@ class AuthService implements AuthServiceInterface {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'phone': phone, 'otp': otp}),
     );
-    if (response.statusCode == 200) {
-      return VerifyOtpResponse.fromJson(jsonDecode(response.body));
-    } else {
-      return VerifyOtpResponse.fromJson(jsonDecode(response.body));
+
+    final verifyResponse = VerifyOtpResponse.fromJson(jsonDecode(response.body));
+
+    // Save token and user data if verification is successful
+    if (response.statusCode == 200 && verifyResponse.success) {
+      await _saveUserSession(verifyResponse, phone);
     }
+
+    return verifyResponse;
+  }
+
+  /// Save user session data after successful authentication
+  Future<void> _saveUserSession(VerifyOtpResponse response, String phone) async {
+    if (response.token != null) {
+      await _storage.saveAuthToken(response.token!);
+      await _storage.saveUserPhone(phone);
+      await _storage.saveLoginStatus(true);
+    }
+
+    // Save user data if available
+    if (response.user != null) {
+      final userData = response.user!;
+
+      if (userData['id'] != null) {
+        await _storage.saveUserId(userData['id'].toString());
+      }
+
+      if (userData['name'] != null) {
+        await _storage.saveUserName(userData['name'].toString());
+      }
+
+      if (userData['email'] != null) {
+        await _storage.saveUserEmail(userData['email'].toString());
+      }
+    }
+  }
+
+  /// Logout user and clear session data
+  Future<void> logout() async {
+    await _storage.logout();
+  }
+
+  /// Check if user has valid session
+  Future<bool> hasValidSession() async {
+    return await _storage.hasValidSession();
+  }
+
+  /// Get current user ID
+  Future<String?> getCurrentUserId() async {
+    return await _storage.getUserId();
   }
 }

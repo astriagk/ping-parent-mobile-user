@@ -18,7 +18,6 @@ class _OtpScreenState extends State<OtpScreen> {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is String) {
-      print('Received phone number: $args');
       phone = args;
     }
   }
@@ -31,11 +30,16 @@ class _OtpScreenState extends State<OtpScreen> {
 
       if (!mounted) return;
 
+      // Clear OTP input
+      final otpProvider = Provider.of<OtpProvider>(context, listen: false);
+
       if (response.success) {
+        otpProvider.pinController.clear();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: TextWidgetCommon(text: response.message)),
         );
-        route.pushNamed(context, routeName.dashBoardLayout);
+        route.pushNamedAndRemoveUntil(context, routeName.dashBoardLayout);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: TextWidgetCommon(text: response.error)));

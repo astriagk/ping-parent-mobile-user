@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:share_plus/share_plus.dart';
 import 'package:taxify_user_ui/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';
+import '../../api/services/storage_service.dart';
 
 class SettingProvider extends ChangeNotifier {
   List setting = [];
@@ -116,37 +117,51 @@ class SettingProvider extends ChangeNotifier {
       route.pushNamed(context, routeName.chatScreen);
       chatCtrl.homeChat = false;
     }
-    if (language(context, a['subTitle']) ==
-        language(context, appFonts.deleteAccount)) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return CustomConfirmationDialog(
-                message: "Are you sure you want to delete account ?",
-                onConfirm: () {
-                  route.pop(context);
-                  route.pushReplacementNamed(context, routeName.signInScreen);
-                },
-                onCancel: () {
-                  route.pop(context);
-                });
-          });
-    }
+    // if (language(context, a['subTitle']) ==
+    //     language(context, appFonts.deleteAccount)) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return CustomConfirmationDialog(
+    //             message: "Are you sure you want to delete account ?",
+    //             onConfirm: () {
+    //               route.pop(context);
+    //               route.pushReplacementNamed(context, routeName.signInScreen);
+    //             },
+    //             onCancel: () {
+    //               route.pop(context);
+    //             });
+    //       });
+    // }
     if (language(context, a['subTitle']) ==
         language(context, appFonts.logout)) {
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return CustomConfirmationDialog(
-                message: "Are you sure you want to Logout ?",
-                onConfirm: () {
-                  route.pop(context);
-                  route.pushReplacementNamed(context, routeName.signInScreen);
-                },
-                onCancel: () {
-                  route.pop(context);
-                });
-          });
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return CustomConfirmationDialog(
+            message: "Are you sure you want to Logout ?",
+            onConfirm: () async {
+              final navigator = Navigator.of(dialogContext);
+              final messenger = ScaffoldMessenger.of(context);
+              await StorageService().logout();
+              if (navigator.mounted) {
+                navigator.pushNamedAndRemoveUntil(
+                  routeName.signInScreen,
+                  (route) => false,
+                );
+                messenger.showSnackBar(
+                  SnackBar(
+                      content:
+                          TextWidgetCommon(text: "Logged out successfully")),
+                );
+              }
+            },
+            onCancel: () {
+              route.pop(dialogContext);
+            },
+          );
+        },
+      );
 
       // route.pushNamed(context, routeName.noInternetScreen);
     }
@@ -156,12 +171,15 @@ class SettingProvider extends ChangeNotifier {
   String link = '';
 
   void onShare(BuildContext context, String text, String? subject) async {
+    // Get RenderBox before async operation
     final box = context.findRenderObject() as RenderBox?;
+    final sharePositionOrigin =
+        box != null ? box.localToGlobal(Offset.zero) & box.size : Rect.zero;
+
     await Share.share(
       text,
       subject: subject,
-      sharePositionOrigin:
-          box != null ? box.localToGlobal(Offset.zero) & box.size : Rect.zero,
+      sharePositionOrigin: sharePositionOrigin,
     );
   }
 
