@@ -6,15 +6,15 @@ class OTPScreenWidgets {
       return Pinput(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               controller: otpCtrl.pinController,
-              length: 5,
+              length: 6,
               focusNode: otpCtrl.focusNode,
               isCursorAnimationEnabled: false,
               validator: (value) {
-                return value == '22222'
-                    ? null
-                    : value!.isEmpty
-                        ? appFonts.pleaseFillTheOTP
-                        : appFonts.pinIsIncorrect;
+                print('Validating OTP: $value');
+                if (value!.isEmpty) {
+                  return appFonts.pleaseFillTheOTP;
+                }
+                return null;
               },
               onClipboardFound: (value) => otpCtrl.pinController.setText(value),
               defaultPinTheme: PinTheme(

@@ -65,7 +65,7 @@ abstract class FontSizeResolvers {
 class ScreenUtilInit extends StatefulWidget {
   /// A helper widget that initializes [ScreenUtil]
   const ScreenUtilInit({
-    Key? key,
+    super.key,
     this.builder,
     this.child,
     this.rebuildFactor = RebuildFactors.size,
@@ -76,7 +76,7 @@ class ScreenUtilInit extends StatefulWidget {
     this.ensureScreenSize = false,
     this.responsiveWidgets,
     this.fontSizeResolver = FontSizeResolvers.width,
-  }) : super(key: key);
+  });
 
   final ScreenUtilInitBuilder? builder;
   final Widget? child;

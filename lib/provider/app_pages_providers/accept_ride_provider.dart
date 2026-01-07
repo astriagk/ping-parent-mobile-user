@@ -64,7 +64,7 @@ class AcceptRideProvider extends ChangeNotifier {
 
   getArgument(context) {
     data = ModalRoute.of(context)!.settings.arguments;
-    log("value::value:${data}");
+    log("value::value:$data");
     index = data["index"];
     value = data["data"];
     driverProfile = value['image'];

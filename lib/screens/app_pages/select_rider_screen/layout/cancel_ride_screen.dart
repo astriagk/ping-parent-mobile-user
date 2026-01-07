@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:taxify_user_ui/config.dart';
 
 class CancelRideScreen {

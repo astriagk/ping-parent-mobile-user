@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../config.dart';
 
 class ProfileWidgets {

@@ -1,7 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:taxify_user_ui/widgets/country_picker_custom/country_code_custom.dart';
-import 'package:taxify_user_ui/widgets/country_picker_custom/country_picker_custom.dart';
-import 'package:taxify_user_ui/widgets/country_picker_custom/layouts/country_theme.dart';
 import '../../../../config.dart';
 
 List<Map> countriesEnglish = [

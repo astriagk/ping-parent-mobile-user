@@ -1,5 +1,3 @@
-import 'package:taxify_user_ui/screens/app_pages/out_station_screen/layout/out_station_widgets.dart';
-
 import '../../../../config.dart';
 
 //offer and payment method layout

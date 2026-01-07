@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../../../config.dart';
 
 class ParcelLayout extends StatelessWidget {

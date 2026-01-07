@@ -1,7 +1,54 @@
 import '../../../config.dart';
+import '../../../api/services/auth_service.dart';
+import '../../../api/api_client.dart';
+import '../../../api/models/verify_otp_response.dart';
 
-class OtpScreen extends StatelessWidget {
+class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
+
+  @override
+  State<OtpScreen> createState() => _OtpScreenState();
+}
+
+class _OtpScreenState extends State<OtpScreen> {
+  String? phone;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is String) {
+      print('Received phone number: $args');
+      phone = args;
+    }
+  }
+
+  Future<void> _verifyOtp(String phone, String otp) async {
+    final authService = AuthService(ApiClient());
+    try {
+      final VerifyOtpResponse response =
+          await authService.verifyOtp(phone: phone, otp: otp);
+
+      if (!mounted) return;
+
+      if (response.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: TextWidgetCommon(text: response.message)),
+        );
+        route.pushNamed(context, routeName.dashBoardLayout);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: TextWidgetCommon(text: response.error)));
+      }
+    } catch (e, _) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: TextWidgetCommon(
+                text: 'An error occurred while verifying OTP.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +82,22 @@ class OtpScreen extends StatelessWidget {
                           OTPScreenWidgets().pinPutLayout(),
                           // Common button
                           CommonButton(
-                                  text: appFonts.verify,
-                                  onTap: () => route.pushNamed(
-                                      context, routeName.addLocationScreen))
-                              .padding(top: Sizes.s60, bottom: Sizes.s15),
+                              text: appFonts.verify,
+                              onTap: () async {
+                                final otp = otpCtrl.pinController.text.trim();
+                                final phoneNumber = phone?.trim() ?? '';
+                                if (phoneNumber.isEmpty || otp.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: TextWidgetCommon(
+                                          text:
+                                              'Please enter both phone and OTP.'),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                await _verifyOtp(phoneNumber, otp);
+                              }).padding(top: Sizes.s60, bottom: Sizes.s15),
                           // Common Rich Text layout
                           AuthCommonWidgets()
                               .commonRichText(context, appFonts.notReceivedYet,

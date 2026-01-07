@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:taxify_user_ui/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';

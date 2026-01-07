@@ -8,10 +8,10 @@ class RPadding extends SingleChildRenderObjectWidget {
   ///
   /// The [padding] argument must not be null.
   const RPadding({
-    Key? key,
-    required Widget child,
+    super.key,
+    required Widget super.child,
     required this.padding,
-  }) : super(key: key, child: child);
+  });
 
   /// The amount of space by which to inset the child.
   final EdgeInsets padding;
@@ -73,11 +73,11 @@ class REdgeInsets extends EdgeInsets {
     double left = 0,
     double top = 0,
   }) : super.only(
-    bottom: bottom.r,
-    right: right.r,
-    left: left.r,
-    top: top.r,
-  );
+          bottom: bottom.r,
+          right: right.r,
+          left: left.r,
+          top: top.r,
+        );
 }
 
 class REdgeInsetsDirectional extends EdgeInsetsDirectional {
@@ -109,22 +109,22 @@ class REdgeInsetsDirectional extends EdgeInsetsDirectional {
     double start = 0,
     double top = 0,
   }) : super.only(
-    bottom: bottom.r,
-    start: start.r,
-    end: end.r,
-    top: top.r,
-  );
+          bottom: bottom.r,
+          start: start.r,
+          end: end.r,
+          top: top.r,
+        );
 
   /// Creates adapt insets from offsets from the start, top, end, and bottom.
   REdgeInsetsDirectional.fromSTEB(
-      double start,
-      double top,
-      double end,
-      double bottom,
-      ) : super.fromSTEB(
-    start.r,
-    top.r,
-    end.r,
-    bottom.r,
-  );
+    double start,
+    double top,
+    double end,
+    double bottom,
+  ) : super.fromSTEB(
+          start.r,
+          top.r,
+          end.r,
+          bottom.r,
+        );
 }

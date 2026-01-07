@@ -125,9 +125,7 @@ class AppTheme {
             brightness: isDark ? Brightness.dark : Brightness.light,
             primary: primary,
             secondary: primary,
-            background: screenBg,
             surface: screenBg,
-            onBackground: screenBg,
             onSurface: screenBg,
             onError: Colors.red,
             onPrimary: primary,
@@ -135,7 +133,7 @@ class AppTheme {
             onInverseSurface: screenBg,
             tertiaryContainer: screenBg,
             surfaceTint: screenBg,
-            surfaceVariant: screenBg,
+            surfaceContainerHighest: screenBg,
             onSecondary: primary,
             error: Colors.red));
     return t.copyWith(
