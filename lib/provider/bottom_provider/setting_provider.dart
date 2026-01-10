@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:share_plus/share_plus.dart';
 import 'package:taxify_user_ui/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';
+import '../../helper/auth_helper.dart';
 
 class SettingProvider extends ChangeNotifier {
   List setting = [];
@@ -139,16 +140,15 @@ class SettingProvider extends ChangeNotifier {
           builder: (BuildContext context) {
             return CustomConfirmationDialog(
                 message: "Are you sure you want to Logout ?",
-                onConfirm: () {
-                  route.pop(context);
-                  route.pushReplacementNamed(context, routeName.signInScreen);
+                onConfirm: () async {
+                  final settingProvider =
+                      Provider.of<SettingProvider>(context, listen: false);
+                  await settingProvider.logout(context);
                 },
                 onCancel: () {
                   route.pop(context);
                 });
           });
-
-      // route.pushNamed(context, routeName.noInternetScreen);
     }
   }
 
@@ -265,5 +265,19 @@ class SettingProvider extends ChangeNotifier {
   onLanguageChangeButton(index) async {
     selectIndex = index;
     notifyListeners();
+  }
+
+  // Logout functionality
+  Future<void> logout(BuildContext context) async {
+    // Clear authentication data
+    await AuthHelper.logout();
+
+    if (!context.mounted) return;
+
+    // Navigate to sign in screen and clear navigation stack
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      routeName.signInScreen,
+      (route) => false,
+    );
   }
 }
