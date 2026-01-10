@@ -2,6 +2,7 @@ import '../../../config.dart';
 import '../../../api/services/auth_service.dart';
 import '../../../api/api_client.dart';
 import '../../../api/models/verify_otp_response.dart';
+import '../../../helper/auth_helper.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -12,6 +13,7 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String? phone;
+  bool isSignUp = false;
 
   @override
   void didChangeDependencies() {
@@ -19,14 +21,19 @@ class _OtpScreenState extends State<OtpScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is String) {
       phone = args;
+    } else if (args is Map<String, dynamic>) {
+      phone = args['phone'] as String?;
+      isSignUp = args['isSignUp'] as bool? ?? false;
     }
   }
 
   Future<void> _verifyOtp(String phone, String otp) async {
     final authService = AuthService(ApiClient());
+    final otpCtrl = context.read<OtpProvider>();
     try {
-      final VerifyOtpResponse response =
-          await authService.verifyOtp(phone: phone, otp: otp);
+      final VerifyOtpResponse response = isSignUp
+          ? await authService.registerVerifyOtp(phone: phone, otp: otp)
+          : await authService.verifyOtp(phone: phone, otp: otp);
 
       if (!mounted) return;
 
@@ -34,12 +41,28 @@ class _OtpScreenState extends State<OtpScreen> {
       final otpProvider = Provider.of<OtpProvider>(context, listen: false);
 
       if (response.success) {
-        otpProvider.pinController.clear();
+        // Save authentication data
+        if (response.token != null && response.user != null) {
+          await AuthHelper.saveAuthData(
+            token: response.token!,
+            user: response.user!,
+          );
+        }
+
+        if (!mounted) return;
+
+        // Clear OTP input
+        otpCtrl.pinController.text = "";
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: TextWidgetCommon(text: response.message)),
         );
-        route.pushNamedAndRemoveUntil(context, routeName.dashBoardLayout);
+
+        if (isSignUp) {
+          route.pushNamed(context, routeName.addLocationScreen);
+        } else {
+          route.pushNamed(context, routeName.dashBoardLayout);
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: TextWidgetCommon(text: response.error)));

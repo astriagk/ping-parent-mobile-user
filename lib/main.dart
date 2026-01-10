@@ -96,7 +96,11 @@ class MyApp extends StatelessWidget {
                     darkTheme: AppTheme.fromType(ThemeType.dark).themeData,
                     themeMode: ThemeMode.light,
                     debugShowCheckedModeBanner: false,
-                    home: const SplashLayout()));
+                    home: const Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )));
           }
         });
   }

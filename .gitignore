@@ -18,5 +18,13 @@ ios/Pods/
 Runner.xcworkspace
 ios/Podfile.lock
 
+# Android
+android/.gradle/
 android/.kotlin/errors/
+android/.gradle/kotlin/errors/
+android/build/
+android/app/build/
+android/local.properties
+*.iml
+.gradle/
 build/

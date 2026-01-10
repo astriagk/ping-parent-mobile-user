@@ -9,7 +9,8 @@ class ApiClient {
   ApiClient({http.Client? client}) : _client = client ?? http.Client();
 
   /// Get headers with authentication token if available
-  Future<Map<String, String>> getHeaders({Map<String, String>? additionalHeaders}) async {
+  Future<Map<String, String>> getHeaders(
+      {Map<String, String>? additionalHeaders}) async {
     final token = await _storage.getAuthToken();
     final headers = {
       'Content-Type': 'application/json',
@@ -49,7 +50,8 @@ class ApiClient {
     );
   }
 
-  Future<http.Response> delete(String url, {Map<String, String>? headers}) async {
+  Future<http.Response> delete(String url,
+      {Map<String, String>? headers}) async {
     final requestHeaders = await getHeaders(additionalHeaders: headers);
     return await _client.delete(Uri.parse(url), headers: requestHeaders);
   }

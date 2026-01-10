@@ -1,6 +1,6 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=D:\Software\flutter_windows_3.38.5-stable\flutter"
+export "FLUTTER_ROOT=C:\Users\gowth\develop_flutter\flutter"
 export "FLUTTER_APPLICATION_PATH=D:\astria\Ping Parent\ping-parent-mobile-user"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib\main.dart"

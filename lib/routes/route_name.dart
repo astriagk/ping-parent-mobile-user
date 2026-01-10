@@ -1,5 +1,6 @@
 class RouteName {
   final String splash = '/';
+  final String splashScreen = '/splashScreen';
   final String splash1 = '/splash';
   final String onBoard = '/onBoard';
   final String onBoardCard = '/onBoardCard';
