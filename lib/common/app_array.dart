@@ -236,7 +236,7 @@ class AppArray {
     {
       "title": appFonts.alertZone,
       "data": [
-        {"subTitle": appFonts.deleteAccount, "icon": svgAssets.delete},
+        // {"subTitle": appFonts.deleteAccount, "icon": svgAssets.delete},
         {"subTitle": appFonts.logout, "icon": svgAssets.logout}
       ]
     }

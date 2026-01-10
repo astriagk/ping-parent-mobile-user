@@ -37,6 +37,9 @@ class _OtpScreenState extends State<OtpScreen> {
 
       if (!mounted) return;
 
+      // Clear OTP input
+      final otpProvider = Provider.of<OtpProvider>(context, listen: false);
+
       if (response.success) {
         // Save authentication data
         if (response.token != null && response.user != null) {

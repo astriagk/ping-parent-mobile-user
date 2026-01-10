@@ -4,10 +4,12 @@ import '../models/send_otp_response.dart';
 import '../models/verify_otp_response.dart';
 import '../models/verify_token_response.dart';
 import '../interfaces/auth_service_interface.dart';
+import 'storage_service.dart';
 import 'dart:convert';
 
 class AuthService implements AuthServiceInterface {
   final ApiClient _apiClient;
+  final StorageService _storage = StorageService();
 
   AuthService(this._apiClient);
 

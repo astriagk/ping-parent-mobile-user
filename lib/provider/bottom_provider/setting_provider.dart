@@ -117,22 +117,22 @@ class SettingProvider extends ChangeNotifier {
       route.pushNamed(context, routeName.chatScreen);
       chatCtrl.homeChat = false;
     }
-    if (language(context, a['subTitle']) ==
-        language(context, appFonts.deleteAccount)) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return CustomConfirmationDialog(
-                message: "Are you sure you want to delete account ?",
-                onConfirm: () {
-                  route.pop(context);
-                  route.pushReplacementNamed(context, routeName.signInScreen);
-                },
-                onCancel: () {
-                  route.pop(context);
-                });
-          });
-    }
+    // if (language(context, a['subTitle']) ==
+    //     language(context, appFonts.deleteAccount)) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return CustomConfirmationDialog(
+    //             message: "Are you sure you want to delete account ?",
+    //             onConfirm: () {
+    //               route.pop(context);
+    //               route.pushReplacementNamed(context, routeName.signInScreen);
+    //             },
+    //             onCancel: () {
+    //               route.pop(context);
+    //             });
+    //       });
+    // }
     if (language(context, a['subTitle']) ==
         language(context, appFonts.logout)) {
       showDialog(
@@ -156,12 +156,15 @@ class SettingProvider extends ChangeNotifier {
   String link = '';
 
   void onShare(BuildContext context, String text, String? subject) async {
+    // Get RenderBox before async operation
     final box = context.findRenderObject() as RenderBox?;
+    final sharePositionOrigin =
+        box != null ? box.localToGlobal(Offset.zero) & box.size : Rect.zero;
+
     await Share.share(
       text,
       subject: subject,
-      sharePositionOrigin:
-          box != null ? box.localToGlobal(Offset.zero) & box.size : Rect.zero,
+      sharePositionOrigin: sharePositionOrigin,
     );
   }
 

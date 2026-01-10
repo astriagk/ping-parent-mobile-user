@@ -7,6 +7,9 @@ class Endpoints {
   static const String baseUrl = 'http://192.168.0.126:3000/api';
   static const String getUser = '$baseUrl/user';
   static const String login = '$baseUrl/login';
+
+  // Verify Token Endpoint
+
   static const String verifyToken = '$baseUrl/auth/verify-token';
 
   // Auth Endpoints
