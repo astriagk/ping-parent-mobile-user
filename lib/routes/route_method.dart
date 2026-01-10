@@ -9,8 +9,10 @@ import '../screens/app_pages/review_driver_screen/review_driver_screen.dart';
 
 class AppRoute {
   Map<String, Widget Function(BuildContext)> route = {
-    routeName.splash: (p0) => const SplashLayout(),
-    routeName.splashScreen: (p0) => const SplashScreen(),
+    routeName.splash: (p0) => const AuthCheckWidget(
+          authenticatedScreen: DashBoard(),
+          unauthenticatedScreen: SplashScreen(),
+        ),
     routeName.signInScreen: (p0) => const SignInScreen(),
     routeName.signUpScreen: (p0) => const SignUpScreen(),
     routeName.otpScreen: (p0) => const OtpScreen(),
