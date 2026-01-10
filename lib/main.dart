@@ -39,7 +39,6 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => PromoProvider()),
                   ChangeNotifierProvider(create: (_) => MyWalletProvider()),
                   ChangeNotifierProvider(create: (_) => SaveLocationProvider()),
-                  ChangeNotifierProvider(create: (_) => CurrencyProvider()),
                   ChangeNotifierProvider(create: (_) => AppSettingProvider()),
                   ChangeNotifierProvider(create: (_) => ChatProvider()),
                   ChangeNotifierProvider(create: (_) => DateTimeProvider()),
@@ -96,11 +95,7 @@ class MyApp extends StatelessWidget {
                     darkTheme: AppTheme.fromType(ThemeType.dark).themeData,
                     themeMode: ThemeMode.light,
                     debugShowCheckedModeBanner: false,
-                    home: const Scaffold(
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    )));
+                    home: const SplashLayout()));
           }
         });
   }

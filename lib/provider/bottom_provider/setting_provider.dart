@@ -4,7 +4,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:taxify_user_ui/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';
 import '../../api/services/storage_service.dart';
-import '../../helper/auth_helper.dart';
 
 class SettingProvider extends ChangeNotifier {
   List setting = [];
@@ -43,54 +42,6 @@ class SettingProvider extends ChangeNotifier {
     }
   }
 
-  // showNoInternetDialog(context, VoidCallback onRetry) {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (BuildContext context) {
-  //         return CommonDialog(
-  //             onTap: onRetry,
-  //             title: appFonts.noInternet,
-  //             image: imageAssets.noInternet);
-  //       });
-  // }
-  //
-  // showDeleteAddressSuccess(context, VoidCallback onRetry) {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (BuildContext context) {
-  //         return CommonDialog(
-  //             onTap: onRetry,
-  //             title: appFonts.noInternet,
-  //             image: imageAssets.noInternet);
-  //       });
-  // }
-  //
-  // showBookingCancel(context, VoidCallback onRetry) {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (BuildContext context) {
-  //         return CommonDialog(
-  //             onTap: onRetry,
-  //             title: appFonts.noInternet,
-  //             image: imageAssets.noInternet);
-  //       });
-  // }
-
-  // void showBookingSuccessfully(BuildContext context, VoidCallback onRetry) {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (BuildContext context) {
-  //         return CommonDialog(
-  //             onTap: () {},
-  //             title: appFonts.bookSuccessfully,
-  //             image: imageAssets.bookingSuccess);
-  //       });
-  // }
-
 //setting screen onTap
   settingsOnTap(e, a, context) {
     var chatCtrl = Provider.of<ChatProvider>(context, listen: false);
@@ -118,22 +69,7 @@ class SettingProvider extends ChangeNotifier {
       route.pushNamed(context, routeName.chatScreen);
       chatCtrl.homeChat = false;
     }
-    // if (language(context, a['subTitle']) ==
-    //     language(context, appFonts.deleteAccount)) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (BuildContext context) {
-    //         return CustomConfirmationDialog(
-    //             message: "Are you sure you want to delete account ?",
-    //             onConfirm: () {
-    //               route.pop(context);
-    //               route.pushReplacementNamed(context, routeName.signInScreen);
-    //             },
-    //             onCancel: () {
-    //               route.pop(context);
-    //             });
-    //       });
-    // }
+
     if (language(context, a['subTitle']) ==
         language(context, appFonts.logout)) {
       showDialog(
@@ -289,7 +225,7 @@ class SettingProvider extends ChangeNotifier {
   // Logout functionality
   Future<void> logout(BuildContext context) async {
     // Clear authentication data
-    await AuthHelper.logout();
+    await StorageService().logout();
 
     if (!context.mounted) return;
 
