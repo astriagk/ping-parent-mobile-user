@@ -2,6 +2,7 @@ import '../../../config.dart';
 import '../../../api/services/auth_service.dart';
 import '../../../api/api_client.dart';
 import '../../../api/models/verify_otp_response.dart';
+import '../../../helper/auth_helper.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -32,6 +33,16 @@ class _OtpScreenState extends State<OtpScreen> {
       if (!mounted) return;
 
       if (response.success) {
+        // Save authentication data
+        if (response.token != null && response.user != null) {
+          await AuthHelper.saveAuthData(
+            token: response.token!,
+            user: response.user!,
+          );
+        }
+
+        if (!mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: TextWidgetCommon(text: response.message)),
         );
