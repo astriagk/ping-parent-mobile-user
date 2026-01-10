@@ -15,7 +15,19 @@ class AuthService implements AuthServiceInterface {
   Future<SendOtpResponse> sendOtp({required String phone}) async {
     final response = await _apiClient.post(
       Endpoints.sendOtp,
-      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'phone': phone}),
+      requiresAuth: false,
+    );
+    if (response.statusCode == 200) {
+      return SendOtpResponse.fromJson(jsonDecode(response.body));
+    } else {
+      return SendOtpResponse.fromJson(jsonDecode(response.body));
+    }
+  }
+
+  Future<SendOtpResponse> registerSendOtp({required String phone}) async {
+    final response = await _apiClient.post(
+      Endpoints.registerSendOtp,
       body: jsonEncode({'phone': phone}),
       requiresAuth: false,
     );
@@ -31,7 +43,20 @@ class AuthService implements AuthServiceInterface {
       {required String phone, required String otp}) async {
     final response = await _apiClient.post(
       Endpoints.verifyOtp,
-      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'phone': phone, 'otp': otp}),
+      requiresAuth: false,
+    );
+    if (response.statusCode == 200) {
+      return VerifyOtpResponse.fromJson(jsonDecode(response.body));
+    } else {
+      return VerifyOtpResponse.fromJson(jsonDecode(response.body));
+    }
+  }
+
+  Future<VerifyOtpResponse> registerVerifyOtp(
+      {required String phone, required String otp}) async {
+    final response = await _apiClient.post(
+      Endpoints.registerVerifyOtp,
       body: jsonEncode({'phone': phone, 'otp': otp}),
       requiresAuth: false,
     );

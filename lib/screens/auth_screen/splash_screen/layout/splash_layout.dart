@@ -30,7 +30,7 @@ class _SplashLayoutState extends State<SplashLayout> {
       // Token invalid, clear auth and go to splash
       await AuthHelper.logout();
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, routeName.splash);
+      Navigator.pushReplacementNamed(context, routeName.signInScreen);
     }
   }
 

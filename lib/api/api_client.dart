@@ -23,7 +23,10 @@ class ApiClient {
       {Map<String, String>? headers,
       Object? body,
       bool requiresAuth = true}) async {
-    final finalHeaders = headers ?? <String, String>{};
+    final finalHeaders = <String, String>{
+      'Content-Type': 'application/json',
+      ...?headers,
+    };
 
     if (requiresAuth) {
       final token = await AuthHelper.getToken();
