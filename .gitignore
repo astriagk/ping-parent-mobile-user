@@ -19,4 +19,5 @@ Runner.xcworkspace
 ios/Podfile.lock
 
 android/.kotlin/errors/
+android/.gradle/kotlin/errors/
 build/
