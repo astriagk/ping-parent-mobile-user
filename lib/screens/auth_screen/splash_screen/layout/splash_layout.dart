@@ -41,6 +41,11 @@ class _SplashLayoutState extends State<SplashLayout> {
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          SvgPicture.asset(
+            svgAssets.logo,
+            width: 120,
+            height: 120,
+          ),
           const SizedBox(height: 30),
           CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(
