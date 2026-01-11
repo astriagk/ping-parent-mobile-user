@@ -6,8 +6,12 @@ class ProfileWidgets {
       {String? title,
       String? hintText,
       String? icon,
+      String? initialValue,
       TextEditingController? controller,
-      TextInputType? textInputType}) {
+      TextInputType? textInputType,
+      bool readOnly = false,
+      FocusNode? focusNode,
+      VoidCallback? onFieldSubmitted}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       TextWidgetCommon(
         text: title,
@@ -15,18 +19,38 @@ class ProfileWidgets {
             .textColor(appColor(context).appTheme.darkText),
       ),
       TextFieldCommon(
-        controller: controller,
+        controller: controller ??
+            (initialValue != null
+                ? TextEditingController(text: initialValue)
+                : null),
         hintText: hintText,
         keyboardType: textInputType,
+        readOnly: readOnly,
+        focusNode: focusNode,
+        color: readOnly
+            ? appColor(context).appTheme.stroke.withValues(alpha: 0.8)
+            : null,
       ).padding(top: Sizes.s8, bottom: Sizes.s20)
     ]);
   }
 
   //profile image and edit button layout
-  Widget profileImageLayout(BuildContext context) {
+  Widget profileImageLayout(BuildContext context, {String? photoUrl}) {
     return Stack(children: [
-      Image.asset(imageAssets.profileImg, height: Insets.i79, width: Insets.i79)
-          .center(),
+      photoUrl != null && photoUrl.isNotEmpty
+          ? Image.network(
+              photoUrl,
+              height: Insets.i79,
+              width: Insets.i79,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(imageAssets.profileImg,
+                    height: Insets.i79, width: Insets.i79);
+              },
+            ).clipRRect(all: Insets.i39).center()
+          : Image.asset(imageAssets.profileImg,
+                  height: Insets.i79, width: Insets.i79)
+              .center(),
       CommonIconButton(
           height: Insets.i30,
           bgColor: Colors.white,
