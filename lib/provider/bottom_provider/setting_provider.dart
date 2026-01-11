@@ -82,8 +82,11 @@ class SettingProvider extends ChangeNotifier {
               final navigator = Navigator.of(dialogContext);
               final messenger = ScaffoldMessenger.of(context);
 
+              // Get UserProvider from the correct context (outside dialog)
+              final userProvider = Provider.of<UserProvider>(context, listen: false);
+
               // Clear user data from provider
-              context.read<UserProvider>().clearUserData();
+              userProvider.clearUserData();
 
               // Clear authentication data from storage
               await StorageService().logout();
@@ -231,8 +234,11 @@ class SettingProvider extends ChangeNotifier {
 
   // Logout functionality
   Future<void> logout(BuildContext context) async {
+    // Get UserProvider from context
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     // Clear user data from provider
-    context.read<UserProvider>().clearUserData();
+    userProvider.clearUserData();
 
     // Clear authentication data
     await StorageService().logout();
