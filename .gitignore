@@ -18,6 +18,11 @@ ios/Pods/
 Runner.xcworkspace
 ios/Podfile.lock
 
+# Generated plugin registrants
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+ios/Runner/GeneratedPluginRegistrant.m
+ios/Runner/GeneratedPluginRegistrant.h
+
 # Android
 android/.gradle/
 android/.kotlin/errors/
