@@ -72,7 +72,7 @@ class AppFonts {
   final off = "30% off";
   final rating = "4.5";
   final validTill = "Valid Till";
-  final topCategories = "Top Categories";
+  final topCategories = "Get Started";
   final addNewLocation = "Add New Location";
   final searchDestinations = "Search Destinations";
   final dateTimeSchedule = "Date Time Schedule";
@@ -91,6 +91,15 @@ class AppFonts {
   final terms = "Terms";
   final auto = "Auto";
   final bike = "Bike";
+
+  // add school screen
+  final addSchool = "Add School";
+
+  // add student screen
+  final addStudent = "Add Student";
+
+  // assign driver screen
+  final assignDriver = "Assign Driver";
 
   //setting screen
   final general = "General";

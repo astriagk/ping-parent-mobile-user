@@ -38,14 +38,14 @@ class TopCategories extends StatelessWidget {
                                 ])).inkWell(onTap: () {
                           if (e.key == 0) {
                             route.pushNamed(
-                                context, routeName.searchLocationScreen);
+                                context, routeName.addStudentScreen);
                           }
                           if (e.key == 1) {
-                            route.pushNamed(
-                                context, routeName.outStationScreen);
+                            route.pushNamed(context, routeName.addSchoolScreen);
                           }
                           if (e.key == 2) {
-                            route.pushNamed(context, routeName.rentalScreen);
+                            route.pushNamed(
+                                context, routeName.assignDriverScreen);
                           }
                         }))
                     .toList())

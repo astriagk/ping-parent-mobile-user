@@ -29,6 +29,10 @@ class ImageAssets {
   final kate = "assets/image/home/Kate.png";
   final tony = "assets/image/home/Tony.png";
 
+  final addStudent = "assets/image/home/pp_student.png";
+  final addSchool = "assets/image/home/pp_school.png";
+  final assignDriver = "assets/image/home/pp_driver.png";
+
   //category screen
   final sharedRide = "assets/image/category/sharedRide.png";
   final parcel = "assets/image/category/parcel.png";

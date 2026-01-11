@@ -35,4 +35,8 @@ class RouteName {
   final String withdrawScreen = '/withdrawScreen';
   final String myWalletScreen = '/myWalletScreen';
   final String noInternetScreen = '/noInternetScreen';
+
+  final String addStudentScreen = '/AddStudentScreen';
+  final String addSchoolScreen = '/AddSchoolScreen';
+  final String assignDriverScreen = '/assignDriverScreen';
 }
