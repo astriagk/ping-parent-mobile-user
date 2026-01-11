@@ -1,4 +1,5 @@
 import '../../../config.dart';
+import '../../../providers/user_provider.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
@@ -8,6 +9,18 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch user data if not already loaded (handles app restart with existing session)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userProvider = context.read<UserProvider>();
+      if (!userProvider.hasUserData && !userProvider.isLoading) {
+        await userProvider.fetchUserProfile();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DashBoardProvider>(builder: (context1, bottomCtrl, child) {

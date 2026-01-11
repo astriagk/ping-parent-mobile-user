@@ -122,12 +122,13 @@ class AppFonts {
   final swiftHint = "DBSSINBB";
   final update = "Update";
   final updateProfile = "Update Profile";
+  final updatingProfile = "Updating Profile...";
   final profileSetting = "Profile Setting";
   final homeWasYourRide = "How was your ride?";
   final appSettings = "App Settings";
   final rtl = "RTL";
-  final jonathanHiggins = "Jonathan Higgins";
-  final userMail = "zaindorwart12@gmail.com";
+  final yourName = "Your Name";
+  final yourEmail = "Your Email";
   final myWalletBalance = "My Wallet Balance";
   final walletValue = "156.23";
   final online = "Online";
