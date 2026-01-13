@@ -7,7 +7,6 @@ import '../screens/app_pages/my_wallet_screen/my_wallet_screen.dart';
 import '../screens/app_pages/no_internet_screen/no_internet_screen.dart';
 import '../screens/app_pages/review_driver_screen/review_driver_screen.dart';
 import '../screens/app_pages/add_student/add_student_screen.dart';
-import '../screens/app_pages/add_school/add_school_screen.dart';
 import '../screens/app_pages/assign_driver/assign_driver_screen.dart';
 
 class AppRoute {
@@ -48,7 +47,6 @@ class AppRoute {
     routeName.noInternetScreen: (p0) => const NoInternetScreen(),
     routeName.reviewDriverScreen: (p0) => const ReviewDriverScreen(),
     routeName.addStudentScreen: (p0) => const AddStudentScreen(),
-    routeName.addSchoolScreen: (p0) => const AddSchoolScreen(),
     routeName.assignDriverScreen: (p0) => const AssignDriverScreen(),
   };
 }

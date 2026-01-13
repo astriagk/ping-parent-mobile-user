@@ -30,8 +30,8 @@ class ImageAssets {
   final tony = "assets/image/home/Tony.png";
 
   final addStudent = "assets/image/home/pp_student.png";
-  final addSchool = "assets/image/home/pp_school.png";
   final assignDriver = "assets/image/home/pp_driver.png";
+  final commingSoon = "assets/image/home/pp_comming_soon.png";
 
   //category screen
   final sharedRide = "assets/image/category/sharedRide.png";

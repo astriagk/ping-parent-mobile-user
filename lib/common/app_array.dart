@@ -145,14 +145,14 @@ class AppArray {
       "subtitle": "Used for add your student details"
     },
     {
-      'image': imageAssets.addSchool,
-      'title': "Add School",
-      "subtitle": "Used for add your school details"
-    },
-    {
       'image': imageAssets.assignDriver,
       'title': "Assign Driver",
       "subtitle": "Used for assign driver to student"
+    },
+    {
+      'image': imageAssets.commingSoon,
+      'title': "Comming Soon",
+      "subtitle": "Stay tuned for updates"
     },
   ];
 

@@ -92,9 +92,6 @@ class AppFonts {
   final auto = "Auto";
   final bike = "Bike";
 
-  // add school screen
-  final addSchool = "Add School";
-
   // add student screen
   final addStudent = "Add Student";
 

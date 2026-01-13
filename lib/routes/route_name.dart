@@ -37,6 +37,5 @@ class RouteName {
   final String noInternetScreen = '/noInternetScreen';
 
   final String addStudentScreen = '/AddStudentScreen';
-  final String addSchoolScreen = '/AddSchoolScreen';
   final String assignDriverScreen = '/assignDriverScreen';
 }
