@@ -17,4 +17,29 @@ class StudentService {
       return StudentListResponse.fromJson(jsonDecode(response.body));
     }
   }
+
+  Future<Map<String, dynamic>> createStudent(
+      Map<String, dynamic> studentData) async {
+    final response = await _apiClient.post(
+      Endpoints.students,
+      body: studentData,
+    );
+
+    final responseData = jsonDecode(response.body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return {
+        'success': true,
+        'data': responseData,
+        'message': responseData['message'] ?? 'Student added successfully',
+      };
+    } else {
+      return {
+        'success': false,
+        'error': responseData['error'] ??
+            responseData['message'] ??
+            'Failed to add student',
+      };
+    }
+  }
 }

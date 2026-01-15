@@ -1,3 +1,5 @@
+import 'package:taxify_user_ui/config.dart';
+
 class AppFonts {
   final skip = "skip";
   final taxify = "Taxify";
@@ -102,18 +104,27 @@ class AppFonts {
   final enterStudentName = "Enter Student Name";
   final schoolName = "School Name";
   final enterSchoolName = "Enter School Name";
-  final grade = "Grade";
-  final enterGrade = "Enter Grade";
-  final pickupTime = "Pickup Time";
-  final enterPickupTime = "Enter Pickup Time";
-  final dropTime = "Drop Time";
-  final enterDropTime = "Enter Drop Time";
   final pickupAddress = "Pickup Address";
   final enterPickupAddress = "Enter Pickup Address";
-  final dropAddress = "Drop Address";
-  final enterDropAddress = "Enter Drop Address";
   final saveStudent = "Save Student";
   final updateStudent = "Update Student";
+  final section = "Section";
+  final enterSection = "Enter Section";
+  final rollNumber = "Roll Number";
+  final enterRollNumber = "Enter Roll Number";
+  final gender = "Gender";
+  final selectGender = "Select Gender";
+  final dateOfBirth = "Date of Birth";
+  final enterDateOfBirth = "Enter Date of Birth";
+  final hintDateOfBirth = "DD/MM/YYYY";
+  final emergencyContact = "Emergency Contact";
+  final enterEmergencyContact = "Enter Emergency Contact";
+  final medicalInfo = "Medical Info";
+  final enterMedicalInfo = "Enter Medical Info";
+  final addStudentPhoto = "Add Student Photo";
+  final selectPhoto = "Select Photo";
+  final openCamera = "Open Camera";
+  final selectFromGallery = "Select From Gallery";
 
   // assign driver screen
   final assignDriver = "Assign Driver";

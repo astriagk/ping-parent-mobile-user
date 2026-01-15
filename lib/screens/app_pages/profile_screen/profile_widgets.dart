@@ -27,9 +27,6 @@ class ProfileWidgets {
         keyboardType: textInputType,
         readOnly: readOnly,
         focusNode: focusNode,
-        color: readOnly
-            ? appColor(context).appTheme.stroke.withValues(alpha: 0.8)
-            : null,
       ).padding(top: Sizes.s8, bottom: Sizes.s20)
     ]);
   }

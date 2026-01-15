@@ -24,6 +24,7 @@ class Endpoints {
 
   // Student Endpoints
   static const String myStudents = '$baseUrl/students/my-students';
+  static const String students = '$baseUrl/students';
 
   // Add more endpoints as needed
 }
