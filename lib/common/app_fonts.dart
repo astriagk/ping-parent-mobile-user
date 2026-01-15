@@ -61,6 +61,8 @@ class AppFonts {
   final continueBtn = "Continue";
   final bookSuccessfully = "Booking Successfully";
   final noInternet = "No Internet";
+  final somethingWentWrong = "Something Went Wrong";
+  final tryAgain = "Try Again";
 
   //notification
   final notification = "Notifications";

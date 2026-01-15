@@ -1,6 +1,7 @@
 import '../../../config.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/common_empty_state.dart';
+import '../../../widgets/common_error_state.dart';
 import '../../../widgets/skeletons/student_card_skeleton.dart';
 import '../../../api/models/student_response.dart';
 
@@ -26,19 +27,11 @@ class StudentListScreen extends StatelessWidget {
               body: studentCtrl.isLoading
                   ? const StudentListSkeleton()
                   : studentCtrl.errorMessage != null
-                      ? Center(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                              TextWidgetCommon(
-                                  text: studentCtrl.errorMessage!,
-                                  color: appColor(context).appTheme.alertZone),
-                              VSpace(Sizes.s20),
-                              CommonButton(
-                                      text: appFonts.refresh, width: Sizes.s120)
-                                  .inkWell(
-                                      onTap: () => studentCtrl.fetchStudents())
-                            ]))
+                      ? CommonErrorState(
+                          title: appFonts.somethingWentWrong,
+                          description: studentCtrl.errorMessage!,
+                          buttonText: appFonts.refresh,
+                          onButtonTap: () => studentCtrl.fetchStudents())
                       : studentCtrl.studentList.isEmpty
                           ? CommonEmptyState(
                               mainText: appFonts.noStudentsAdded,

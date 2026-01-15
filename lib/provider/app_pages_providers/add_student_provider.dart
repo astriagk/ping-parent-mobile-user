@@ -134,7 +134,10 @@ class AddStudentProvider extends ChangeNotifier {
 
     // Populate form with current student data
     studentNameController.text = currentStudent?.studentName ?? '';
-    selectedClass = currentStudent?.studentClass;
+    // Only set selectedClass if it's a valid option (1-10)
+    selectedClass = classOptions.contains(currentStudent?.studentClass)
+        ? currentStudent?.studentClass
+        : null;
     sectionController.text = currentStudent?.section ?? '';
     rollNumberController.text = currentStudent?.rollNumber ?? '';
     photoUrlController.text = currentStudent?.photoUrl ?? '';
@@ -208,7 +211,9 @@ class AddStudentProvider extends ChangeNotifier {
       print(payload);
       print('==================');
 
-      final response = await studentService.createStudent(payload);
+      final response = isEditMode
+          ? await studentService.updateStudent(currentStudent!.id!, payload)
+          : await studentService.createStudent(payload);
 
       if (response['success']) {
         // Refresh student list
