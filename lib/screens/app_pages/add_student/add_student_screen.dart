@@ -2,8 +2,81 @@ import '../../../config.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import 'student_widgets.dart';
 
-class AddStudentScreen extends StatelessWidget {
+class AddStudentScreen extends StatefulWidget {
   const AddStudentScreen({super.key});
+
+  @override
+  State<AddStudentScreen> createState() => _AddStudentScreenState();
+}
+
+class _AddStudentScreenState extends State<AddStudentScreen> {
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize data when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final studentProvider = context.read<AddStudentProvider>();
+      // Pre-select pickup address if available
+      if (studentProvider.parentAddress != null &&
+          studentProvider.selectedPickupAddressId == null) {
+        studentProvider.selectedPickupAddressId =
+            studentProvider.parentAddress!.id;
+      }
+    });
+  }
+
+  Future<void> _saveStudent() async {
+    if (_isSaving) return;
+
+    setState(() => _isSaving = true);
+
+    final studentCtrl = context.read<AddStudentProvider>();
+
+    // Print all form data
+    print('=== FORM DATA ===');
+    print('Student Name: ${studentCtrl.studentNameController.text}');
+    print('Selected School ID (school_id): ${studentCtrl.selectedSchoolId}');
+    print('Selected Class: ${studentCtrl.selectedClass}');
+    print('Section: ${studentCtrl.sectionController.text}');
+    print('Roll Number: ${studentCtrl.rollNumberController.text}');
+    print('Selected Gender: ${studentCtrl.selectedGender}');
+    print('Date of Birth: ${studentCtrl.dateOfBirthController.text}');
+    print(
+        'Selected Pickup Address ID (_id): ${studentCtrl.selectedPickupAddressId}');
+    print('Emergency Contact: ${studentCtrl.emergencyContactController.text}');
+    print('Medical Info: ${studentCtrl.medicalInfoController.text}');
+    print('Photo URL: ${studentCtrl.photoUrlController.text}');
+    print('================');
+
+    final success = await studentCtrl.createStudent();
+
+    if (mounted) {
+      setState(() => _isSaving = false);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: TextWidgetCommon(
+              text: studentCtrl.isEditMode
+                  ? 'Student updated successfully'
+                  : 'Student created successfully',
+            ),
+          ),
+        );
+        route.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: TextWidgetCommon(
+              text: studentCtrl.errorMessage ?? 'Failed to save student',
+            ),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,17 +160,38 @@ class AddStudentScreen extends StatelessWidget {
                   title: appFonts.schoolName,
                   hintText: appFonts.enterSchoolName,
                   value: studentCtrl.selectedSchoolId,
-                  itemsList: studentCtrl.dummySchools
+                  itemsList: studentCtrl.schoolList
                       .map((school) => DropdownMenuItem<dynamic>(
-                            value: school['id'],
+                            value: school.schoolId,
                             child: TextWidgetCommon(
-                              text: school['name']!,
+                              text: school.schoolName,
                               fontSize: Sizes.s14,
                             ),
                           ))
                       .toList(),
                   onChanged: (value) {
                     studentCtrl.selectedSchoolId = value;
+                    studentCtrl.notifyListeners();
+                  },
+                ),
+
+                // Class (Optional - Dropdown)
+                widgets.commonDropdown(
+                  context,
+                  title: appFonts.studentClass,
+                  hintText: appFonts.selectClass,
+                  value: studentCtrl.selectedClass,
+                  itemsList: studentCtrl.classOptions
+                      .map((classValue) => DropdownMenuItem<dynamic>(
+                            value: classValue,
+                            child: TextWidgetCommon(
+                              text: classValue,
+                              fontSize: Sizes.s14,
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    studentCtrl.selectedClass = value;
                     studentCtrl.notifyListeners();
                   },
                 ),
@@ -128,7 +222,8 @@ class AddStudentScreen extends StatelessWidget {
                       .map((gender) => DropdownMenuItem<dynamic>(
                             value: gender,
                             child: TextWidgetCommon(
-                              text: gender,
+                              text:
+                                  gender[0].toUpperCase() + gender.substring(1),
                               fontSize: Sizes.s14,
                             ),
                           ))
@@ -153,16 +248,18 @@ class AddStudentScreen extends StatelessWidget {
                   title: appFonts.pickupAddress,
                   hintText: appFonts.enterPickupAddress,
                   value: studentCtrl.selectedPickupAddressId,
-                  itemsList: studentCtrl.dummyPickupAddresses
-                      .map((address) => DropdownMenuItem<dynamic>(
-                            value: address['id'],
+                  itemsList: studentCtrl.parentAddress != null
+                      ? [
+                          DropdownMenuItem<dynamic>(
+                            value: studentCtrl.parentAddress!.id,
                             child: TextWidgetCommon(
-                              text: address['address']!,
+                              text: studentCtrl.parentAddress!.displayAddress,
                               fontSize: Sizes.s14,
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ))
-                      .toList(),
+                          )
+                        ]
+                      : [],
                   onChanged: (value) {
                     studentCtrl.selectedPickupAddressId = value;
                     studentCtrl.notifyListeners();
@@ -190,20 +287,15 @@ class AddStudentScreen extends StatelessWidget {
               ]).padding(horizontal: Sizes.s20, vertical: Sizes.s20)),
           bottomNavigationBar: Padding(
               padding: EdgeInsets.all(Sizes.s20),
-              child: studentCtrl.isSaving
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : CommonButton(
-                          text: studentCtrl.isEditMode
+              child: CommonButton(
+                      text: _isSaving
+                          ? (studentCtrl.isEditMode
+                              ? 'Updating Student...'
+                              : 'Saving Student...')
+                          : (studentCtrl.isEditMode
                               ? appFonts.updateStudent
-                              : appFonts.saveStudent)
-                      .inkWell(onTap: () async {
-                      final success = await studentCtrl.createStudent();
-                      if (success && context.mounted) {
-                        route.pop(context);
-                      }
-                    })),
+                              : appFonts.saveStudent),
+                      onTap: _isSaving ? null : _saveStudent)),
         ),
       );
     });

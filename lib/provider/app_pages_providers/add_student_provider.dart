@@ -3,9 +3,13 @@ import '../../api/api_client.dart';
 import '../../api/services/student_service.dart';
 import '../../api/models/student_response.dart';
 import '../../api/models/add_student_request.dart';
+import '../../api/models/school_response.dart' as school_model;
+import '../../api/models/parent_address_response.dart';
 
 class AddStudentProvider extends ChangeNotifier {
   List<Student> studentList = [];
+  List<school_model.School> schoolList = [];
+  ParentAddress? parentAddress;
   bool isLoading = false;
   bool isSaving = false;
   String? errorMessage;
@@ -29,24 +33,54 @@ class AddStudentProvider extends ChangeNotifier {
   String? selectedSchoolId;
   String? selectedPickupAddressId;
   String? selectedGender;
+  String? selectedClass;
 
-  // Dummy data for dropdowns (replace with real API data later)
-  final List<Map<String, String>> dummySchools = [
-    {'id': 'school_001', 'name': 'Springfield Elementary School'},
-    {'id': 'school_002', 'name': 'Riverdale High School'},
-    {'id': 'school_003', 'name': 'Greenwood Academy'},
+  final List<String> genderOptions = ['male', 'female', 'other'];
+  final List<String> classOptions = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10'
   ];
-
-  final List<Map<String, String>> dummyPickupAddresses = [
-    {'id': 'addr_001', 'address': '123 Main Street, Springfield'},
-    {'id': 'addr_002', 'address': '456 Oak Avenue, Riverdale'},
-    {'id': 'addr_003', 'address': '789 Pine Road, Greenwood'},
-  ];
-
-  final List<String> genderOptions = ['Male', 'Female', 'Other'];
 
   Future<void> onInit() async {
+    await fetchSchools();
+    await fetchParentAddress();
     await fetchStudents();
+  }
+
+  Future<void> fetchSchools() async {
+    try {
+      final studentService = StudentService(ApiClient());
+      final response = await studentService.getSchools();
+
+      if (response.success) {
+        schoolList = response.data;
+      }
+    } catch (e) {
+      print('Error fetching schools: $e');
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchParentAddress() async {
+    try {
+      final studentService = StudentService(ApiClient());
+      final response = await studentService.getParentAddress();
+
+      if (response != null && response.success) {
+        parentAddress = response.data;
+      }
+    } catch (e) {
+      print('Error fetching parent address: $e');
+    }
+    notifyListeners();
   }
 
   Future<void> fetchStudents() async {
@@ -88,6 +122,7 @@ class AddStudentProvider extends ChangeNotifier {
     selectedSchoolId = null;
     selectedPickupAddressId = null;
     selectedGender = null;
+    selectedClass = null;
     notifyListeners();
   }
 
@@ -99,6 +134,7 @@ class AddStudentProvider extends ChangeNotifier {
 
     // Populate form with current student data
     studentNameController.text = currentStudent?.studentName ?? '';
+    selectedClass = currentStudent?.studentClass;
     sectionController.text = currentStudent?.section ?? '';
     rollNumberController.text = currentStudent?.rollNumber ?? '';
     photoUrlController.text = currentStudent?.photoUrl ?? '';
@@ -141,6 +177,7 @@ class AddStudentProvider extends ChangeNotifier {
       final request = AddStudentRequest(
         schoolId: selectedSchoolId!,
         studentName: studentNameController.text.trim(),
+        studentClass: selectedClass,
         section: sectionController.text.trim().isNotEmpty
             ? sectionController.text.trim()
             : null,
@@ -164,7 +201,14 @@ class AddStudentProvider extends ChangeNotifier {
       );
 
       final studentService = StudentService(ApiClient());
-      final response = await studentService.createStudent(request.toJson());
+      final payload = request.toJson();
+
+      // Print the constructed payload
+      print('=== API PAYLOAD ===');
+      print(payload);
+      print('==================');
+
+      final response = await studentService.createStudent(payload);
 
       if (response['success']) {
         // Refresh student list

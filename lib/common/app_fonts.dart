@@ -108,6 +108,8 @@ class AppFonts {
   final enterPickupAddress = "Enter Pickup Address";
   final saveStudent = "Save Student";
   final updateStudent = "Update Student";
+  final studentClass = "Class";
+  final selectClass = "Select Class";
   final section = "Section";
   final enterSection = "Enter Section";
   final rollNumber = "Roll Number";

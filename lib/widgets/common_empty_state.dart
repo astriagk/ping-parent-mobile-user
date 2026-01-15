@@ -52,13 +52,13 @@ class CommonEmptyState extends StatelessWidget {
                               AppCss.lexendMedium18.textColor(appTheme.primary))
                   ]),
                 Image.asset(image ?? imageAssets.empty).padding(
-                    vertical: Sizes.s56, right: Sizes.s58, left: Sizes.s90)
+                    vertical: Sizes.s30, right: Sizes.s58, left: Sizes.s90)
               ])).paddingOnly(right: Sizes.s30),
 
         // Image only (without header)
         if (title == null && !showBackButton)
           Image.asset(image ?? imageAssets.empty)
-              .padding(vertical: Sizes.s56, horizontal: Sizes.s40),
+              .padding(vertical: Sizes.s30, horizontal: Sizes.s40),
 
         // Content section
         Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -75,8 +75,8 @@ class CommonEmptyState extends StatelessWidget {
                   textAlign: TextAlign.center)
               .padding(horizontal: Sizes.s15),
           CommonButton(text: buttonText, onTap: onButtonTap)
-              .padding(bottom: Sizes.s30, top: Sizes.s75)
-        ]).padding(horizontal: Sizes.s20, top: Sizes.s40)
+              .padding(bottom: Sizes.s30, top: Sizes.s40)
+        ]).padding(horizontal: Sizes.s20, top: Sizes.s20)
       ])
     ]);
   }
