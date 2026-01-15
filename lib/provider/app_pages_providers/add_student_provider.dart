@@ -30,7 +30,8 @@ class AddStudentProvider extends ChangeNotifier {
         studentList = response.data;
         errorMessage = null;
       } else {
-        errorMessage = response.error ?? response.message ?? 'Failed to fetch students';
+        errorMessage =
+            response.error ?? response.message ?? 'Failed to fetch students';
       }
     } catch (e) {
       errorMessage = 'An error occurred. Please try again.';

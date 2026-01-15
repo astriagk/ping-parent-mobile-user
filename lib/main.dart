@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/my_wallet_provider.dart';
-import 'package:taxify_user_ui/providers/user_provider.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
 import 'config.dart';
 
 void main() async {

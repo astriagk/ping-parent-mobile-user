@@ -1,6 +1,7 @@
 import '../../../config.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/common_empty_state.dart';
+import '../../../widgets/skeletons/student_card_skeleton.dart';
 import '../../../api/models/student_response.dart';
 
 class StudentListScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class StudentListScreen extends StatelessWidget {
                     route.pushNamed(context, routeName.addStudentScreen);
                   }),
               body: studentCtrl.isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const StudentListSkeleton()
                   : studentCtrl.errorMessage != null
                       ? Center(
                           child: Column(
@@ -53,7 +54,7 @@ class StudentListScreen extends StatelessWidget {
                               padding: EdgeInsets.only(
                                   top: Sizes.s20, bottom: Sizes.s20),
                               children: [
-                                  ...studentCtrl.studentList
+                                  ...studentCtrl.studentList!
                                       .asMap()
                                       .entries
                                       .map((entries) {

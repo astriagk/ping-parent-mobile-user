@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import '../api/api_client.dart';
-import '../api/services/user_service.dart';
-import '../api/models/profile_response.dart';
+import '../../api/api_client.dart';
+import '../../api/services/user_service.dart';
+import '../../api/models/profile_response.dart';
 
 class UserProvider extends ChangeNotifier {
   final UserService _userService = UserService(ApiClient());

@@ -2,7 +2,7 @@ import '../../../config.dart';
 import '../../../api/services/auth_service.dart';
 import '../../../api/api_client.dart';
 import '../../../api/models/verify_otp_response.dart';
-import '../../../providers/user_provider.dart';
+import '../../../provider/app_pages_providers/user_provider.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
