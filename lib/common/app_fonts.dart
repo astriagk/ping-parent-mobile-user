@@ -129,6 +129,8 @@ class AppFonts {
   final selectPhoto = "Select Photo";
   final openCamera = "Open Camera";
   final selectFromGallery = "Select From Gallery";
+  final studentUpdatedSuccessfully = "Student updated successfully";
+  final studentCreatedSuccessfully = "Student created successfully";
 
   // assign driver screen
   final assignDriver = "Assign Driver";

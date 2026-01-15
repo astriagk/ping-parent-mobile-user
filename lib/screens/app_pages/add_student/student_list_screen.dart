@@ -2,6 +2,8 @@ import '../../../config.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/common_empty_state.dart';
 import '../../../widgets/common_error_state.dart';
+import '../../../widgets/location_preview_card.dart';
+import '../../../models/location_data.dart';
 import '../../../widgets/skeletons/student_card_skeleton.dart';
 import '../../../api/models/student_response.dart';
 
@@ -68,6 +70,7 @@ class StudentListScreen extends StatelessWidget {
           route.pushNamed(context, routeName.addStudentScreen);
         },
         child: Column(children: [
+          // Student info row with photo
           Row(children: [
             Container(
                 height: Sizes.s50,
@@ -98,8 +101,8 @@ class StudentListScreen extends StatelessWidget {
                         Expanded(
                             child: TextWidgetCommon(
                                 text: student.studentName ?? '',
-                                fontSize: Sizes.s14,
-                                fontWeight: FontWeight.w500,
+                                fontSize: Sizes.s13,
+                                fontWeight: FontWeight.w400,
                                 overflow: TextOverflow.ellipsis)),
                         TextWidgetCommon(
                             text: student.isActive ? "• Active" : "• Inactive",
@@ -110,62 +113,92 @@ class StudentListScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500)
                       ]),
                   VSpace(Sizes.s4),
-                  TextWidgetCommon(
-                      text: student.school?.schoolName ?? '',
-                      color: appColor(context).appTheme.lightText,
-                      fontSize: Sizes.s12,
-                      fontWeight: FontWeight.w400)
+                  Row(children: [
+                    TextWidgetCommon(
+                        text: 'Class ${student.studentClass ?? ''}',
+                        color: appColor(context).appTheme.lightText,
+                        fontSize: Sizes.s12,
+                        fontWeight: FontWeight.w300),
+                    if (student.section != null &&
+                        student.section!.isNotEmpty) ...[
+                      TextWidgetCommon(
+                          text: ' - ${student.section}',
+                          color: appColor(context).appTheme.lightText,
+                          fontSize: Sizes.s12,
+                          fontWeight: FontWeight.w300),
+                    ]
+                  ])
                 ]))
           ]),
           DottedLine(dashColor: appColor(context).appTheme.stroke)
-              .padding(vertical: Sizes.s12),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                TextWidgetCommon(
-                    text: 'ID: ${student.schoolId ?? ''}',
-                    fontSize: Sizes.s12,
-                    fontWeight: FontWeight.w400),
-                HSpace(Sizes.s10),
-                Container(
-                    height: Sizes.s4,
-                    width: Sizes.s4,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: appColor(context).appTheme.lightText)),
-                HSpace(Sizes.s10),
-                TextWidgetCommon(
-                    text: student.studentClass ?? '',
-                    fontSize: Sizes.s12,
-                    fontWeight: FontWeight.w400),
-                if (student.section != null && student.section!.isNotEmpty) ...[
-                  HSpace(Sizes.s5),
-                  TextWidgetCommon(
-                      text: '- ${student.section}',
-                      fontSize: Sizes.s12,
-                      fontWeight: FontWeight.w400),
-                ]
-              ]),
-            ]),
-            CommonIconButton(
-                icon: svgAssets.arrowRight,
-                height: Sizes.s32,
-                width: Sizes.s32,
-                bgColor: appColor(context).appTheme.bgBox)
-          ]),
-          VSpace(Sizes.s12),
-          Row(children: [
-            SvgPicture.asset(svgAssets.locationSearch),
-            HSpace(Sizes.s10),
-            Expanded(
-                child: TextWidgetCommon(
-                    text: student.pickupAddress?.fullAddress ?? '',
-                    color: appColor(context).appTheme.darkText,
-                    fontSize: Sizes.s13,
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.w400))
-          ]).padding(horizontal: Sizes.s10, vertical: Sizes.s10).decorated(
-              color: appColor(context).appTheme.bgBox, allRadius: Sizes.s8),
+              .padding(vertical: Sizes.s15),
+          // Assign driver button
+          GestureDetector(
+            onTap: () {
+              route.pushNamed(context, routeName.assignDriverScreen);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: Sizes.s12, vertical: Sizes.s10),
+              decoration: BoxDecoration(
+                color: appColor(context).appTheme.bgBox,
+                borderRadius: BorderRadius.circular(Sizes.s8),
+                border: Border.all(
+                  color: appColor(context).appTheme.stroke,
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.person_add_outlined,
+                        size: Sizes.s20,
+                        color: appColor(context).appTheme.primary,
+                      ),
+                      HSpace(Sizes.s10),
+                      TextWidgetCommon(
+                        text: language(context, appFonts.assignDriver),
+                        fontSize: Sizes.s13,
+                        fontWeight: FontWeight.w500,
+                        color: appColor(context).appTheme.darkText,
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: Sizes.s14,
+                    color: appColor(context).appTheme.lightText,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Location preview card
+          if (student.pickupAddress != null &&
+              student.school != null &&
+              student.pickupAddress!.latitude != null &&
+              student.school!.latitude != null)
+            LocationPreviewCard(
+              showBottomSpace: false,
+              locations: [
+                LocationData(
+                  name: appFonts.pickupLocation,
+                  address: student.pickupAddress!.fullAddress,
+                  latitude: student.pickupAddress!.latitude!,
+                  longitude: student.pickupAddress!.longitude!,
+                ),
+                LocationData(
+                  name: student.school!.schoolName ?? '',
+                  address: student.school!.fullAddress,
+                  latitude: student.school!.latitude!,
+                  longitude: student.school!.longitude!,
+                ),
+              ],
+            ),
         ]).myRideListExtension(context));
   }
 }

@@ -8,6 +8,7 @@ class StudentWidgets {
       TextEditingController? controller,
       TextInputType? textInputType,
       bool readOnly = false,
+      FocusNode? focusNode,
       int? minLines,
       int? maxLines}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -16,14 +17,51 @@ class StudentWidgets {
         style: AppCss.lexendMedium14
             .textColor(appColor(context).appTheme.darkText),
       ),
-      TextFieldCommon(
+      VSpace(Sizes.s8),
+      TextFormField(
         controller: controller,
-        hintText: hintText,
         keyboardType: textInputType,
         readOnly: readOnly,
-        minLines: minLines,
-        maxLines: maxLines,
-      ).padding(top: Sizes.s8, bottom: Sizes.s20)
+        focusNode: focusNode,
+        minLines: minLines ?? 1,
+        maxLines: maxLines ?? 1,
+        style: AppCss.lexendRegular14,
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          isDense: true,
+          filled: true,
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: Sizes.s15, vertical: Sizes.s16),
+          fillColor: appColor(context).appTheme.screenBg,
+          hintText: language(context, hintText),
+          hintStyle: AppCss.lexendRegular13
+              .textColor(appColor(context).appTheme.hintText),
+          enabledBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide:
+                BorderSide(width: 1, color: appColor(context).appTheme.stroke),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide:
+                BorderSide(width: 2, color: appColor(context).appTheme.primary),
+          ),
+          border: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide:
+                BorderSide(width: 1, color: appColor(context).appTheme.stroke),
+          ),
+        ),
+      ).decorated(boxShadow: [
+        BoxShadow(
+            color: appColor(context).appTheme.primary.withValues(alpha: 0.04),
+            blurRadius: 12,
+            spreadRadius: 4)
+      ]),
+      VSpace(Sizes.s16),
     ]);
   }
 
@@ -40,13 +78,50 @@ class StudentWidgets {
         style: AppCss.lexendMedium14
             .textColor(appColor(context).appTheme.darkText),
       ),
-      CommonDropDownMenu(
+      VSpace(Sizes.s8),
+      DropdownButtonFormField(
+        dropdownColor: appColor(context).appTheme.white,
+        isExpanded: true,
+        icon: Icon(Icons.keyboard_arrow_down_outlined,
+            color: appColor(context).appTheme.primary.withValues(alpha: 0.5)),
         value: value,
-        hintText: hintText,
-        bgColor: appColor(context).appTheme.bgBox,
-        itemsList: itemsList,
+        items: itemsList,
         onChanged: onChanged,
-      ).padding(top: Sizes.s8, bottom: Sizes.s20)
+        hint: TextWidgetCommon(
+            text: language(context, hintText),
+            style: AppCss.lexendRegular13
+                .textColor(appColor(context).appTheme.hintText)),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: appColor(context).appTheme.screenBg,
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: Sizes.s15, vertical: Sizes.s16),
+          border: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide:
+                BorderSide(width: 1, color: appColor(context).appTheme.stroke),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide:
+                BorderSide(width: 1, color: appColor(context).appTheme.stroke),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide:
+                BorderSide(width: 2, color: appColor(context).appTheme.primary),
+          ),
+        ),
+      ).decorated(boxShadow: [
+        BoxShadow(
+            color: appColor(context).appTheme.primary.withValues(alpha: 0.04),
+            blurRadius: 12,
+            spreadRadius: 4)
+      ]),
+      VSpace(Sizes.s16),
     ]);
   }
 

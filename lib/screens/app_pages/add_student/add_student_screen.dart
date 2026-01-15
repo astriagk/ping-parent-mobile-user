@@ -1,5 +1,10 @@
 import '../../../config.dart';
+import '../../../helper/distance_helper.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
+import '../../../widgets/searchable_dropdown.dart';
+import '../../../widgets/location_preview_card.dart';
+import '../../../models/location_data.dart';
+import '../../../api/models/school_response.dart';
 import 'student_widgets.dart';
 
 class AddStudentScreen extends StatefulWidget {
@@ -34,22 +39,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
     final studentCtrl = context.read<AddStudentProvider>();
 
-    // Print all form data
-    print('=== FORM DATA ===');
-    print('Student Name: ${studentCtrl.studentNameController.text}');
-    print('Selected School ID (school_id): ${studentCtrl.selectedSchoolId}');
-    print('Selected Class: ${studentCtrl.selectedClass}');
-    print('Section: ${studentCtrl.sectionController.text}');
-    print('Roll Number: ${studentCtrl.rollNumberController.text}');
-    print('Selected Gender: ${studentCtrl.selectedGender}');
-    print('Date of Birth: ${studentCtrl.dateOfBirthController.text}');
-    print(
-        'Selected Pickup Address ID (_id): ${studentCtrl.selectedPickupAddressId}');
-    print('Emergency Contact: ${studentCtrl.emergencyContactController.text}');
-    print('Medical Info: ${studentCtrl.medicalInfoController.text}');
-    print('Photo URL: ${studentCtrl.photoUrlController.text}');
-    print('================');
-
     final success = await studentCtrl.createStudent();
 
     if (mounted) {
@@ -60,8 +49,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
           SnackBar(
             content: TextWidgetCommon(
               text: studentCtrl.isEditMode
-                  ? 'Student updated successfully'
-                  : 'Student created successfully',
+                  ? appFonts.studentUpdatedSuccessfully
+                  : appFonts.studentCreatedSuccessfully,
             ),
           ),
         );
@@ -76,6 +65,38 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         );
       }
     }
+  }
+
+  Widget _buildLocationPreview(
+      BuildContext context, AddStudentProvider studentCtrl) {
+    // Get selected school
+    final selectedSchool = studentCtrl.schoolList.firstWhere(
+      (school) => school.schoolId == studentCtrl.selectedSchoolId,
+      orElse: () => studentCtrl.schoolList.first,
+    );
+
+    // Get pickup address
+    final pickupAddress = studentCtrl.parentAddress;
+
+    if (pickupAddress == null) return const SizedBox.shrink();
+
+    // Create locations array
+    final locations = [
+      LocationData(
+        name: appFonts.pickupLocation,
+        address: pickupAddress.displayAddress,
+        latitude: pickupAddress.latitude,
+        longitude: pickupAddress.longitude,
+      ),
+      LocationData(
+        name: selectedSchool.schoolName,
+        address: selectedSchool.fullAddress,
+        latitude: selectedSchool.latitude,
+        longitude: selectedSchool.longitude,
+      ),
+    ];
+
+    return LocationPreviewCard(locations: locations);
   }
 
   @override
@@ -127,6 +148,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     ),
                   ),
 
+                // ========== REQUIRED FIELDS ==========
+
                 // Student Photo Upload
                 widgets.studentPhotoLayout(
                   context,
@@ -154,26 +177,168 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   controller: studentCtrl.studentNameController,
                 ),
 
-                // School (Required - Dropdown)
+                // Pickup Address (Required - Dropdown)
                 widgets.commonDropdown(
                   context,
-                  title: appFonts.schoolName,
-                  hintText: appFonts.enterSchoolName,
-                  value: studentCtrl.selectedSchoolId,
-                  itemsList: studentCtrl.schoolList
-                      .map((school) => DropdownMenuItem<dynamic>(
-                            value: school.schoolId,
+                  title: appFonts.pickupAddress,
+                  hintText: appFonts.enterPickupAddress,
+                  value: studentCtrl.selectedPickupAddressId,
+                  itemsList: studentCtrl.parentAddress != null
+                      ? [
+                          DropdownMenuItem<dynamic>(
+                            value: studentCtrl.parentAddress!.id,
                             child: TextWidgetCommon(
-                              text: school.schoolName,
+                              text: studentCtrl.parentAddress!.displayAddress,
                               fontSize: Sizes.s14,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ))
-                      .toList(),
+                          )
+                        ]
+                      : [],
                   onChanged: (value) {
-                    studentCtrl.selectedSchoolId = value;
-                    studentCtrl.notifyListeners();
+                    setState(() {
+                      studentCtrl.selectedPickupAddressId = value;
+                    });
                   },
                 ),
+
+                // School (Required - Searchable Dropdown)
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  TextWidgetCommon(
+                    text: appFonts.schoolName,
+                    style: AppCss.lexendMedium14
+                        .textColor(appColor(context).appTheme.darkText),
+                  ),
+                  VSpace(Sizes.s8),
+                  SearchableDropdown<School>(
+                    items: studentCtrl.schoolList,
+                    selectedItem: studentCtrl.schoolList.isNotEmpty &&
+                            studentCtrl.selectedSchoolId != null
+                        ? studentCtrl.schoolList.firstWhere(
+                            (school) =>
+                                school.schoolId == studentCtrl.selectedSchoolId,
+                            orElse: () => studentCtrl.schoolList.first,
+                          )
+                        : null,
+                    hintText: appFonts.enterSchoolName,
+                    itemAsString: (school) => school.schoolName,
+                    itemBuilder: (context, school, isSelected, isHighlighted) {
+                      // Calculate distance if pickup address is selected
+                      String? distanceText;
+                      double? distanceInKm;
+                      if (studentCtrl.selectedPickupAddressId != null &&
+                          studentCtrl.parentAddress != null) {
+                        distanceInKm = DistanceHelper.calculateDistanceInKm(
+                          studentCtrl.parentAddress!.latitude,
+                          studentCtrl.parentAddress!.longitude,
+                          school.latitude,
+                          school.longitude,
+                        );
+                        distanceText =
+                            DistanceHelper.formatDistance(distanceInKm);
+                      }
+
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Sizes.s15, vertical: Sizes.s12),
+                        decoration: BoxDecoration(
+                          color: isHighlighted
+                              ? appColor(context)
+                                  .appTheme
+                                  .primary
+                                  .withValues(alpha: 0.1)
+                              : null,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextWidgetCommon(
+                                    text: school.schoolName,
+                                    fontSize: Sizes.s14,
+                                    fontWeight: FontWeight.w500,
+                                    color: appColor(context).appTheme.darkText,
+                                  ),
+                                ),
+                                if (distanceText != null &&
+                                    distanceInKm != null) ...[
+                                  HSpace(Sizes.s8),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Sizes.s8,
+                                        vertical: Sizes.s4),
+                                    decoration: BoxDecoration(
+                                      color: DistanceHelper
+                                          .getDistanceColorWithAlpha(
+                                              distanceInKm,
+                                              appColor(context)
+                                                  .appTheme
+                                                  .primary,
+                                              appColor(context)
+                                                  .appTheme
+                                                  .success,
+                                              appColor(context)
+                                                  .appTheme
+                                                  .yellowIcon,
+                                              appColor(context)
+                                                  .appTheme
+                                                  .alertZone,
+                                              0.1),
+                                      borderRadius:
+                                          BorderRadius.circular(Sizes.s4),
+                                    ),
+                                    child: TextWidgetCommon(
+                                      text: distanceText,
+                                      fontSize: Sizes.s11,
+                                      fontWeight: FontWeight.w500,
+                                      color: DistanceHelper.getDistanceColor(
+                                          distanceInKm,
+                                          appColor(context).appTheme.primary,
+                                          appColor(context).appTheme.success,
+                                          appColor(context).appTheme.yellowIcon,
+                                          appColor(context).appTheme.alertZone),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            if (school.fullAddress.isNotEmpty) ...[
+                              VSpace(Sizes.s2),
+                              TextWidgetCommon(
+                                text: school.fullAddress,
+                                fontSize: Sizes.s12,
+                                color: appColor(context).appTheme.lightText,
+                              ),
+                            ],
+                          ],
+                        ),
+                      );
+                    },
+                    filterFn: (school, filter) {
+                      return school.schoolName
+                              .toLowerCase()
+                              .contains(filter.toLowerCase()) ||
+                          school.fullAddress
+                              .toLowerCase()
+                              .contains(filter.toLowerCase());
+                    },
+                    onChanged: (school) {
+                      setState(() {
+                        studentCtrl.selectedSchoolId = school?.schoolId;
+                      });
+                    },
+                  ),
+                  VSpace(Sizes.s16),
+                ]),
+
+                // Location Preview - shows when both school and pickup address are selected
+                if (studentCtrl.selectedSchoolId != null &&
+                    studentCtrl.selectedPickupAddressId != null)
+                  _buildLocationPreview(context, studentCtrl),
+
+                // ========== OPTIONAL FIELDS ==========
 
                 // Class (Optional - Dropdown)
                 widgets.commonDropdown(
@@ -191,8 +356,9 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                           ))
                       .toList(),
                   onChanged: (value) {
-                    studentCtrl.selectedClass = value;
-                    studentCtrl.notifyListeners();
+                    setState(() {
+                      studentCtrl.selectedClass = value;
+                    });
                   },
                 ),
 
@@ -229,8 +395,9 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                           ))
                       .toList(),
                   onChanged: (value) {
-                    studentCtrl.selectedGender = value;
-                    studentCtrl.notifyListeners();
+                    setState(() {
+                      studentCtrl.selectedGender = value;
+                    });
                   },
                 ),
 
@@ -240,30 +407,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   title: appFonts.dateOfBirth,
                   hintText: appFonts.enterDateOfBirth,
                   controller: studentCtrl.dateOfBirthController,
-                ),
-
-                // Pickup Address (Required - Dropdown)
-                widgets.commonDropdown(
-                  context,
-                  title: appFonts.pickupAddress,
-                  hintText: appFonts.enterPickupAddress,
-                  value: studentCtrl.selectedPickupAddressId,
-                  itemsList: studentCtrl.parentAddress != null
-                      ? [
-                          DropdownMenuItem<dynamic>(
-                            value: studentCtrl.parentAddress!.id,
-                            child: TextWidgetCommon(
-                              text: studentCtrl.parentAddress!.displayAddress,
-                              fontSize: Sizes.s14,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
-                        ]
-                      : [],
-                  onChanged: (value) {
-                    studentCtrl.selectedPickupAddressId = value;
-                    studentCtrl.notifyListeners();
-                  },
                 ),
 
                 // Emergency Contact (Optional)
@@ -288,14 +431,14 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
           bottomNavigationBar: Padding(
               padding: EdgeInsets.all(Sizes.s20),
               child: CommonButton(
-                      text: _isSaving
-                          ? (studentCtrl.isEditMode
-                              ? 'Updating Student...'
-                              : 'Saving Student...')
-                          : (studentCtrl.isEditMode
-                              ? appFonts.updateStudent
-                              : appFonts.saveStudent),
-                      onTap: _isSaving ? null : _saveStudent)),
+                  text: _isSaving
+                      ? (studentCtrl.isEditMode
+                          ? 'Updating Student...'
+                          : 'Saving Student...')
+                      : (studentCtrl.isEditMode
+                          ? appFonts.updateStudent
+                          : appFonts.saveStudent),
+                  onTap: _isSaving ? null : _saveStudent)),
         ),
       );
     });

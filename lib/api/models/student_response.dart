@@ -138,6 +138,20 @@ class School {
       updatedAt: json['updated_at'],
     );
   }
+
+  String get fullAddress {
+    List<String> parts = [];
+    if (address != null && address!.isNotEmpty) {
+      parts.add(address!);
+    }
+    if (city != null && city!.isNotEmpty) {
+      parts.add(city!);
+    }
+    if (state != null && state!.isNotEmpty) {
+      parts.add(state!);
+    }
+    return parts.join(', ');
+  }
 }
 
 class PickupAddress {
