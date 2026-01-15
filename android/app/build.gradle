@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.pixelstrap.taxify_user_ui"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion "27.0.12077973"
 
 	compileOptions {

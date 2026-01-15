@@ -1,3 +1,5 @@
+import 'package:taxify_user_ui/config.dart';
+
 class AppFonts {
   final skip = "skip";
   final taxify = "Taxify";
@@ -59,6 +61,8 @@ class AppFonts {
   final continueBtn = "Continue";
   final bookSuccessfully = "Booking Successfully";
   final noInternet = "No Internet";
+  final somethingWentWrong = "Something Went Wrong";
+  final tryAgain = "Try Again";
 
   //notification
   final notification = "Notifications";
@@ -72,7 +76,7 @@ class AppFonts {
   final off = "30% off";
   final rating = "4.5";
   final validTill = "Valid Till";
-  final topCategories = "Top Categories";
+  final topCategories = "Get Started";
   final addNewLocation = "Add New Location";
   final searchDestinations = "Search Destinations";
   final dateTimeSchedule = "Date Time Schedule";
@@ -91,6 +95,45 @@ class AppFonts {
   final terms = "Terms";
   final auto = "Auto";
   final bike = "Bike";
+
+  // add student screen
+  final addStudent = "Add Student";
+  final studentList = "Student List";
+  final noStudentsAdded = "No Students Added Yet.";
+  final addYourFirstStudent =
+      "Add your first student to start tracking their school transportation";
+  final studentName = "Student Name";
+  final enterStudentName = "Enter Student Name";
+  final schoolName = "School Name";
+  final enterSchoolName = "Enter School Name";
+  final pickupAddress = "Pickup Address";
+  final enterPickupAddress = "Enter Pickup Address";
+  final saveStudent = "Save Student";
+  final updateStudent = "Update Student";
+  final studentClass = "Class";
+  final selectClass = "Select Class";
+  final section = "Section";
+  final enterSection = "Enter Section";
+  final rollNumber = "Roll Number";
+  final enterRollNumber = "Enter Roll Number";
+  final gender = "Gender";
+  final selectGender = "Select Gender";
+  final dateOfBirth = "Date of Birth";
+  final enterDateOfBirth = "Enter Date of Birth";
+  final hintDateOfBirth = "DD/MM/YYYY";
+  final emergencyContact = "Emergency Contact";
+  final enterEmergencyContact = "Enter Emergency Contact";
+  final medicalInfo = "Medical Info";
+  final enterMedicalInfo = "Enter Medical Info";
+  final addStudentPhoto = "Add Student Photo";
+  final selectPhoto = "Select Photo";
+  final openCamera = "Open Camera";
+  final selectFromGallery = "Select From Gallery";
+  final studentUpdatedSuccessfully = "Student updated successfully";
+  final studentCreatedSuccessfully = "Student created successfully";
+
+  // assign driver screen
+  final assignDriver = "Assign Driver";
 
   //setting screen
   final general = "General";

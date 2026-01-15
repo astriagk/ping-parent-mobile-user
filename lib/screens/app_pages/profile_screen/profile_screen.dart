@@ -1,5 +1,5 @@
 import '../../../config.dart';
-import '../../../providers/user_provider.dart';
+import '../../../provider/app_pages_providers/user_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

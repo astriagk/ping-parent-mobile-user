@@ -8,9 +8,10 @@ class TopCategories extends StatelessWidget {
     return Consumer<HomeScreenProvider>(builder: (context, homeCtrl, child) {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         TextWidgetCommon(
-            text: appFonts.topCategories,
-            style: AppCss.lexendMedium18
-                .textColor(appColor(context).appTheme.darkText)),
+                text: appFonts.topCategories,
+                style: AppCss.lexendMedium18
+                    .textColor(appColor(context).appTheme.darkText))
+            .paddingOnly(top: Sizes.s25),
         Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: homeCtrl.categories
@@ -38,14 +39,11 @@ class TopCategories extends StatelessWidget {
                                 ])).inkWell(onTap: () {
                           if (e.key == 0) {
                             route.pushNamed(
-                                context, routeName.searchLocationScreen);
+                                context, routeName.studentListScreen);
                           }
                           if (e.key == 1) {
                             route.pushNamed(
-                                context, routeName.outStationScreen);
-                          }
-                          if (e.key == 2) {
-                            route.pushNamed(context, routeName.rentalScreen);
+                                context, routeName.assignDriverScreen);
                           }
                         }))
                     .toList())

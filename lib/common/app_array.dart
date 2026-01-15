@@ -140,19 +140,19 @@ class AppArray {
   var carCards = [imageAssets.card1, imageAssets.card2];
   var categories = [
     {
-      'image': imageAssets.ride,
-      'title': "Ride",
-      "subtitle": "Used for intercity travelling"
+      'image': imageAssets.addStudent,
+      'title': "Add Student",
+      "subtitle": "Used for add your student details"
     },
     {
-      'image': imageAssets.outstation,
-      'title': "Outstation",
-      "subtitle": "Used for travel city to city"
+      'image': imageAssets.assignDriver,
+      'title': "Assign Driver",
+      "subtitle": "Used for assign driver to student"
     },
     {
-      'image': imageAssets.rental,
-      'title': "Rental",
-      "subtitle": "Used for get vehicle on rent"
+      'image': imageAssets.commingSoon,
+      'title': "Comming Soon",
+      "subtitle": "Stay tuned for updates"
     },
   ];
 

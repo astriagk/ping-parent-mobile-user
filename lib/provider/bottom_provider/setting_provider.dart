@@ -4,7 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:taxify_user_ui/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';
 import '../../api/services/storage_service.dart';
-import '../../providers/user_provider.dart';
+import '../app_pages_providers/user_provider.dart';
 
 class SettingProvider extends ChangeNotifier {
   List setting = [];
@@ -83,7 +83,8 @@ class SettingProvider extends ChangeNotifier {
               final messenger = ScaffoldMessenger.of(context);
 
               // Get UserProvider from the correct context (outside dialog)
-              final userProvider = Provider.of<UserProvider>(context, listen: false);
+              final userProvider =
+                  Provider.of<UserProvider>(context, listen: false);
 
               // Clear user data from provider
               userProvider.clearUserData();

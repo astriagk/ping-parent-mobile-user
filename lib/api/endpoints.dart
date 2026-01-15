@@ -4,7 +4,7 @@ class Endpoints {
   // For Android Emulator: use 10.0.2.2
   // For iOS Simulator: use localhost or 127.0.0.1
   // For Physical Device: use your computer's network IP (check with ipconfig/ifconfig)
-  static const String baseUrl = 'http://10.31.78.207:3000/api';
+  static const String baseUrl = 'http://192.168.0.126:3000/api';
   static const String getUser = '$baseUrl/user';
   static const String login = '$baseUrl/login';
 
@@ -21,6 +21,17 @@ class Endpoints {
 
   // Profile Endpoints
   static const String parentProfile = '$baseUrl/parent/profile';
+
+  // Student Endpoints
+  static const String myStudents = '$baseUrl/students/my-students';
+  static const String students = '$baseUrl/students';
+  static String updateStudent(String id) => '$baseUrl/students/$id';
+
+  // School Endpoints
+  static const String schools = '$baseUrl/schools';
+
+  // Parent Address Endpoints
+  static const String parentAddress = '$baseUrl/parent/address';
 
   // Add more endpoints as needed
 }
