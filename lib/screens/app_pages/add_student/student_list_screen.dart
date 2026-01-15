@@ -1,5 +1,6 @@
 import '../../../config.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
+import '../../../widgets/common_empty_state.dart';
 import '../../../api/models/student_response.dart';
 
 class StudentListScreen extends StatelessWidget {
@@ -7,8 +8,7 @@ class StudentListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AddStudentProvider>(
-        builder: (context, studentCtrl, child) {
+    return Consumer<AddStudentProvider>(builder: (context, studentCtrl, child) {
       return StatefulWrapper(
           onInit: () => Future.delayed(DurationClass.ms150)
               .then((value) => studentCtrl.onInit()),
@@ -34,16 +34,21 @@ class StudentListScreen extends StatelessWidget {
                                   color: appColor(context).appTheme.alertZone),
                               VSpace(Sizes.s20),
                               CommonButton(
-                                      text: appFonts.refresh,
-                                      width: Sizes.s120)
+                                      text: appFonts.refresh, width: Sizes.s120)
                                   .inkWell(
                                       onTap: () => studentCtrl.fetchStudents())
                             ]))
                       : studentCtrl.studentList.isEmpty
-                          ? Center(
-                              child: TextWidgetCommon(
-                                  text: appFonts.noStudentsAdded,
-                                  color: appColor(context).appTheme.lightText))
+                          ? CommonEmptyState(
+                              mainText: appFonts.noStudentsAdded,
+                              descriptionText: appFonts.addYourFirstStudent,
+                              buttonText:
+                                  language(context, appFonts.addStudent),
+                              onButtonTap: () {
+                                studentCtrl.clearForm();
+                                route.pushNamed(
+                                    context, routeName.addStudentScreen);
+                              })
                           : ListView(
                               padding: EdgeInsets.only(
                                   top: Sizes.s20, bottom: Sizes.s20),
@@ -61,8 +66,8 @@ class StudentListScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildStudentCard(BuildContext context,
-      AddStudentProvider studentCtrl, Student student, int index) {
+  Widget _buildStudentCard(BuildContext context, AddStudentProvider studentCtrl,
+      Student student, int index) {
     return GestureDetector(
         onTap: () {
           studentCtrl.setEditStudent(index);
@@ -76,13 +81,13 @@ class StudentListScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: appColor(context).appTheme.bgBox,
-                    image: student.photoUrl != null &&
-                            student.photoUrl!.isNotEmpty
-                        ? DecorationImage(
-                            image: NetworkImage(student.photoUrl!),
-                            fit: BoxFit.cover,
-                            onError: (exception, stackTrace) {})
-                        : null),
+                    image:
+                        student.photoUrl != null && student.photoUrl!.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(student.photoUrl!),
+                                fit: BoxFit.cover,
+                                onError: (exception, stackTrace) {})
+                            : null),
                 child: student.photoUrl == null || student.photoUrl!.isEmpty
                     ? Icon(Icons.person,
                         size: Sizes.s30,
@@ -165,10 +170,8 @@ class StudentListScreen extends StatelessWidget {
                     fontSize: Sizes.s13,
                     overflow: TextOverflow.ellipsis,
                     fontWeight: FontWeight.w400))
-          ])
-              .padding(horizontal: Sizes.s10, vertical: Sizes.s10)
-              .decorated(
-                  color: appColor(context).appTheme.bgBox, allRadius: Sizes.s8),
+          ]).padding(horizontal: Sizes.s10, vertical: Sizes.s10).decorated(
+              color: appColor(context).appTheme.bgBox, allRadius: Sizes.s8),
         ]).myRideListExtension(context));
   }
 }

@@ -96,6 +96,8 @@ class AppFonts {
   final addStudent = "Add Student";
   final studentList = "Student List";
   final noStudentsAdded = "No Students Added Yet.";
+  final addYourFirstStudent =
+      "Add your first student to start tracking their school transportation";
   final studentName = "Student Name";
   final enterStudentName = "Enter Student Name";
   final schoolName = "School Name";
