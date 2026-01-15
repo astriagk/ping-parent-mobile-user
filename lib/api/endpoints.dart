@@ -22,5 +22,8 @@ class Endpoints {
   // Profile Endpoints
   static const String parentProfile = '$baseUrl/parent/profile';
 
+  // Student Endpoints
+  static const String myStudents = '$baseUrl/students/my-students';
+
   // Add more endpoints as needed
 }

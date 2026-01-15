@@ -27,3 +27,4 @@ export 'package:taxify_user_ui/provider/app_pages_providers/finding_driver_provi
 export 'package:taxify_user_ui/provider/app_pages_providers/rental_provider.dart';
 export 'package:taxify_user_ui/provider/bottom_provider/my_ride_provider.dart';
 export 'package:taxify_user_ui/provider/app_pages_providers/completed_ride_provider.dart';
+export 'package:taxify_user_ui/provider/app_pages_providers/add_student_provider.dart';

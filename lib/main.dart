@@ -60,7 +60,8 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => MyRideScreenProvider()),
                   ChangeNotifierProvider(
                       create: (_) => CompletedRideProvider()),
-                  ChangeNotifierProvider(create: (_) => AcceptRideProvider())
+                  ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
+                  ChangeNotifierProvider(create: (_) => AddStudentProvider())
                 ],
                 child: Consumer<ThemeService>(builder: (context, theme, child) {
                   return Consumer<LanguageProvider>(

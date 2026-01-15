@@ -94,6 +94,24 @@ class AppFonts {
 
   // add student screen
   final addStudent = "Add Student";
+  final studentList = "Student List";
+  final noStudentsAdded = "No Students Added Yet.";
+  final studentName = "Student Name";
+  final enterStudentName = "Enter Student Name";
+  final schoolName = "School Name";
+  final enterSchoolName = "Enter School Name";
+  final grade = "Grade";
+  final enterGrade = "Enter Grade";
+  final pickupTime = "Pickup Time";
+  final enterPickupTime = "Enter Pickup Time";
+  final dropTime = "Drop Time";
+  final enterDropTime = "Enter Drop Time";
+  final pickupAddress = "Pickup Address";
+  final enterPickupAddress = "Enter Pickup Address";
+  final dropAddress = "Drop Address";
+  final enterDropAddress = "Enter Drop Address";
+  final saveStudent = "Save Student";
+  final updateStudent = "Update Student";
 
   // assign driver screen
   final assignDriver = "Assign Driver";

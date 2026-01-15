@@ -39,7 +39,7 @@ class TopCategories extends StatelessWidget {
                                 ])).inkWell(onTap: () {
                           if (e.key == 0) {
                             route.pushNamed(
-                                context, routeName.addStudentScreen);
+                                context, routeName.studentListScreen);
                           }
                           if (e.key == 1) {
                             route.pushNamed(
