@@ -10,9 +10,10 @@ class AddStudentProvider extends ChangeNotifier {
   List<Student> studentList = [];
   List<school_model.School> schoolList = [];
   ParentAddress? parentAddress;
-  bool isLoading = false;
+  bool isLoading = true; // Start with loading true to prevent empty state flash
   bool isSaving = false;
   String? errorMessage;
+  bool _isInitialized = false;
 
   // Edit mode
   bool isEditMode = false;
@@ -50,6 +51,8 @@ class AddStudentProvider extends ChangeNotifier {
   ];
 
   Future<void> onInit() async {
+    if (_isInitialized) return;
+    _isInitialized = true;
     await fetchSchools();
     await fetchParentAddress();
     await fetchStudents();
