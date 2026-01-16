@@ -33,5 +33,8 @@ class Endpoints {
   // Parent Address Endpoints
   static const String parentAddress = '$baseUrl/parent/address';
 
+  // Driver Endpoints
+  static const String allDrivers = '$baseUrl/driver-student-assignments/all-drivers';
+
   // Add more endpoints as needed
 }

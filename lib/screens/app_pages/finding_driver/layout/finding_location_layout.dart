@@ -8,6 +8,14 @@ class FindingLocationLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentLocation = data?["currentLocation"] ?? '';
+    final addLocation = data?['addLocation'] ?? '';
+
+    // Hide widget if both locations are empty
+    if (currentLocation.isEmpty && addLocation.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Row(children: [
       Column(children: [
         SvgPicture.asset(svgAssets.locationSearch),
@@ -26,13 +34,16 @@ class FindingLocationLayout extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-            TextWidgetCommon(
-                text: data["currentLocation"],
-                fontSize: Sizes.s13,
-                color: loc1Color ?? appColor(context).appTheme.lightText),
-            DottedLine(dashColor: appColor(context).appTheme.stroke)
-                .padding(vertical: Sizes.s15),
-            TextWidgetCommon(text: data['addLocation'], fontSize: Sizes.s13)
+            if (currentLocation.isNotEmpty)
+              TextWidgetCommon(
+                  text: currentLocation,
+                  fontSize: Sizes.s13,
+                  color: loc1Color ?? appColor(context).appTheme.lightText),
+            if (currentLocation.isNotEmpty && addLocation.isNotEmpty)
+              DottedLine(dashColor: appColor(context).appTheme.stroke)
+                  .padding(vertical: Sizes.s15),
+            if (addLocation.isNotEmpty)
+              TextWidgetCommon(text: addLocation, fontSize: Sizes.s13)
           ])))
     ]);
   }

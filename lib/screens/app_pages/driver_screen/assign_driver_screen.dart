@@ -1,23 +1,216 @@
+import '../../../api/models/driver_response.dart';
 import '../../../config.dart';
-import '../../../widgets/common_app_bar_layout1.dart';
+import '../../../helper/date_formatter_helper.dart';
+import '../../../provider/app_pages_providers/driver_provider.dart';
+import '../../../widgets/info_card.dart';
 
-class AssignDriverScreen extends StatelessWidget {
+class AssignDriverScreen extends StatefulWidget {
   const AssignDriverScreen({super.key});
+
+  @override
+  State<AssignDriverScreen> createState() => _AssignDriverScreenState();
+}
+
+class _AssignDriverScreenState extends State<AssignDriverScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  List<Driver> _filteredDrivers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DriverProvider>().onInit();
+    });
+    _searchController.addListener(_filterDrivers);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterDrivers() {
+    final query = _searchController.text.toLowerCase();
+    final driverCtrl = context.read<DriverProvider>();
+
+    if (query.isEmpty) {
+      setState(() {
+        _filteredDrivers = [];
+      });
+      return;
+    }
+
+    setState(() {
+      _filteredDrivers = driverCtrl.driverList.where((driver) {
+        final name = (driver.name ?? '').toLowerCase();
+        final driverId = (driver.driverUniqueId ?? '').toLowerCase();
+        final email = (driver.email ?? '').toLowerCase();
+
+        return name.contains(query) ||
+            driverId.contains(query) ||
+            email.contains(query);
+      }).toList();
+    });
+  }
+
+  void _selectDriver(Driver driver) {
+    // TODO: Implement driver assignment logic here
+    // This will be called when user taps on a driver card
+  }
+
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _filteredDrivers = [];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appColor(context).appTheme.white,
-      appBar: CommonAppBarLayout1(
-          title: language(context, appFonts.assignDriver),
-          titleWidth: MediaQuery.of(context).size.width * 0.01),
-      body: Center(
-        child: TextWidgetCommon(
-          text: appFonts.assignDriver,
-          style: AppCss.lexendMedium18
-              .textColor(appColor(context).appTheme.darkText),
-        ),
+      backgroundColor: appColor(context).appTheme.screenBg,
+      body: Consumer<DriverProvider>(
+        builder: (context, driverCtrl, child) {
+          return CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                excludeHeaderSemantics: true,
+                pinned: true,
+                floating: true,
+                snap: true,
+                expandedHeight: Sizes.s140,
+                automaticallyImplyLeading: false,
+                shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                        cornerRadius: Sizes.s20, cornerSmoothing: 1)),
+                flexibleSpace: FlexibleSpaceBar(
+                  expandedTitleScale: 1,
+                  background: StatefulBuilder(
+                    builder: (context, setLocalState) {
+                      return TextFieldCommon(
+                        controller: _searchController,
+                        prefixIcon: SvgPicture.asset(svgAssets.search).padding(
+                            vertical: Sizes.s12,
+                            left: Sizes.s12,
+                            right: Sizes.s8),
+                        hintText: 'Search by name, ID, or email',
+                        contentPadding: EdgeInsets.zero,
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: Sizes.s1,
+                                    color: appColor(context).appTheme.bgBox,
+                                    height: Sizes.s24,
+                                  ),
+                                  Container(
+                                    height: Sizes.s36,
+                                    padding: EdgeInsets.all(Sizes.s8),
+                                    width: Sizes.s36,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: appColor(context).appTheme.bgBox,
+                                    ),
+                                    child: Icon(
+                                      Icons.clear,
+                                      color:
+                                          appColor(context).appTheme.lightText,
+                                      size: Sizes.s20,
+                                    ),
+                                  ).inkWell(onTap: _clearSearch).paddingOnly(
+                                        top: Sizes.s5,
+                                        bottom: Sizes.s5,
+                                        right: Sizes.s5,
+                                        left: Sizes.s10,
+                                      ),
+                                ],
+                              )
+                            : null,
+                        borderRadius: SmoothBorderRadius(
+                            cornerRadius: Sizes.s23, cornerSmoothing: 1),
+                        enabledBorder: SmoothBorderRadius(
+                            cornerRadius: Sizes.s23, cornerSmoothing: 1),
+                      ).padding(horizontal: Sizes.s20, top: Sizes.s95);
+                    },
+                  ),
+                ),
+                backgroundColor: appColor(context).appTheme.bgBox,
+                leading: Padding(
+                  padding: EdgeInsets.only(left: Sizes.s10),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios,
+                        color: appColor(context).appTheme.darkText),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+                leadingWidth: Sizes.s60,
+                title: TextWidgetCommon(
+                  text: language(context, appFonts.assignDriver),
+                  style: AppCss.lexendBold18
+                      .textColor(appColor(context).appTheme.darkText),
+                ),
+                centerTitle: true,
+              ),
+              SliverFillRemaining(
+                child: driverCtrl.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: appColor(context).appTheme.primary,
+                        ),
+                      )
+                    : _filteredDrivers.isNotEmpty
+                        ? ListView.builder(
+                            padding: EdgeInsets.only(
+                              top: Sizes.s20,
+                            ),
+                            itemCount: _filteredDrivers.length,
+                            itemBuilder: (context, index) {
+                              return _buildDriverDetails(
+                                  context, _filteredDrivers[index]);
+                            },
+                          )
+                        : Center(
+                            child: TextWidgetCommon(
+                              text: language(context,
+                                  'Search for a driver by name, ID, or email'),
+                              style: AppCss.lexendRegular14.textColor(
+                                  appColor(context).appTheme.lightText),
+                              textAlign: TextAlign.center,
+                            ).padding(horizontal: Sizes.s40),
+                          ),
+              ),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  Widget _buildDriverDetails(BuildContext context, Driver driver) {
+    return InfoCard(
+      image: svgAssets.car,
+      id: driver.driverUniqueId?.toUpperCase(),
+      status: driver.isAvailable == true ? 'Available' : 'Unavailable',
+      statusColor: driver.isAvailable == true
+          ? appColor(context).appTheme.activeColor
+          : appColor(context).appTheme.alertZone,
+      price: '25.00',
+      date: DateFormatterHelper.formatToShortDate(driver.approvedAt),
+      time: '10:30 AM',
+      driverName: driver.name,
+      rating: (driver.rating != null && driver.rating! > 0)
+          ? driver.rating!.toStringAsFixed(1)
+          : null,
+      userRatingNumber: ' (${driver.totalTrips ?? 0})',
+      carName:
+          '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
+              .trim(),
+      profileImage: driver.photoUrl,
+      pickupLocation: '123 Main Street, Downtown',
+      dropLocation: '',
+      onTap: () => _selectDriver(driver),
+    ).padding(bottom: Sizes.s15);
   }
 }

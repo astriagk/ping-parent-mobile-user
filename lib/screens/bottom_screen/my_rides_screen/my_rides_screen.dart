@@ -182,7 +182,9 @@ class MyRidesScreen extends StatelessWidget {
                               .decorated(
                                   color: appColor(context).appTheme.bgBox,
                                   allRadius: Sizes.s8)
-                        ]).myRideListExtension(context));
+                        ])
+                            .myRideListExtension(context)
+                            .padding(bottom: Sizes.s15));
                   })
                 ]))
           ])));
