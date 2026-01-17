@@ -14,6 +14,8 @@ class AppFonts {
   final available = 'Available';
   final unavailable = 'Unavailable';
 
+  final retry = 'Retry';
+
   // auth screen
   final home = "Home";
   final category = "Category";
@@ -149,7 +151,9 @@ class AppFonts {
 
   // subscription management screen
   final subscriptionManagement = "Subscription Management";
-  final noSubscriptionsFound = "No Subscriptions Found";
+  final noSubscriptionPlansAvailable = "No subscription plans available";
+  final noSubscriptionPlansDescription =
+      "There are no subscription plans at the moment. Please check back later.";
 
   //setting screen
   final general = "General";

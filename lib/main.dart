@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/driver_provider.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/my_wallet_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscription_provider.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
 import 'config.dart';
 
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
                   ChangeNotifierProvider(create: (_) => AddStudentProvider()),
                   ChangeNotifierProvider(create: (_) => DriverProvider()),
-                  ChangeNotifierProvider(create: (_) => SubscriptionProvider())
+                  ChangeNotifierProvider(create: (_) => SubscriptionsProvider())
                 ],
                 child: Consumer<ThemeService>(builder: (context, theme, child) {
                   return Consumer<LanguageProvider>(

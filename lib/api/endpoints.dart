@@ -39,5 +39,8 @@ class Endpoints {
   static const String driverStudentAssignments =
       '$baseUrl/driver-student-assignments';
 
+  // Subscription Endpoints
+  static const String subscriptionPlans = '$baseUrl/subscription-plans';
+
   // Add more endpoints as needed
 }

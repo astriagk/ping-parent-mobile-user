@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import '../../api/api_client.dart';
+import '../../api/services/subscriptions_service.dart';
+import '../../api/models/subscription_plans_response.dart';
+
+class SubscriptionsProvider extends ChangeNotifier {
+  List<SubscriptionPlan> subscriptionPlans = [];
+  bool isLoading = true; // Start with loading true to prevent empty state flash
+  bool isRefreshing = false;
+  String? errorMessage;
+  bool _isInitialized = false;
+
+  Future<void> onInit() async {
+    if (_isInitialized) return;
+    _isInitialized = true;
+    await fetchSubscriptionPlans();
+  }
+
+  Future<void> fetchSubscriptionPlans({bool isRefresh = false}) async {
+    if (isRefresh) {
+      isRefreshing = true;
+    } else {
+      isLoading = true;
+    }
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final subscriptionsService = SubscriptionsService(ApiClient());
+      final response = await subscriptionsService.getSubscriptionPlans();
+
+      if (response.success) {
+        subscriptionPlans = response.data;
+        errorMessage = null;
+      } else {
+        errorMessage = response.error ??
+            response.message ??
+            'Failed to fetch subscription plans';
+      }
+    } catch (e) {
+      errorMessage = 'An error occurred. Please try again.';
+    }
+
+    isLoading = false;
+    isRefreshing = false;
+    notifyListeners();
+  }
+
+  // Get active subscription plans only
+  List<SubscriptionPlan> get activePlans {
+    return subscriptionPlans.where((plan) => plan.isActive).toList();
+  }
+
+  // Get plans by type (monthly/yearly)
+  List<SubscriptionPlan> getPlansByType(String type) {
+    return subscriptionPlans
+        .where((plan) => plan.planType == type && plan.isActive)
+        .toList();
+  }
+
+  // Get plan by ID
+  SubscriptionPlan? getPlanById(String planId) {
+    try {
+      return subscriptionPlans.firstWhere((plan) => plan.planId == planId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  void reset() {
+    subscriptionPlans = [];
+    isLoading = false;
+    isRefreshing = false;
+    errorMessage = null;
+    _isInitialized = false;
+    notifyListeners();
+  }
+}

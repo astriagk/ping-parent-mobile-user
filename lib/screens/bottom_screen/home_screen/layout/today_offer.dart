@@ -10,12 +10,11 @@ class TodayOfferLayout extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Offers Section
           TextWidgetCommon(
                   text: appFonts.todayOffer,
                   style: AppCss.lexendMedium18
                       .textColor(appColor(context).appTheme.darkText))
-              .padding(bottom: Sizes.s15),
+              .padding(top: Sizes.s25, bottom: Sizes.s15),
           Column(
               children: homeCtrl.offer
                   .asMap()
