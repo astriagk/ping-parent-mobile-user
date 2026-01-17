@@ -20,7 +20,7 @@ class AppArray {
       "iconDark": svgAssets.categoryDark
     },
     {
-      "title": appFonts.myRides,
+      "title": appFonts.mySubscriptions,
       "icon": svgAssets.carLight,
       "iconDark": svgAssets.carDark
     },

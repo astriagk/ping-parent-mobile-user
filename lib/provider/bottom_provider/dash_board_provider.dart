@@ -1,9 +1,10 @@
+import 'package:taxify_user_ui/screens/app_pages/subscription_management/subscription_management_screen.dart';
+
 import '../../config.dart';
 
 class DashBoardProvider extends ChangeNotifier {
-
   int currentTab = 0;
-bool isImage = true;
+  bool isImage = true;
   List bottomNavigationBarList = [];
   ScrollController? scrollViewController;
 
@@ -11,7 +12,7 @@ bool isImage = true;
   final List<Widget> screens = [
     const HomeScreen(),
     const CategoryScreen(),
-    const MyRidesScreen(),
+    const SubscriptionManagementScreen(),
     const SettingsScreen(),
   ];
   // Initialize list
@@ -21,14 +22,15 @@ bool isImage = true;
     scrollViewController!.addListener(changeColor);
     notifyListeners();
   }
+
 //CHANGE COLOUR
-  void changeColor(){
-    if((scrollViewController!.offset == 0)){
-      isImage =true;
-    }else if((scrollViewController!.offset <= 80)){
-      isImage =true;
-    }else if((scrollViewController!.offset <= 100)){
-      isImage =false;
+  void changeColor() {
+    if ((scrollViewController!.offset == 0)) {
+      isImage = true;
+    } else if ((scrollViewController!.offset <= 80)) {
+      isImage = true;
+    } else if ((scrollViewController!.offset <= 100)) {
+      isImage = false;
     }
     notifyListeners();
   }
@@ -38,6 +40,4 @@ bool isImage = true;
     currentTab = index;
     notifyListeners();
   }
-
-
 }
