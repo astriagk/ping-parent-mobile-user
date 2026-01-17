@@ -26,8 +26,10 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                       expandedTitleScale: 1,
                       background: TextFieldCommon(
                               readOnly: true,
-                              onTap: () => route.pushNamed(
-                                  context, routeName.searchLocationScreen),
+                              onTap: () => {
+                                    // route.pushNamed(
+                                    //     context, routeName.searchLocationScreen)
+                                  },
                               prefixIcon: SvgPicture.asset(svgAssets.search)
                                   .padding(
                                       vertical: Sizes.s12,
@@ -54,8 +56,8 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                                             child: SvgPicture.asset(
                                                 svgAssets.calendar))
                                         .inkWell(onTap: () {
-                                      route.pushNamed(
-                                          context, routeName.dateTimePicker);
+                                      // route.pushNamed(
+                                      //     context, routeName.dateTimePicker);
                                     }).paddingOnly(
                                             top: Sizes.s5,
                                             bottom: Sizes.s5,

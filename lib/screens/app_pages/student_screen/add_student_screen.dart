@@ -4,7 +4,6 @@ import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/searchable_dropdown.dart';
 import '../../../widgets/location/route_location_display.dart';
 import '../../../widgets/location/route_distance_display.dart';
-import '../../../models/location_data.dart';
 import '../../../api/models/school_response.dart';
 import 'student_widgets.dart';
 
@@ -80,22 +79,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     final pickupAddress = studentCtrl.parentAddress;
 
     if (pickupAddress == null) return const SizedBox.shrink();
-
-    // Create locations array
-    final locations = [
-      LocationData(
-        name: appFonts.pickupLocation,
-        address: pickupAddress.displayAddress,
-        latitude: pickupAddress.latitude,
-        longitude: pickupAddress.longitude,
-      ),
-      LocationData(
-        name: selectedSchool.schoolName,
-        address: selectedSchool.fullAddress,
-        latitude: selectedSchool.latitude,
-        longitude: selectedSchool.longitude,
-      ),
-    ];
 
     final distance = DistanceHelper.calculateDistanceInKm(
       pickupAddress.latitude,
@@ -371,6 +354,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                 if (studentCtrl.selectedSchoolId != null &&
                     studentCtrl.selectedPickupAddressId != null)
                   _buildLocationPreview(context, studentCtrl),
+
+                VSpace(Sizes.s16),
 
                 // ========== OPTIONAL FIELDS ==========
 

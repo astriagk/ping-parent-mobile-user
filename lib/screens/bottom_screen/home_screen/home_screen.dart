@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   //card layout
-                  // CardLayout(),
+                  CardLayout(),
                   // top categories layout
                   TopCategories(),
                   //today's offer layout
