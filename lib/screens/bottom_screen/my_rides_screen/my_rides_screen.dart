@@ -1,4 +1,6 @@
 import 'package:taxify_user_ui/config.dart';
+import '../../../widgets/ride_card/ride_card.dart';
+import '../../../widgets/ride_card/layout/ride_data_model.dart';
 
 class MyRidesScreen extends StatelessWidget {
   const MyRidesScreen({super.key});
@@ -55,136 +57,17 @@ class MyRidesScreen extends StatelessWidget {
                       .map((entries) {
                     var e = entries.value;
                     var index = entries.key;
-                    return GestureDetector(
-                        onTap: () {
-                          if (e["status"] != "Active") {
-                            route.pushNamed(
-                                context, routeName.completedRideScreen,
-                                arg: {'index': index, 'value': entries.value});
-                          }
-                        },
-                        child: Column(children: [
-                          Row(children: [
-                            SizedBox(
-                                height: Sizes.s50,
-                                width: Sizes.s50,
-                                child: SvgPicture.asset(e['image'])
-                                    .padding(horizontal: Sizes.s4)
-                                    .decorated(
-                                        color: appColor(context).appTheme.bgBox,
-                                        allRadius: Sizes.s7)),
-                            HSpace(Sizes.s10),
-                            Expanded(
-                                child: Column(children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextWidgetCommon(
-                                        text: "ID : ${e['id']}",
-                                        fontSize: Sizes.s13,
-                                        fontWeight: FontWeight.w400),
-                                    TextWidgetCommon(
-                                        text: "• ${e['status']}",
-                                        color: e["status"] == "Active"
-                                            ? appColor(context)
-                                                .appTheme
-                                                .activeColor
-                                            : e["status"] == "Pending"
-                                                ? appColor(context)
-                                                    .appTheme
-                                                    .yellowIcon
-                                                : e["status"] == "Complete"
-                                                    ? appColor(context)
-                                                        .appTheme
-                                                        .success
-                                                    : appColor(context)
-                                                        .appTheme
-                                                        .alertZone,
-                                        fontSize: Sizes.s12,
-                                        fontWeight: FontWeight.w500)
-                                  ]),
-                              VSpace(Sizes.s7),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextWidgetCommon(
-                                        text:
-                                            '${getSymbol(context)}${(currency(context).currencyVal * double.parse(e['price'])).toStringAsFixed(2)}',
-                                        color:
-                                            appColor(context).appTheme.success,
-                                        fontSize: Sizes.s13,
-                                        fontWeight: FontWeight.w500),
-                                    TextWidgetCommon(
-                                        text: "${e['date']} at ${e['time']}",
-                                        color: appColor(context)
-                                            .appTheme
-                                            .lightText,
-                                        fontSize: Sizes.s12,
-                                        fontWeight: FontWeight.w300)
-                                  ])
-                            ]))
-                          ]),
-                          DottedLine(
-                                  dashColor: appColor(context).appTheme.stroke)
-                              .padding(vertical: Sizes.s15),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(children: [
-                                        TextWidgetCommon(
-                                            text: '${e['driverName']}',
-                                            fontSize: Sizes.s12,
-                                            fontWeight: FontWeight.w400),
-                                        HSpace(Sizes.s6),
-                                        SvgPicture.asset(svgAssets.star),
-                                        HSpace(Sizes.s4),
-                                        TextWidgetCommon(
-                                            text: '${e['rating']}',
-                                            fontSize: Sizes.s12,
-                                            fontWeight: FontWeight.w400),
-                                        TextWidgetCommon(
-                                            text: e['userRatingNumber'],
-                                            color: appColor(context)
-                                                .appTheme
-                                                .lightText,
-                                            fontSize: Sizes.s12,
-                                            fontWeight: FontWeight.w400),
-                                      ]),
-                                      VSpace(Sizes.s4),
-                                      TextWidgetCommon(
-                                          text: '${e['carName']}',
-                                          color: appColor(context)
-                                              .appTheme
-                                              .lightText)
-                                    ]),
-                                Container(
-                                    height: Insets.i32,
-                                    width: Insets.i32,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                imageAssets.profileImg))))
-                              ]),
-                          VSpace(Sizes.s15),
-                          FindingLocationLayout(
-                                  data: e,
-                                  loc1Color:
-                                      appColor(context).appTheme.darkText)
-                              .padding(
-                                  horizontal: Sizes.s10, vertical: Sizes.s10)
-                              .decorated(
-                                  color: appColor(context).appTheme.bgBox,
-                                  allRadius: Sizes.s8)
-                        ])
-                            .myRideListExtension(context)
-                            .padding(bottom: Sizes.s15));
+                    return RideCard(
+                      rideData: RideDataModel.fromMap(e),
+                      index: index,
+                      onTap: () {
+                        if (e["status"] != "Active") {
+                          route.pushNamed(
+                              context, routeName.completedRideScreen,
+                              arg: {'index': index, 'value': entries.value});
+                        }
+                      },
+                    );
                   })
                 ]))
           ])));

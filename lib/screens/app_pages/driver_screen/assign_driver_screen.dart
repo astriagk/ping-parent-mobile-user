@@ -2,8 +2,8 @@ import '../../../api/models/driver_response.dart';
 import '../../../config.dart';
 import '../../../helper/date_formatter_helper.dart';
 import '../../../provider/app_pages_providers/driver_provider.dart';
-import '../../../provider/app_pages_providers/add_student_provider.dart';
-import '../../../widgets/info_card.dart';
+import '../../../widgets/ride_card/ride_card.dart';
+import '../../../widgets/ride_card/layout/ride_data_model.dart';
 import '../../../../widgets/common_confirmation_dialog.dart';
 
 class AssignDriverScreen extends StatefulWidget {
@@ -257,30 +257,33 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
   }
 
   Widget _buildDriverDetails(BuildContext context, Driver driver) {
-    return InfoCard(
-      image: svgAssets.car,
-      id: driver.driverUniqueId?.toUpperCase(),
-      status: driver.isAvailable == true
-          ? appFonts.available
-          : appFonts.unavailable,
-      statusColor: driver.isAvailable == true
-          ? appColor(context).appTheme.activeColor
-          : appColor(context).appTheme.alertZone,
-      price: '25.00',
-      date: DateFormatterHelper.formatToShortDate(driver.approvedAt),
-      time: '10:30 AM',
-      driverName: driver.name,
-      rating: (driver.rating != null && driver.rating! > 0)
-          ? driver.rating!.toStringAsFixed(1)
-          : null,
-      userRatingNumber: ' (${driver.totalTrips ?? 0})',
-      carName:
-          '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
-              .trim(),
-      profileImage: driver.photoUrl,
-      pickupLocation: '123 Main Street, Downtown',
-      dropLocation: '',
+    return RideCard(
+      rideData: RideDataModel(
+        image: svgAssets.car,
+        id: driver.driverUniqueId?.toUpperCase(),
+        status: driver.isAvailable == true
+            ? appFonts.available
+            : appFonts.unavailable,
+        statusColor: driver.isAvailable == true
+            ? appColor(context).appTheme.activeColor
+            : appColor(context).appTheme.alertZone,
+        price: driver.currentStudentCount?.toString() ?? '0',
+        date: DateFormatterHelper.formatToShortDate(driver.approvedAt),
+        time: DateFormatterHelper.formatTo12HourTime(driver.approvedAt),
+        driverName: driver.name,
+        rating: (driver.rating != null && driver.rating! > 0)
+            ? driver.rating!.toStringAsFixed(1)
+            : null,
+        userRatingNumber: ' (${driver.totalTrips ?? 0})',
+        carName:
+            '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
+                .trim(),
+        currentLocation: '123 Main Street, Downtown',
+        addLocation: '',
+      ),
+      profileImageUrl: driver.photoUrl,
+      index: 0,
       onTap: () => _selectDriver(driver),
-    ).padding(bottom: Sizes.s15);
+    );
   }
 }

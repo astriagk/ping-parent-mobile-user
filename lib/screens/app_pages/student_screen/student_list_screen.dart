@@ -2,8 +2,16 @@ import '../../../config.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/common_empty_state.dart';
 import '../../../widgets/common_error_state.dart';
-import '../../../widgets/location_preview_card.dart';
-import '../../../models/location_data.dart';
+import '../../../widgets/location/route_location_display.dart';
+import '../../../widgets/location/route_distance_display.dart';
+import '../../../widgets/ride_card/layout/ride_header_section.dart';
+import '../../../widgets/ride_card/layout/ride_driver_info_section.dart';
+import '../../../widgets/ride_card/layout/action_button_section.dart';
+import '../../../widgets/ride_card/layout/ride_data_model.dart';
+import '../../../widgets/status_badge.dart';
+import '../../../helper/distance_helper.dart';
+import '../../../helper/date_formatter_helper.dart';
+import '../../../helper/status_helper.dart';
 import '../../../widgets/skeletons/student_card_skeleton.dart';
 import '../../../api/models/student_response.dart';
 import '../driver_screen/assign_driver_screen.dart';
@@ -72,65 +80,20 @@ class StudentListScreen extends StatelessWidget {
         },
         child: Column(children: [
           // Student info row with photo
-          Row(children: [
-            Container(
-                height: Sizes.s50,
-                width: Sizes.s50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Sizes.s7),
-                    color: appColor(context).appTheme.bgBox,
-                    image:
-                        student.photoUrl != null && student.photoUrl!.isNotEmpty
-                            ? DecorationImage(
-                                image: NetworkImage(student.photoUrl!),
-                                fit: BoxFit.cover,
-                                onError: (exception, stackTrace) {})
-                            : null),
-                child: student.photoUrl == null || student.photoUrl!.isEmpty
-                    ? Icon(Icons.person,
-                        size: Sizes.s30,
-                        color: appColor(context).appTheme.lightText)
-                    : null),
-            HSpace(Sizes.s10),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                            child: TextWidgetCommon(
-                                text: student.studentName ?? '',
-                                fontSize: Sizes.s13,
-                                fontWeight: FontWeight.w400,
-                                overflow: TextOverflow.ellipsis)),
-                        TextWidgetCommon(
-                            text: student.isActive ? "• Active" : "• Inactive",
-                            color: student.isActive
-                                ? appColor(context).appTheme.activeColor
-                                : appColor(context).appTheme.alertZone,
-                            fontSize: Sizes.s12,
-                            fontWeight: FontWeight.w500)
-                      ]),
-                  VSpace(Sizes.s4),
-                  Row(children: [
-                    TextWidgetCommon(
-                        text: 'Class ${student.studentClass ?? ''}',
-                        color: appColor(context).appTheme.lightText,
-                        fontSize: Sizes.s12,
-                        fontWeight: FontWeight.w300),
-                    if (student.section != null &&
-                        student.section!.isNotEmpty) ...[
-                      TextWidgetCommon(
-                          text: ' - ${student.section}',
-                          color: appColor(context).appTheme.lightText,
-                          fontSize: Sizes.s12,
-                          fontWeight: FontWeight.w300),
-                    ]
-                  ])
-                ]))
-          ]),
+          RideHeaderSection(
+            rideData: RideDataModel(
+              image: student.photoUrl ?? '',
+              id: student.studentName ?? '',
+              status: student.isActive ? 'Active' : 'Inactive',
+              statusColor: student.isActive
+                  ? appColor(context).appTheme.activeColor
+                  : appColor(context).appTheme.alertZone,
+              price:
+                  'Class ${student.studentClass ?? ''}${student.section != null && student.section!.isNotEmpty ? ' - ${student.section}' : ''}',
+              date: DateFormatterHelper.formatToShortDate(student.createdAt),
+              time: DateFormatterHelper.formatTo12HourTime(student.createdAt),
+            ),
+          ),
           DottedLine(dashColor: appColor(context).appTheme.stroke)
               .padding(vertical: Sizes.s15),
 
@@ -144,29 +107,45 @@ class StudentListScreen extends StatelessWidget {
           if (student.pickupAddress != null &&
               student.school != null &&
               student.pickupAddress!.latitude != null &&
-              student.school!.latitude != null)
-            LocationPreviewCard(
-              showBottomSpace: false,
-              locations: [
-                LocationData(
-                  name: appFonts.pickupLocation,
-                  address: student.pickupAddress!.fullAddress,
-                  latitude: student.pickupAddress!.latitude!,
-                  longitude: student.pickupAddress!.longitude!,
+              student.school!.latitude != null) ...[
+            RouteLocationDisplay(
+              data: {
+                'currentLocation': student.pickupAddress!.fullAddress,
+                'addLocation': student.school!.fullAddress,
+              },
+              loc1Color: appColor(context).appTheme.darkText,
+            ).padding(horizontal: Sizes.s10, vertical: Sizes.s10).decorated(
+                color: appColor(context).appTheme.bgBox, allRadius: Sizes.s8),
+            VSpace(Sizes.s8),
+            RouteDistanceDisplay(
+              distance: DistanceHelper.formatDistance(
+                DistanceHelper.calculateDistanceInKm(
+                  student.pickupAddress!.latitude!,
+                  student.pickupAddress!.longitude!,
+                  student.school!.latitude!,
+                  student.school!.longitude!,
                 ),
-                LocationData(
-                  name: student.school!.schoolName ?? '',
-                  address: student.school!.fullAddress,
-                  latitude: student.school!.latitude!,
-                  longitude: student.school!.longitude!,
+              ),
+              distanceColor: DistanceHelper.getDistanceColor(
+                DistanceHelper.calculateDistanceInKm(
+                  student.pickupAddress!.latitude!,
+                  student.pickupAddress!.longitude!,
+                  student.school!.latitude!,
+                  student.school!.longitude!,
                 ),
-              ],
+                appColor(context).appTheme.primary,
+                appColor(context).appTheme.success,
+                appColor(context).appTheme.yellowIcon,
+                appColor(context).appTheme.alertZone,
+              ),
             ),
+          ],
         ]).myRideListExtension(context));
   }
 
   Widget _buildAssignDriverButton(BuildContext context, Student student) {
-    return GestureDetector(
+    return ActionButtonSection(
+      label: language(context, appFonts.assignDriver),
       onTap: () {
         if (student.studentId != null) {
           Navigator.push(
@@ -185,155 +164,38 @@ class StudentListScreen extends StatelessWidget {
           );
         }
       },
-      child: Container(
-        padding:
-            EdgeInsets.symmetric(horizontal: Sizes.s12, vertical: Sizes.s10),
-        decoration: BoxDecoration(
-          color: appColor(context).appTheme.bgBox,
-          borderRadius: BorderRadius.circular(Sizes.s8),
-          border: Border.all(
-            color: appColor(context).appTheme.stroke,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.person_add_outlined,
-                  size: Sizes.s20,
-                  color: appColor(context).appTheme.primary,
-                ),
-                HSpace(Sizes.s10),
-                TextWidgetCommon(
-                  text: language(context, appFonts.assignDriver),
-                  fontSize: Sizes.s13,
-                  fontWeight: FontWeight.w500,
-                  color: appColor(context).appTheme.darkText,
-                ),
-              ],
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: Sizes.s14,
-              color: appColor(context).appTheme.lightText,
-            ),
-          ],
-        ),
-      ),
-    );
+    ).paddingOnly(bottom: Sizes.s15);
   }
 
   Widget _buildDriverAssignmentCard(BuildContext context, Student student) {
     final driver = student.driver!;
     final assignment = student.driverAssignment!;
-
-    Color statusColor;
-    switch (assignment.assignmentStatus) {
-      case 'active':
-        statusColor = appColor(context).appTheme.success;
-        break;
-      case 'parent_requested':
-      case 'pending':
-        statusColor = appColor(context).appTheme.yellowIcon;
-        break;
-      case 'rejected':
-      case 'inactive':
-        statusColor = appColor(context).appTheme.alertZone;
-        break;
-      default:
-        statusColor = appColor(context).appTheme.lightText;
-    }
+    final statusColor = StatusHelper.getAssignmentStatusColor(
+        context, assignment.assignmentStatus);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Driver details row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: TextWidgetCommon(
-                          text: driver.name ?? 'Driver',
-                          fontSize: Sizes.s12,
-                          fontWeight: FontWeight.w400,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (driver.rating != null && driver.rating! > 0) ...[
-                        HSpace(Sizes.s6),
-                        SvgPicture.asset(svgAssets.star),
-                        HSpace(Sizes.s4),
-                        TextWidgetCommon(
-                          text: driver.rating!.toStringAsFixed(1),
-                          fontSize: Sizes.s12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        TextWidgetCommon(
-                          text: ' (${driver.totalTrips ?? 0})',
-                          color: appColor(context).appTheme.lightText,
-                          fontSize: Sizes.s12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ],
-                    ],
-                  ),
-                  VSpace(Sizes.s4),
-                  TextWidgetCommon(
-                    text:
-                        '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''}'
-                            .trim(),
-                    color: appColor(context).appTheme.lightText,
-                    fontSize: Sizes.s12,
-                  ),
-                  VSpace(Sizes.s6),
-                  // Status badge below vehicle number
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Sizes.s8, vertical: Sizes.s4),
-                    decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Sizes.s4),
-                    ),
-                    child: TextWidgetCommon(
-                      text: "• ${assignment.statusDisplay}",
-                      fontSize: Sizes.s12,
-                      fontWeight: FontWeight.w500,
-                      color: statusColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: Insets.i32,
-              width: Insets.i32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: appColor(context).appTheme.bgBox,
-                image: driver.photoUrl != null && driver.photoUrl!.isNotEmpty
-                    ? DecorationImage(
-                        image: NetworkImage(driver.photoUrl!),
-                        fit: BoxFit.cover,
-                        onError: (exception, stackTrace) {},
-                      )
-                    : null,
-              ),
-              child: driver.photoUrl == null || driver.photoUrl!.isEmpty
-                  ? Icon(Icons.person,
-                      size: Sizes.s20,
-                      color: appColor(context).appTheme.lightText)
-                  : null,
-            ),
-          ],
+        RideDriverInfoSection(
+          rideData: RideDataModel(
+            driverName: driver.name ?? 'Driver',
+            rating: driver.rating != null
+                ? driver.rating!.toStringAsFixed(1)
+                : '0.0',
+            userRatingNumber:
+                driver.totalTrips != null ? ' (${driver.totalTrips})' : '',
+            carName:
+                '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''}'
+                    .trim(),
+          ),
+          profileImageUrl: driver.photoUrl,
+        ),
+        VSpace(Sizes.s6),
+        // Status badge below vehicle number
+        StatusBadge(
+          status: assignment.statusDisplay,
+          statusColor: statusColor,
         ),
       ],
     ).paddingOnly(bottom: Sizes.s15);

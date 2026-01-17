@@ -1,6 +1,6 @@
-import '../config.dart';
-import '../helper/distance_helper.dart';
-import '../models/location_data.dart';
+import '../../config.dart';
+import '../../helper/distance_helper.dart';
+import '../../models/location_data.dart';
 
 class LocationPreviewCard extends StatelessWidget {
   final List<LocationData> locations;

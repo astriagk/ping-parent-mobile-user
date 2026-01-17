@@ -1,4 +1,5 @@
 import '../../../config.dart';
+import '../../../widgets/location/route_location_display.dart';
 
 class CompletedRideScreen extends StatelessWidget {
   const CompletedRideScreen({super.key});
@@ -172,7 +173,7 @@ class CompletedRideScreen extends StatelessWidget {
                           child: Image.asset(imageAssets.luxuryInfo,
                               height: Sizes.s44))
                     ]).carDetailsExtension(context),
-                FindingLocationLayout(
+                RouteLocationDisplay(
                     data: rideCtrl.value,
                     loc1Color: appColor(context).appTheme.darkText),
                 VSpace(Sizes.s25),
