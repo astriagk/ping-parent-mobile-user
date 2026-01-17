@@ -77,7 +77,7 @@ class StudentListScreen extends StatelessWidget {
                 height: Sizes.s50,
                 width: Sizes.s50,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(Sizes.s7),
                     color: appColor(context).appTheme.bgBox,
                     image:
                         student.photoUrl != null && student.photoUrl!.isNotEmpty
@@ -317,7 +317,7 @@ class StudentListScreen extends StatelessWidget {
               height: Insets.i32,
               width: Insets.i32,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Sizes.s7),
+                shape: BoxShape.circle,
                 color: appColor(context).appTheme.bgBox,
                 image: driver.photoUrl != null && driver.photoUrl!.isNotEmpty
                     ? DecorationImage(
