@@ -90,3 +90,66 @@ class Driver {
     );
   }
 }
+
+class DriverStudentAssignmentResponse {
+  final bool success;
+  final DriverStudentAssignment? data;
+  final String? message;
+  final String? error;
+
+  DriverStudentAssignmentResponse({
+    required this.success,
+    this.data,
+    this.message,
+    this.error,
+  });
+
+  factory DriverStudentAssignmentResponse.fromJson(Map<String, dynamic> json) {
+    return DriverStudentAssignmentResponse(
+      success: json['success'] ?? false,
+      data: json['data'] != null
+          ? DriverStudentAssignment.fromJson(json['data'])
+          : null,
+      message: json['message'],
+      error: json['error'],
+    );
+  }
+}
+
+class DriverStudentAssignment {
+  final String? id;
+  final String? assignmentId;
+  final String? driverId;
+  final String? studentId;
+  final String? driverUniqueId;
+  final String? assignmentStatus;
+  final String? assignedDate;
+  final String? createdAt;
+  final String? updatedAt;
+
+  DriverStudentAssignment({
+    this.id,
+    this.assignmentId,
+    this.driverId,
+    this.studentId,
+    this.driverUniqueId,
+    this.assignmentStatus,
+    this.assignedDate,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory DriverStudentAssignment.fromJson(Map<String, dynamic> json) {
+    return DriverStudentAssignment(
+      id: json['_id'],
+      assignmentId: json['assignment_id'],
+      driverId: json['driver_id'],
+      studentId: json['student_id'],
+      driverUniqueId: json['driver_unique_id'],
+      assignmentStatus: json['assignment_status'],
+      assignedDate: json['assigned_date'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+}

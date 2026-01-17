@@ -34,7 +34,10 @@ class Endpoints {
   static const String parentAddress = '$baseUrl/parent/address';
 
   // Driver Endpoints
-  static const String allDrivers = '$baseUrl/driver-student-assignments/all-drivers';
+  static const String allDrivers =
+      '$baseUrl/driver-student-assignments/all-drivers';
+  static const String driverStudentAssignments =
+      '$baseUrl/driver-student-assignments';
 
   // Add more endpoints as needed
 }

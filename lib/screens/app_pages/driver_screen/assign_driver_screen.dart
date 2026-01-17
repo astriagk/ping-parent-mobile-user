@@ -2,10 +2,14 @@ import '../../../api/models/driver_response.dart';
 import '../../../config.dart';
 import '../../../helper/date_formatter_helper.dart';
 import '../../../provider/app_pages_providers/driver_provider.dart';
+import '../../../provider/app_pages_providers/add_student_provider.dart';
 import '../../../widgets/info_card.dart';
+import '../../../../widgets/common_confirmation_dialog.dart';
 
 class AssignDriverScreen extends StatefulWidget {
-  const AssignDriverScreen({super.key});
+  final String? studentId;
+
+  const AssignDriverScreen({super.key, this.studentId});
 
   @override
   State<AssignDriverScreen> createState() => _AssignDriverScreenState();
@@ -54,9 +58,73 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
     });
   }
 
-  void _selectDriver(Driver driver) {
-    // TODO: Implement driver assignment logic here
-    // This will be called when user taps on a driver card
+  Future<void> _selectDriver(Driver driver) async {
+    if (widget.studentId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: TextWidgetCommon(text: appFonts.pleaseSelectStudentFirst)),
+      );
+      return;
+    }
+
+    if (driver.driverUniqueId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: TextWidgetCommon(text: appFonts.driverIdNotAvailable),
+        ),
+      );
+      return;
+    }
+
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return CustomConfirmationDialog(
+          message: appFonts.confirmAssignDriver,
+          onCancel: () => route.pop(dialogContext),
+          onConfirm: () async {
+            route.pop(dialogContext);
+
+            final driverCtrl = context.read<DriverProvider>();
+
+            final success = await driverCtrl.assignDriverToStudent(
+              studentId: widget.studentId!,
+              driverUniqueId: driver.driverUniqueId!,
+            );
+
+            if (!mounted) return;
+
+            if (success) {
+              // Refresh student list
+              context.read<AddStudentProvider>().fetchStudents();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: TextWidgetCommon(
+                    text: appFonts.driverAssignedSuccessfully,
+                  ),
+                ),
+              );
+              // Navigate back to student list
+              await Future.delayed(const Duration(milliseconds: 500));
+              if (mounted) {
+                Navigator.pop(context);
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: TextWidgetCommon(
+                    text: driverCtrl.errorMessage ??
+                        appFonts.failedToAssignDriver,
+                  ),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
   }
 
   void _clearSearch() {
@@ -94,7 +162,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
                             vertical: Sizes.s12,
                             left: Sizes.s12,
                             right: Sizes.s8),
-                        hintText: 'Search by name, ID, or email',
+                        hintText: appFonts.searchForDriverByNameIdOrEmail,
                         contentPadding: EdgeInsets.zero,
                         suffixIcon: _searchController.text.isNotEmpty
                             ? Row(
@@ -174,7 +242,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
                         : Center(
                             child: TextWidgetCommon(
                               text: language(context,
-                                  'Search for a driver by name, ID, or email'),
+                                  appFonts.searchForDriverByNameIdOrEmail),
                               style: AppCss.lexendRegular14.textColor(
                                   appColor(context).appTheme.lightText),
                               textAlign: TextAlign.center,
@@ -192,7 +260,9 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
     return InfoCard(
       image: svgAssets.car,
       id: driver.driverUniqueId?.toUpperCase(),
-      status: driver.isAvailable == true ? 'Available' : 'Unavailable',
+      status: driver.isAvailable == true
+          ? appFonts.available
+          : appFonts.unavailable,
       statusColor: driver.isAvailable == true
           ? appColor(context).appTheme.activeColor
           : appColor(context).appTheme.alertZone,

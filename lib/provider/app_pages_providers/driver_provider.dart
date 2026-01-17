@@ -6,8 +6,10 @@ import '../../api/models/driver_response.dart';
 class DriverProvider extends ChangeNotifier {
   List<Driver> driverList = [];
   bool isLoading = false;
+  bool isAssigning = false;
   String? errorMessage;
   bool _isInitialized = false;
+  DriverStudentAssignment? lastAssignment;
 
   Future<void> onInit() async {
     if (_isInitialized) return;
@@ -39,11 +41,49 @@ class DriverProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> assignDriverToStudent({
+    required String studentId,
+    required String driverUniqueId,
+  }) async {
+    isAssigning = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final driverService = DriverService(ApiClient());
+      final response = await driverService.createDriverStudentAssignment(
+        studentId: studentId,
+        driverUniqueId: driverUniqueId,
+      );
+
+      if (response.success) {
+        lastAssignment = response.data;
+        errorMessage = null;
+        isAssigning = false;
+        notifyListeners();
+        return true;
+      } else {
+        errorMessage =
+            response.error ?? response.message ?? 'Assignment failed';
+        isAssigning = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      errorMessage = 'An error occurred. Please try again.';
+      isAssigning = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   void reset() {
     _isInitialized = false;
     driverList = [];
     isLoading = false;
+    isAssigning = false;
     errorMessage = null;
+    lastAssignment = null;
     notifyListeners();
   }
 }

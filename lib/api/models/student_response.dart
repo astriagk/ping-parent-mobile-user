@@ -1,3 +1,5 @@
+import 'driver_response.dart';
+
 class StudentListResponse {
   final bool success;
   final List<Student> data;
@@ -43,6 +45,8 @@ class Student {
   final String? updatedAt;
   final School? school;
   final PickupAddress? pickupAddress;
+  final DriverAssignment? driverAssignment;
+  final Driver? driver;
 
   Student({
     this.id,
@@ -64,6 +68,8 @@ class Student {
     this.updatedAt,
     this.school,
     this.pickupAddress,
+    this.driverAssignment,
+    this.driver,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
@@ -89,7 +95,91 @@ class Student {
       pickupAddress: json['pickup_address'] != null
           ? PickupAddress.fromJson(json['pickup_address'])
           : null,
+      driverAssignment: json['driver_assignment'] != null
+          ? DriverAssignment.fromJson(json['driver_assignment'])
+          : null,
+      driver: json['driver'] != null ? Driver.fromJson(json['driver']) : null,
     );
+  }
+}
+
+enum AssignmentStatus {
+  active,
+  inactive,
+  pending,
+  parentRequested,
+  rejected,
+}
+
+class DriverAssignment {
+  final String? id;
+  final String? assignmentId;
+  final String? driverId;
+  final String? studentId;
+  final String? driverUniqueId;
+  final String? assignmentStatus;
+  final String? assignedDate;
+  final String? createdAt;
+  final String? updatedAt;
+
+  DriverAssignment({
+    this.id,
+    this.assignmentId,
+    this.driverId,
+    this.studentId,
+    this.driverUniqueId,
+    this.assignmentStatus,
+    this.assignedDate,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory DriverAssignment.fromJson(Map<String, dynamic> json) {
+    return DriverAssignment(
+      id: json['_id'],
+      assignmentId: json['assignment_id'],
+      driverId: json['driver_id'],
+      studentId: json['student_id'],
+      driverUniqueId: json['driver_unique_id'],
+      assignmentStatus: json['assignment_status'],
+      assignedDate: json['assigned_date'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+
+  AssignmentStatus? get status {
+    switch (assignmentStatus) {
+      case 'active':
+        return AssignmentStatus.active;
+      case 'inactive':
+        return AssignmentStatus.inactive;
+      case 'pending':
+        return AssignmentStatus.pending;
+      case 'parent_requested':
+        return AssignmentStatus.parentRequested;
+      case 'rejected':
+        return AssignmentStatus.rejected;
+      default:
+        return null;
+    }
+  }
+
+  String get statusDisplay {
+    switch (assignmentStatus) {
+      case 'active':
+        return 'Active';
+      case 'inactive':
+        return 'Inactive';
+      case 'pending':
+        return 'Pending';
+      case 'parent_requested':
+        return 'Requested';
+      case 'rejected':
+        return 'Rejected';
+      default:
+        return 'Unknown';
+    }
   }
 }
 
