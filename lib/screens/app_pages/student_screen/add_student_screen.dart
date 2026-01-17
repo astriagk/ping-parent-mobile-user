@@ -2,7 +2,8 @@ import '../../../config.dart';
 import '../../../helper/distance_helper.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/searchable_dropdown.dart';
-import '../../../widgets/location_preview_card.dart';
+import '../../../widgets/location/route_location_display.dart';
+import '../../../widgets/location/route_distance_display.dart';
 import '../../../models/location_data.dart';
 import '../../../api/models/school_response.dart';
 import 'student_widgets.dart';
@@ -96,7 +97,40 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       ),
     ];
 
-    return LocationPreviewCard(locations: locations);
+    final distance = DistanceHelper.calculateDistanceInKm(
+      pickupAddress.latitude,
+      pickupAddress.longitude,
+      selectedSchool.latitude,
+      selectedSchool.longitude,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        VSpace(Sizes.s8),
+        RouteLocationDisplay(
+          data: {
+            'currentLocation':
+                '${appFonts.pickupLocation}\n${pickupAddress.displayAddress}',
+            'addLocation':
+                '${selectedSchool.schoolName}\n${selectedSchool.fullAddress}',
+          },
+          loc1Color: appColor(context).appTheme.darkText,
+        ).padding(horizontal: Sizes.s10, vertical: Sizes.s10).decorated(
+            color: appColor(context).appTheme.bgBox, allRadius: Sizes.s8),
+        VSpace(Sizes.s8),
+        RouteDistanceDisplay(
+          distance: DistanceHelper.formatDistance(distance),
+          distanceColor: DistanceHelper.getDistanceColor(
+            distance,
+            appColor(context).appTheme.primary,
+            appColor(context).appTheme.success,
+            appColor(context).appTheme.yellowIcon,
+            appColor(context).appTheme.alertZone,
+          ),
+        ),
+      ],
+    );
   }
 
   @override

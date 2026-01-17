@@ -6,9 +6,9 @@ import '../screens/app_pages/my_wallet_screen/layouts/withdraw_screen.dart';
 import '../screens/app_pages/my_wallet_screen/my_wallet_screen.dart';
 import '../screens/app_pages/no_internet_screen/no_internet_screen.dart';
 import '../screens/app_pages/review_driver_screen/review_driver_screen.dart';
-import '../screens/app_pages/add_student/add_student_screen.dart';
-import '../screens/app_pages/add_student/student_list_screen.dart';
-import '../screens/app_pages/assign_driver/assign_driver_screen.dart';
+import '../screens/app_pages/student_screen/add_student_screen.dart';
+import '../screens/app_pages/student_screen/student_list_screen.dart';
+import '../screens/app_pages/driver_screen/assign_driver_screen.dart';
 
 class AppRoute {
   Map<String, Widget Function(BuildContext)> route = {

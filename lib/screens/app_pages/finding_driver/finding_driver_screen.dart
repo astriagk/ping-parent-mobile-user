@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:taxify_user_ui/config.dart';
+import 'package:taxify_user_ui/widgets/location/route_location_display.dart';
 
 class FindingDriverScreen extends StatelessWidget {
   const FindingDriverScreen({super.key});
@@ -72,7 +73,7 @@ class FindingDriverScreen extends StatelessWidget {
                                       DatePaymentTypeLayout(data: e),
                                       FindingDriverWidgets()
                                           .dividerLayout(context),
-                                      FindingLocationLayout(data: e)
+                                      RouteLocationDisplay(data: e)
                                     ]))
                                 .toList())
                         .findingExtension(context)

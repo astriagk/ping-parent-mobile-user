@@ -75,7 +75,6 @@ export 'package:taxify_user_ui/screens/app_pages/out_station_screen/layout/app_b
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/timer_and_text_layout.dart';
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/date_payment_type_layout.dart';
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/finding_driver_widgets.dart';
-export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/finding_location_layout.dart';
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/finding_driver_screen.dart';
 export 'package:taxify_user_ui/screens/app_pages/rental_screen/rental_screen.dart';
 export 'package:taxify_user_ui/screens/app_pages/rental_screen/layout/choose_package_list.dart';

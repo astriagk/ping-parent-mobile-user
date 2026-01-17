@@ -1,5 +1,3 @@
-import 'package:taxify_user_ui/config.dart';
-
 class AppFonts {
   final skip = "skip";
   final taxify = "Taxify";
@@ -12,6 +10,9 @@ class AppFonts {
   final arabic = "arabic";
   final french = "french";
   final spanish = "spanish";
+
+  final available = 'Available';
+  final unavailable = 'Unavailable';
 
   // auth screen
   final home = "Home";
@@ -134,6 +135,16 @@ class AppFonts {
 
   // assign driver screen
   final assignDriver = "Assign Driver";
+  final pleaseSelectStudentFirst =
+      "Please select a student first from the student list";
+  final driverIdNotAvailable = 'Driver ID not available';
+  final confirmAssignDriver =
+      "Are you sure you want to assign this driver to this student?";
+  final driverAssignedSuccessfully = 'Driver assigned successfully';
+  final failedToAssignDriver = 'Failed to assign driver';
+  final searchByNameIdOrEmail = 'Search by name, ID, or email';
+  final searchForDriverByNameIdOrEmail =
+      'Search for a driver by name, ID, or email';
 
   //setting screen
   final general = "General";
