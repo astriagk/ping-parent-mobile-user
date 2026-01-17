@@ -20,7 +20,7 @@ class AppArray {
       "iconDark": svgAssets.categoryDark
     },
     {
-      "title": appFonts.myRides,
+      "title": appFonts.mySubscriptions,
       "icon": svgAssets.carLight,
       "iconDark": svgAssets.carDark
     },
@@ -946,6 +946,101 @@ class AppArray {
       'id': '#WDR123460',
       'amount': 150,
       'isCredit': false
+    }
+  ];
+
+  var subscriptionStatus = ["Active", "Pending", "Expired", "Cancelled"];
+
+  var subscriptionList = [
+    {
+      "id": "SUB001",
+      "studentName": "John Doe",
+      "status": "Active",
+      "price": "150.00",
+      "date": "15 Jan'26",
+      "time": "09:00 AM",
+      "driverName": "Michael Smith",
+      "rating": "4.9",
+      "userRatingNumber": "(234)",
+      "carName": "Toyota Camry",
+      "image": svgAssets.myRideCar,
+      "currentLocation": "123 Main St, Downtown",
+      "addLocation": "Lincoln High School, Education District",
+      "startDate": "01 Jan'26",
+      "endDate": "31 Jan'26",
+      "frequency": "Daily"
+    },
+    {
+      "id": "SUB002",
+      "studentName": "Emma Wilson",
+      "status": "Pending",
+      "price": "150.00",
+      "date": "15 Jan'26",
+      "time": "08:30 AM",
+      "driverName": "Sarah Johnson",
+      "rating": "4.7",
+      "userRatingNumber": "(156)",
+      "carName": "Honda Accord",
+      "image": svgAssets.myRideCar,
+      "currentLocation": "456 Oak Ave, Suburb",
+      "addLocation": "Washington Elementary, School Zone",
+      "startDate": "10 Jan'26",
+      "endDate": "10 Feb'26",
+      "frequency": "Daily"
+    },
+    {
+      "id": "SUB003",
+      "studentName": "Oliver Brown",
+      "status": "Active",
+      "price": "150.00",
+      "date": "15 Jan'26",
+      "time": "07:45 AM",
+      "driverName": "David Lee",
+      "rating": "4.8",
+      "userRatingNumber": "(189)",
+      "carName": "Nissan Altima",
+      "image": svgAssets.myRideAuto,
+      "currentLocation": "789 Pine Rd, City Center",
+      "addLocation": "Jefferson Middle School, North District",
+      "startDate": "05 Jan'26",
+      "endDate": "05 Feb'26",
+      "frequency": "Daily"
+    },
+    {
+      "id": "SUB004",
+      "studentName": "Sophia Davis",
+      "status": "Expired",
+      "price": "150.00",
+      "date": "31 Dec'25",
+      "time": "08:00 AM",
+      "driverName": "James Wilson",
+      "rating": "4.6",
+      "userRatingNumber": "(143)",
+      "carName": "Ford Fusion",
+      "image": svgAssets.myRideCar,
+      "currentLocation": "321 Maple Dr, Westside",
+      "addLocation": "Roosevelt High School, West Campus",
+      "startDate": "01 Dec'25",
+      "endDate": "31 Dec'25",
+      "frequency": "Daily"
+    },
+    {
+      "id": "SUB005",
+      "studentName": "Liam Martinez",
+      "status": "Cancelled",
+      "price": "150.00",
+      "date": "10 Jan'26",
+      "time": "09:15 AM",
+      "driverName": "Robert Garcia",
+      "rating": "4.5",
+      "userRatingNumber": "(98)",
+      "carName": "Chevrolet Malibu",
+      "image": svgAssets.myRideLuxury,
+      "currentLocation": "654 Elm St, Eastside",
+      "addLocation": "Kennedy Elementary, East Zone",
+      "startDate": "05 Jan'26",
+      "endDate": "05 Feb'26",
+      "frequency": "Daily"
     }
   ];
 }

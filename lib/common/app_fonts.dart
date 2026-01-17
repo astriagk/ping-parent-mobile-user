@@ -18,6 +18,7 @@ class AppFonts {
   final home = "Home";
   final category = "Category";
   final myRides = "My Rides";
+  final mySubscriptions = "Subscriptions";
   final settings = "Settings";
   final createYourAccount = "Create Your Account";
   final exploreYourLife = "Explore Your Life By Joining With Ride.";
@@ -145,6 +146,10 @@ class AppFonts {
   final searchByNameIdOrEmail = 'Search by name, ID, or email';
   final searchForDriverByNameIdOrEmail =
       'Search for a driver by name, ID, or email';
+
+  // subscription management screen
+  final subscriptionManagement = "Subscription Management";
+  final noSubscriptionsFound = "No Subscriptions Found";
 
   //setting screen
   final general = "General";

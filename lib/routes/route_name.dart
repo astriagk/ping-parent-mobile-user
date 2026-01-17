@@ -39,4 +39,6 @@ class RouteName {
   final String studentListScreen = '/StudentListScreen';
   final String addStudentScreen = '/AddStudentScreen';
   final String assignDriverScreen = '/assignDriverScreen';
+
+  final String subscriptionManagementScreen = '/SubscriptionManagementScreen';
 }
