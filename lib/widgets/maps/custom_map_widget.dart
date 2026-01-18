@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'layout/osm_tile_layer.dart';
 
 /// Reusable map widget with customizable options
 class CustomMapWidget extends StatelessWidget {
@@ -40,10 +41,7 @@ class CustomMapWidget extends StatelessWidget {
         onPositionChanged: onPositionChanged,
       ),
       children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.pixelstrap.taxify_user_ui',
-        ),
+        OSMTileLayer(),
         if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
         if (markers.isNotEmpty) MarkerLayer(markers: markers),
         if (overlayWidget != null)

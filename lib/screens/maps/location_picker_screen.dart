@@ -1,3 +1,6 @@
+import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
+import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+
 import '../../config.dart';
 
 /// Interactive location picker with draggable marker
@@ -116,22 +119,12 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     onTap: _onMapTap,
                   ),
                   children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.pixelstrap.taxify_user_ui',
-                    ),
+                    OSMTileLayer(),
                     MarkerLayer(
                       markers: [
-                        Marker(
+                        MapMarkers.currentLocationMarker(
                           point: _selectedLocation,
-                          width: 80,
-                          height: 80,
-                          child: Icon(
-                            Icons.location_pin,
-                            color: theme.alertZone,
-                            size: 50,
-                          ),
+                          context: context,
                         ),
                       ],
                     ),
@@ -158,7 +151,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(_address, style: TextStyle(color: theme.darkText)),
+                          Text(_address,
+                              style: TextStyle(color: theme.darkText)),
                           const SizedBox(height: 4),
                           Text(
                             'Lat: ${_selectedLocation.latitude.toStringAsFixed(6)}, '
@@ -185,7 +179,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                       foregroundColor: theme.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Text('Confirm Location', style: TextStyle(color: theme.white)),
+                    child: Text('Confirm Location',
+                        style: TextStyle(color: theme.white)),
                   ),
                 ),
               ],

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
+import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
 import '../../config.dart';
 
 /// Route planning with OSRM (Open Source Routing Machine)
@@ -167,10 +169,7 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
               onTap: (tapPosition, point) => _addWaypoint(point),
             ),
             children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.pixelstrap.taxify_user_ui',
-              ),
+              OSMTileLayer(),
               // Route polyline
               if (_routePoints.isNotEmpty)
                 PolylineLayer(
@@ -190,56 +189,20 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                   bool isFirst = index == 0;
                   bool isLast = index == _waypoints.length - 1;
 
-                  return Marker(
-                    point: point,
-                    width: 80,
-                    height: 80,
-                    child: GestureDetector(
-                      onLongPress: () => _removeWaypoint(index),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: theme.white,
-                              borderRadius: BorderRadius.circular(4),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: theme.darkText.withValues(alpha: 0.2),
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              isFirst
-                                  ? 'START'
-                                  : isLast
-                                      ? 'END'
-                                      : '$index',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                                color: theme.darkText,
-                              ),
-                            ),
-                          ),
-                          Icon(
-                            isFirst
-                                ? Icons.flag_circle
-                                : isLast
-                                    ? Icons.location_on
-                                    : Icons.location_pin,
-                            color: isFirst
-                                ? theme.success
-                                : isLast
-                                    ? theme.alertZone
-                                    : theme.yellowIcon,
-                            size: 40,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  if (isLast) {
+                    return MapMarkers.dropMarker(
+                      point: point,
+                      context: context,
+                      onTap: null,
+                    );
+                  } else {
+                    return MapMarkers.pickupMarker(
+                      point: point,
+                      number: isFirst ? 0 : index,
+                      context: context,
+                      onTap: null,
+                    );
+                  }
                 }).toList(),
               ),
             ],
@@ -265,7 +228,8 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(_routeInfo!, style: TextStyle(color: theme.darkText)),
+                      Text(_routeInfo!,
+                          style: TextStyle(color: theme.darkText)),
                       const SizedBox(height: 4),
                       Text(
                         'Waypoints: ${_waypoints.length}',
@@ -299,7 +263,8 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info_outline, size: 16, color: theme.activeColor),
+                        Icon(Icons.info_outline,
+                            size: 16, color: theme.activeColor),
                         const SizedBox(width: 8),
                         Text(
                           'Instructions',

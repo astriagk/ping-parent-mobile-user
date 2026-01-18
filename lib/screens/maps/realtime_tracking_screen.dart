@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
+import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+
 import '../../config.dart';
 
 /// Real-time location tracking example
@@ -132,11 +135,7 @@ class _RealtimeTrackingScreenState extends State<RealtimeTrackingScreen> {
                     initialZoom: 16.0,
                   ),
                   children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.pixelstrap.taxify_user_ui',
-                    ),
+                    OSMTileLayer(),
                     // Route path
                     if (_routePath.length > 1)
                       PolylineLayer(
@@ -152,31 +151,10 @@ class _RealtimeTrackingScreenState extends State<RealtimeTrackingScreen> {
                     if (_currentLocation != null)
                       MarkerLayer(
                         markers: [
-                          Marker(
+                          MapMarkers.currentLocationMarker(
                             point: _currentLocation!,
-                            width: 60,
-                            height: 60,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: theme.activeColor,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: theme.white,
-                                  width: 3,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: theme.darkText.withValues(alpha: 0.3),
-                                    blurRadius: 6,
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.navigation,
-                                color: theme.white,
-                                size: 30,
-                              ),
-                            ),
+                            context: context,
+                            isMoving: _isTracking,
                           ),
                         ],
                       ),
@@ -269,7 +247,8 @@ class _RealtimeTrackingScreenState extends State<RealtimeTrackingScreen> {
     );
   }
 
-  Widget _buildStatItem(BuildContext context, String label, String value, IconData icon) {
+  Widget _buildStatItem(
+      BuildContext context, String label, String value, IconData icon) {
     final theme = appColor(context).appTheme;
     return Column(
       children: [

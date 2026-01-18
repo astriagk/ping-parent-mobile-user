@@ -1,3 +1,6 @@
+import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
+import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+
 import '../../config.dart';
 
 /// Basic OpenStreetMap example with user location
@@ -80,23 +83,14 @@ class _BasicMapScreenState extends State<BasicMapScreen> {
               ),
               children: [
                 // OpenStreetMap tile layer
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.pixelstrap.taxify_user_ui',
-                ),
+                OSMTileLayer(),
                 // Current location marker
                 if (_currentLocation != null)
                   MarkerLayer(
                     markers: [
-                      Marker(
+                      MapMarkers.currentLocationMarker(
                         point: _currentLocation!,
-                        width: 80,
-                        height: 80,
-                        child: Icon(
-                          Icons.location_pin,
-                          color: theme.alertZone,
-                          size: 40,
-                        ),
+                        context: context,
                       ),
                     ],
                   ),

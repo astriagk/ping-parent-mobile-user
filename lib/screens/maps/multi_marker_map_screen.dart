@@ -1,3 +1,6 @@
+import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
+import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+
 import '../../config.dart';
 
 /// Multi-marker map example
@@ -67,76 +70,24 @@ class _MultiMarkerMapScreenState extends State<MultiMarkerMapScreen> {
           initialZoom: 13.0,
         ),
         children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.pixelstrap.taxify_user_ui',
-          ),
+          OSMTileLayer(),
           MarkerLayer(
             markers: [
               // Pickup markers (green)
               ..._pickupLocations.asMap().entries.map((entry) {
                 int index = entry.key;
                 MapLocation loc = entry.value;
-                return Marker(
+                return MapMarkers.pickupMarker(
                   point: loc.latLng,
-                  width: 80,
-                  height: 80,
-                  child: GestureDetector(
-                    onTap: () => _onMarkerTap(index),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: theme.white,
-                            borderRadius: BorderRadius.circular(4),
-                            boxShadow: [
-                              BoxShadow(
-                                color: theme.darkText.withValues(alpha: 0.2),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color: theme.darkText,
-                            ),
-                          ),
-                        ),
-                        Icon(
-                          Icons.location_pin,
-                          color: _selectedMarkerIndex == index
-                              ? theme.activeColor
-                              : theme.success,
-                          size: 40,
-                        ),
-                      ],
-                    ),
-                  ),
+                  number: index + 1,
+                  context: context,
+                  onTap: () => _onMarkerTap(index),
                 );
               }),
               // Drop marker (red)
-              Marker(
+              MapMarkers.dropMarker(
                 point: _dropLocation.latLng,
-                width: 80,
-                height: 80,
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.flag,
-                      color: theme.alertZone,
-                      size: 30,
-                    ),
-                    Icon(
-                      Icons.location_pin,
-                      color: theme.alertZone,
-                      size: 40,
-                    ),
-                  ],
-                ),
+                context: context,
               ),
             ],
           ),
