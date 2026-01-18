@@ -2,6 +2,7 @@ import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
 import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
 
 import '../../config.dart';
+import 'package:taxify_user_ui/common/map_config.dart';
 
 /// Basic OpenStreetMap example with user location
 /// Shows how to display a simple map with current location marker
@@ -16,6 +17,7 @@ class _BasicMapScreenState extends State<BasicMapScreen> {
   final MapController _mapController = MapController();
   LatLng? _currentLocation;
   bool _isLoading = true;
+  int _selectedTileIndex = 0;
 
   @override
   void initState() {
@@ -56,6 +58,7 @@ class _BasicMapScreenState extends State<BasicMapScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = appColor(context).appTheme;
+    final tileOptions = MapConfig.osmTileOptions;
     return Scaffold(
       backgroundColor: theme.screenBg,
       appBar: AppBar(
@@ -73,27 +76,60 @@ class _BasicMapScreenState extends State<BasicMapScreen> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: theme.primary))
-          : FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: _currentLocation ?? const LatLng(0, 0),
-                initialZoom: 15.0,
-                minZoom: 5.0,
-                maxZoom: 18.0,
-              ),
+          : Column(
               children: [
-                // OpenStreetMap tile layer
-                OSMTileLayer(),
-                // Current location marker
-                if (_currentLocation != null)
-                  MarkerLayer(
-                    markers: [
-                      MapMarkers.currentLocationMarker(
-                        point: _currentLocation!,
-                        context: context,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Text('Map Style:',
+                          style: TextStyle(color: theme.darkText)),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DropdownButton<int>(
+                          value: _selectedTileIndex,
+                          isExpanded: true,
+                          items: List.generate(
+                            tileOptions.length,
+                            (i) => DropdownMenuItem(
+                              value: i,
+                              child: Text(tileOptions[i]['name']!),
+                            ),
+                          ),
+                          onChanged: (i) {
+                            if (i != null)
+                              setState(() => _selectedTileIndex = i);
+                          },
+                        ),
                       ),
                     ],
                   ),
+                ),
+                Expanded(
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: _currentLocation ?? const LatLng(0, 0),
+                      initialZoom: 15.0,
+                      minZoom: 5.0,
+                      maxZoom: 18.0,
+                    ),
+                    children: [
+                      OSMTileLayer(
+                          urlTemplate: tileOptions[_selectedTileIndex]['url']!),
+                      if (_currentLocation != null)
+                        MarkerLayer(
+                          markers: [
+                            MapMarkers.currentLocationMarker(
+                              point: _currentLocation!,
+                              context: context,
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
               ],
             ),
     );
