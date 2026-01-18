@@ -50,7 +50,7 @@ class CommonButton extends StatelessWidget {
                               cornerRadius: Sizes.s9, cornerSmoothing: 1)),
                       color: bgColor ?? appColor(context).appTheme.primary),
                   child: TextWidgetCommon(
-                          text: text! ?? "",
+                          text: text,
                           style: style ??
                               AppCss.lexendSemiBold15.textColor(textColor ??
                                   appColor(context).appTheme.white))

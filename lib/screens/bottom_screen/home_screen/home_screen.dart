@@ -14,16 +14,24 @@ class HomeScreen extends StatelessWidget {
               }),
           child: Scaffold(
               body: ListView(padding: EdgeInsets.zero, children: [
-            const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //card layout
-                  CardLayout(),
-                  // top categories layout
-                  TopCategories(),
-                  //today's offer layout
-                  TodayOfferLayout()
-                ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              //card layout
+              CardLayout(),
+              // top categories layout
+              TopCategories(),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  route.pushNamed(
+                    context,
+                    routeName.addLocationScreen,
+                  );
+                },
+                child: Text('Add Location'),
+              ),
+              //today's offer layout
+              TodayOfferLayout()
+            ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
           ])));
     });
   }

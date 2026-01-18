@@ -20,7 +20,7 @@ class RentalScreen extends StatelessWidget {
                   rentalCtrl.price.text.isEmpty;
                   rentalCtrl.selectedIndex = null;
                   rentalCtrl.hourSelectedIndex = null;
-                  rentalCtrl.notifyListeners();
+                  // rentalCtrl.notifyListeners(); // Removed: Only call within provider
                   route.pop(context);
                 }).padding(horizontal: Sizes.s20, vertical: Sizes.s30),
             Align(

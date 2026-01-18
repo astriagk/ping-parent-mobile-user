@@ -128,20 +128,6 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
     _calculateRoute();
   }
 
-  void _removeWaypoint(int index) {
-    setState(() {
-      _waypoints.removeAt(index);
-    });
-    if (_waypoints.length >= 2) {
-      _calculateRoute();
-    } else {
-      setState(() {
-        _routePoints.clear();
-        _routeInfo = null;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = appColor(context).appTheme;

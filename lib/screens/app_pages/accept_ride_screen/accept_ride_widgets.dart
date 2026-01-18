@@ -146,7 +146,7 @@ class AcceptRideWidgets {
                           allRadius: Sizes.s6)
                       .inkWell(onTap: () {
                       acceptCtrl.isPayment = true;
-                      acceptCtrl.notifyListeners();
+                      // acceptCtrl.notifyListeners(); // Removed: Only call within provider
                     }),
               acceptCtrl.isRetry == true
                   ? Text("Complete transection within 0:48 min",
@@ -196,7 +196,7 @@ class AcceptRideWidgets {
                                     text: "Retry",
                                     onTap: () {
                                       acceptCtrl.isRetry = true;
-                                      acceptCtrl.notifyListeners();
+                                      // acceptCtrl.notifyListeners(); // Removed: Only call within provider
                                     }))
                       ]).padding(all: 12),
                   Divider(height: 0, color: appColor(context).appTheme.stroke)

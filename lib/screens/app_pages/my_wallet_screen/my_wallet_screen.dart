@@ -70,7 +70,7 @@ class MyWalletScreen extends StatelessWidget {
                                           : appTheme.hintTextClr)))
                           .inkWell(onTap: () {
                     myWalletPvr.showEarnings = true;
-                    myWalletPvr.notifyListeners();
+                    // myWalletPvr.notifyListeners(); // Removed: Only call within provider
                   })),
                   HSpace(Insets.i15),
                   Expanded(
@@ -92,7 +92,7 @@ class MyWalletScreen extends StatelessWidget {
                                           : appTheme.white)))
                           .inkWell(onTap: () {
                     myWalletPvr.showEarnings = false;
-                    myWalletPvr.notifyListeners();
+                    // myWalletPvr.notifyListeners(); // Removed: Only call within provider
                   }))
                 ]),
                 Expanded(
