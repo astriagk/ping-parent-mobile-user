@@ -4,9 +4,16 @@ import 'package:location/location.dart' as location_package;
 import '../../config.dart';
 
 class AddLocationProvider extends ChangeNotifier {
-  GoogleMapController? mapController;
+  // TODO: Replace with flutter_map MapController when migrating to free maps
+  // GoogleMapController? mapController;
+  dynamic mapController; // Temporary placeholder
+
   location_package.Location location = location_package.Location();
-  Set<Marker>? marker;
+
+  // TODO: Replace with flutter_map Marker when migrating to free maps
+  // Set<Marker>? marker;
+  Set<dynamic>? marker; // Temporary placeholder
+
   Position? position, currentPosition;
   TextEditingController streetCtrl = TextEditingController();
   TextEditingController cityCtrl = TextEditingController();
@@ -43,9 +50,10 @@ class AddLocationProvider extends ChangeNotifier {
   }
 
 // get current location
+  // TODO: Update for flutter_map when migrating
   currentLocation() async {
-    mapController!.animateCamera(CameraUpdate.newLatLng(
-        LatLng(currentPosition!.latitude, currentPosition!.longitude)));
+    // mapController!.animateCamera(CameraUpdate.newLatLng(
+    //     LatLng(currentPosition!.latitude, currentPosition!.longitude)));
     newLat = null;
     newLog = null;
     position = currentPosition;
@@ -70,6 +78,7 @@ class AddLocationProvider extends ChangeNotifier {
   }
 
 // get address from latLong
+  // TODO: Update marker creation for flutter_map when migrating
   getAddressFromLatLng() async {
     await placemarkFromCoordinates(
       newLat ?? position?.latitude ?? 0.0,
@@ -85,45 +94,48 @@ class AddLocationProvider extends ChangeNotifier {
       cityCtrl.text = place!.subLocality ?? '';
       zipCtrl.text = place!.postalCode ?? '';
       areaCtrl.text = place!.locality ?? '';
-      marker!.add(Marker(
-          draggable: true,
-          onDragEnd: (value) {
-            newLat = value.latitude;
-            newLog = value.longitude;
-            if (newLat != null && newLog != null) {
-              position = Position(
-                  latitude: newLat!,
-                  longitude: newLog!,
-                  timestamp: DateTime.now(),
-                  accuracy: 0.0,
-                  altitude: 0.0,
-                  altitudeAccuracy: 0.0,
-                  heading: 0.0,
-                  headingAccuracy: 0.0,
-                  speed: 0.0,
-                  speedAccuracy: 0.0);
-              getAddressFromLatLng();
-            }
-            notifyListeners();
-          },
-          onDrag: (value) {
-            mapController!.animateCamera(CameraUpdate.newLatLng(
-                LatLng(value.latitude, value.longitude)));
-            notifyListeners();
-          },
-          markerId: MarkerId(
-            LatLng(newLat ?? position?.latitude ?? 0.0,
-                    newLog ?? position?.longitude ?? 0.0)
-                .toString(),
-          ),
-          position: LatLng(newLat ?? position?.latitude ?? 0.0,
-              newLog ?? position?.longitude ?? 0.0),
-          infoWindow:
-              InfoWindow(title: place?.name, snippet: place?.subLocality),
-          icon: await BitmapDescriptor.fromAssetImage(
-              const ImageConfiguration(devicePixelRatio: 0.8),
-              imageAssets.marker) // Icon for Marker
-          ));
+
+      // TODO: Replace with flutter_map Marker when migrating to free maps
+      // marker!.add(Marker(
+      //     draggable: true,
+      //     onDragEnd: (value) {
+      //       newLat = value.latitude;
+      //       newLog = value.longitude;
+      //       if (newLat != null && newLog != null) {
+      //         position = Position(
+      //             latitude: newLat!,
+      //             longitude: newLog!,
+      //             timestamp: DateTime.now(),
+      //             accuracy: 0.0,
+      //             altitude: 0.0,
+      //             altitudeAccuracy: 0.0,
+      //             heading: 0.0,
+      //             headingAccuracy: 0.0,
+      //             speed: 0.0,
+      //             speedAccuracy: 0.0);
+      //         getAddressFromLatLng();
+      //       }
+      //       notifyListeners();
+      //     },
+      //     onDrag: (value) {
+      //       mapController!.animateCamera(CameraUpdate.newLatLng(
+      //           LatLng(value.latitude, value.longitude)));
+      //       notifyListeners();
+      //     },
+      //     markerId: MarkerId(
+      //       LatLng(newLat ?? position?.latitude ?? 0.0,
+      //               newLog ?? position?.longitude ?? 0.0)
+      //           .toString(),
+      //     ),
+      //     position: LatLng(newLat ?? position?.latitude ?? 0.0,
+      //         newLog ?? position?.longitude ?? 0.0),
+      //     infoWindow:
+      //         InfoWindow(title: place?.name, snippet: place?.subLocality),
+      //     icon: await BitmapDescriptor.fromAssetImage(
+      //         const ImageConfiguration(devicePixelRatio: 0.8),
+      //         imageAssets.marker) // Icon for Marker
+      //     ));
+
       notifyListeners();
     }).catchError((e) {
       debugPrint("ee : $e");
