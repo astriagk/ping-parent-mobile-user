@@ -144,16 +144,16 @@ class AppArray {
       'title': "Add Student",
       "subtitle": "Used for add your student details"
     },
-    // {
-    //   'image': imageAssets.assignDriver,
-    //   'title': "Assign Driver",
-    //   "subtitle": "Used for assign driver to student"
-    // },
-    // {
-    //   'image': imageAssets.commingSoon,
-    //   'title': "Comming Soon",
-    //   "subtitle": "Stay tuned for updates"
-    // },
+    {
+      'image': imageAssets.rideMap,
+      'title': "Maps Integration",
+      "subtitle": "Used for map & location services"
+    },
+    {
+      'image': imageAssets.commingSoon,
+      'title': "Comming Soon",
+      "subtitle": "Stay tuned for updates"
+    },
   ];
 
   var offer = [

@@ -58,7 +58,7 @@ class StudentListScreen extends StatelessWidget {
                               padding: EdgeInsets.only(
                                   top: Sizes.s20, bottom: Sizes.s20),
                               children: [
-                                  ...studentCtrl.studentList!
+                                  ...studentCtrl.studentList
                                       .asMap()
                                       .entries
                                       .map((entries) {

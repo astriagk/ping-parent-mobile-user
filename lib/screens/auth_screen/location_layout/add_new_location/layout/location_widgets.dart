@@ -51,7 +51,7 @@ class LocationWidgets {
                       allRadius: Sizes.s8,
                       color: appColor(context).appTheme.white)
                   .inkWell(
-                      onTap: () => locationCtrl.currentLocation()))).padding(
+                      onTap: () => locationCtrl.getCurrentLocation()))).padding(
           bottom: Sizes.s20, horizontal: Sizes.s20);
     });
   }

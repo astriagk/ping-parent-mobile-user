@@ -10,7 +10,7 @@ class AddLocationScreen extends StatelessWidget {
       return StatefulWrapper(
           onInit: () =>
               Future.delayed(const Duration(milliseconds: 50)).then((value) {
-                locationCtrl.onInit();
+                locationCtrl.getCurrentLocation();
               }),
           child: Scaffold(
               body: Stack(children: [

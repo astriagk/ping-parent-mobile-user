@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
 import 'package:taxify_user_ui/config.dart';

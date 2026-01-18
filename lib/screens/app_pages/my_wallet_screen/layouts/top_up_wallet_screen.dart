@@ -48,7 +48,7 @@ class TopUpWalletScreen extends StatelessWidget {
                             GestureDetector(
                                 onTap: () {
                                   settingPvr.selectedIndex = index;
-                                  settingPvr.notifyListeners();
+                                  // settingPvr.notifyListeners(); // Removed: Only call within provider
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class TopUpWalletScreen extends StatelessWidget {
                                                 : appTheme.trans))))
                           ])).inkWell(onTap: () {
                         settingPvr.selectedIndex = index;
-                        settingPvr.notifyListeners();
+                        // settingPvr.notifyListeners(); // Removed: Only call within provider
                       }),
                       VSpace(Insets.i12)
                     ]);
