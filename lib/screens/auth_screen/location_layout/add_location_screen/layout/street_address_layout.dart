@@ -7,6 +7,7 @@ class StreetAddressLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AddLocationProvider>(
         builder: (context, locationCtrl, child) {
+      print("address===>${locationCtrl.address}");
       return Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -31,7 +32,7 @@ class StreetAddressLayout extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                 TextWidgetCommon(
-                                    text: locationCtrl.currentAddress ?? "",
+                                    text: locationCtrl.address ?? "",
                                     textAlign: TextAlign.start,
                                     style: AppCss.lexendSemiBold14
                                         .textColor(
@@ -39,7 +40,7 @@ class StreetAddressLayout extends StatelessWidget {
                                         .textHeight(1.2)),
                                 VSpace(Sizes.s8),
                                 TextWidgetCommon(
-                                    text: locationCtrl.street ?? "",
+                                    text: locationCtrl.place?.street ?? "",
                                     textAlign: TextAlign.start,
                                     style: AppCss.lexendRegular14
                                         .textColor(appColor(context)

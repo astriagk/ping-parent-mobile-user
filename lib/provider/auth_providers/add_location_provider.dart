@@ -1,161 +1,143 @@
-import 'dart:developer';
-import 'package:location/location.dart' as location_package;
-
 import '../../config.dart';
 
 class AddLocationProvider extends ChangeNotifier {
-  GoogleMapController? mapController;
-  location_package.Location location = location_package.Location();
-  Set<Marker>? marker;
-  Position? position, currentPosition;
+  MapController mapController = MapController();
+  LatLng? position;
+  String? address;
+  Placemark? place;
   TextEditingController streetCtrl = TextEditingController();
   TextEditingController cityCtrl = TextEditingController();
   TextEditingController zipCtrl = TextEditingController();
   TextEditingController areaCtrl = TextEditingController();
-  double? newLog, newLat;
-  Placemark? place;
-  String? currentAddress, street;
-  double? prevLat, prevLon;
   dynamic country;
   dynamic state;
 
-  //select card number dropDown layout
+  // Indian states dropdown (ISO 3166-2:IN codes)
   List dialogDropDownItems = [
-    {'value': 1, 'label': 'Andhra Pradesh'},
-    {'value': 2, 'label': 'Bihar'},
-    {'value': 3, 'label': 'Gujarat'},
-    {'value': 4, 'label': 'Karnataka'},
-    {'value': 5, 'label': 'Madhya Pradesh'},
+    {'value': 'AP', 'label': 'Andhra Pradesh'},
+    {'value': 'AR', 'label': 'Arunachal Pradesh'},
+    {'value': 'AS', 'label': 'Assam'},
+    {'value': 'BR', 'label': 'Bihar'},
+    {'value': 'CG', 'label': 'Chhattisgarh'},
+    {'value': 'GA', 'label': 'Goa'},
+    {'value': 'GJ', 'label': 'Gujarat'},
+    {'value': 'HR', 'label': 'Haryana'},
+    {'value': 'HP', 'label': 'Himachal Pradesh'},
+    {'value': 'JH', 'label': 'Jharkhand'},
+    {'value': 'KA', 'label': 'Karnataka'},
+    {'value': 'KL', 'label': 'Kerala'},
+    {'value': 'MP', 'label': 'Madhya Pradesh'},
+    {'value': 'MH', 'label': 'Maharashtra'},
+    {'value': 'MN', 'label': 'Manipur'},
+    {'value': 'ML', 'label': 'Meghalaya'},
+    {'value': 'MZ', 'label': 'Mizoram'},
+    {'value': 'NL', 'label': 'Nagaland'},
+    {'value': 'OD', 'label': 'Odisha'},
+    {'value': 'PB', 'label': 'Punjab'},
+    {'value': 'RJ', 'label': 'Rajasthan'},
+    {'value': 'SK', 'label': 'Sikkim'},
+    {'value': 'TN', 'label': 'Tamil Nadu'},
+    {'value': 'TS', 'label': 'Telangana'},
+    {'value': 'TR', 'label': 'Tripura'},
+    {'value': 'UP', 'label': 'Uttar Pradesh'},
+    {'value': 'UK', 'label': 'Uttarakhand'},
+    {'value': 'WB', 'label': 'West Bengal'},
+    {'value': 'DL', 'label': 'Delhi'},
+    {'value': 'JK', 'label': 'Jammu and Kashmir'},
+    {'value': 'LA', 'label': 'Ladakh'},
+    {'value': 'PY', 'label': 'Puducherry'},
+    {'value': 'CH', 'label': 'Chandigarh'},
   ];
 
+  // Country dropdown (ISO 3166-1 alpha-2 codes)
   List countryDialogDropDownItems = [
-    {'value': 1, 'label': 'India'},
-    {'value': 2, 'label': 'Switzerland'},
-    {'value': 3, 'label': 'Japan'},
-    {'value': 4, 'label': 'United States'},
-    {'value': 5, 'label': 'Canada'},
+    {'value': 'IN', 'label': 'India'},
   ];
 
-// map controller
-  onController(controller) {
-    mapController = controller;
-    notifyListeners();
-  }
-
-// get current location
-  currentLocation() async {
-    mapController!.animateCamera(CameraUpdate.newLatLng(
-        LatLng(currentPosition!.latitude, currentPosition!.longitude)));
-    newLat = null;
-    newLog = null;
-    position = currentPosition;
-    notifyListeners();
-    getCurrentPosition();
-  }
-
-//get current position
-  getCurrentPosition() async {
-    await Geolocator.requestPermission().then((value) async {
-      Position position1 = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      position = position1;
-      currentPosition = position1;
-      notifyListeners();
-      getAddressFromLatLng();
-    }).onError((error, stackTrace) async {
-      await Geolocator.requestPermission();
-      log("ERROR $error");
-    });
-  }
-
-// get address from latLong
-  getAddressFromLatLng() async {
-    await placemarkFromCoordinates(
-      newLat ?? position?.latitude ?? 0.0,
-      newLog ?? position?.longitude ?? 0.0,
-    ).then((List<Placemark> placeMarks) async {
-      place = placeMarks[0];
-      marker = {};
-      log("place : ${placeMarks[0]}");
-      currentAddress = place!.name;
-      street =
-          '${place!.name}, ${place!.street}, ${place!.subLocality}, ${place!.locality}, ${place!.postalCode}';
-      streetCtrl.text = place!.street ?? "";
-      cityCtrl.text = place!.subLocality ?? '';
-      zipCtrl.text = place!.postalCode ?? '';
-      areaCtrl.text = place!.locality ?? '';
-      marker!.add(Marker(
-          draggable: true,
-          onDragEnd: (value) {
-            newLat = value.latitude;
-            newLog = value.longitude;
-            if (newLat != null && newLog != null) {
-              position = Position(
-                  latitude: newLat!,
-                  longitude: newLog!,
-                  timestamp: DateTime.now(),
-                  accuracy: 0.0,
-                  altitude: 0.0,
-                  altitudeAccuracy: 0.0,
-                  heading: 0.0,
-                  headingAccuracy: 0.0,
-                  speed: 0.0,
-                  speedAccuracy: 0.0);
-              getAddressFromLatLng();
-            }
-            notifyListeners();
-          },
-          onDrag: (value) {
-            mapController!.animateCamera(CameraUpdate.newLatLng(
-                LatLng(value.latitude, value.longitude)));
-            notifyListeners();
-          },
-          markerId: MarkerId(
-            LatLng(newLat ?? position?.latitude ?? 0.0,
-                    newLog ?? position?.longitude ?? 0.0)
-                .toString(),
-          ),
-          position: LatLng(newLat ?? position?.latitude ?? 0.0,
-              newLog ?? position?.longitude ?? 0.0),
-          infoWindow:
-              InfoWindow(title: place?.name, snippet: place?.subLocality),
-          icon: await BitmapDescriptor.fromAssetImage(
-              const ImageConfiguration(devicePixelRatio: 0.8),
-              imageAssets.marker) // Icon for Marker
-          ));
-      notifyListeners();
-    }).catchError((e) {
-      debugPrint("ee : $e");
-    });
-  }
-
-// initialized position
-  onInit() {
-    getCurrentPosition();
-    currentAddress = "";
-    location.onLocationChanged
-        .listen((location_package.LocationData locationData) async {
-      if (prevLat == null ||
-          prevLon == null ||
-          (locationData.latitude! - prevLat!).abs() > 0.0001 ||
-          (locationData.longitude! - prevLon!).abs() > 0.0001) {
-        prevLat = locationData.latitude;
-        prevLon = locationData.longitude;
-        getAddressFromLatLng();
+  // Get current device location and update position
+  Future<void> getCurrentLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return;
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) return;
       }
-    });
-    // city = dialogDropDownItems[1]['value'];
+      if (permission == LocationPermission.deniedForever) return;
+      Position pos = await Geolocator.getCurrentPosition();
+      position = LatLng(pos.latitude, pos.longitude);
+      await getAddressFromLatLng(position!);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error getting location: $e');
+    }
+  }
+
+  // Get address from LatLng
+  Future<void> getAddressFromLatLng(LatLng latLng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latLng.latitude,
+        latLng.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        place = placemarks.first;
+        address =
+            '${place!.street}, ${place!.locality}, ${place!.administrativeArea}, ${place!.country}';
+        streetCtrl.text = place!.street ?? "";
+        cityCtrl.text = place!.locality ?? '';
+        zipCtrl.text = place!.postalCode ?? '';
+        areaCtrl.text = place!.administrativeArea ?? '';
+
+        // Reset country and state
+        country = null;
+        state = null;
+
+        // Use isoCountryCode directly if available, otherwise match by label
+        final isoCountry = place!.isoCountryCode?.toUpperCase();
+        if (isoCountry != null) {
+          final countryExists = countryDialogDropDownItems
+              .any((item) => item['value'] == isoCountry);
+          if (countryExists) {
+            country = isoCountry;
+          }
+        }
+
+        // Match state by label name (case-insensitive)
+        final stateName = place!.administrativeArea ?? '';
+        if (stateName.isNotEmpty) {
+          for (var item in dialogDropDownItems) {
+            if (item['label'].toString().toLowerCase() ==
+                stateName.toLowerCase()) {
+              state = item['value'];
+              break;
+            }
+          }
+        }
+      }
+      notifyListeners();
+    } catch (e) {
+      address = 'Could not get address';
+      notifyListeners();
+    }
+  }
+
+  // Called when the map is tapped (for flutter_map integration)
+  void onMapTap(LatLng latLng) {
+    position = latLng;
+    getAddressFromLatLng(latLng);
+    notifyListeners();
   }
 
   //country change value
-  countryChange(newValue) {
+  void countryChange(newValue) {
     country = newValue;
     notifyListeners();
   }
 
   //state change value
-  stateChange(newValue) {
+  void stateChange(newValue) {
     state = newValue;
     notifyListeners();
   }
