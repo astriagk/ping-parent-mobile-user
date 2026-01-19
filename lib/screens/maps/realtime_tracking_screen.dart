@@ -151,11 +151,7 @@ class _RealtimeTrackingScreenState extends State<RealtimeTrackingScreen> {
                     if (_currentLocation != null)
                       MarkerLayer(
                         markers: [
-                          MapMarkers.currentLocationMarker(
-                            point: _currentLocation!,
-                            context: context,
-                            isMoving: _isTracking,
-                          ),
+                          MapMarkers.currentLocationMarker(_currentLocation!, context),
                         ],
                       ),
                   ],

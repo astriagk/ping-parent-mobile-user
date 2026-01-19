@@ -121,10 +121,7 @@ class _BasicMapScreenState extends State<BasicMapScreen> {
                       if (_currentLocation != null)
                         MarkerLayer(
                           markers: [
-                            MapMarkers.currentLocationMarker(
-                              point: _currentLocation!,
-                              context: context,
-                            ),
+                            MapMarkers.currentLocationMarker(_currentLocation!, context),
                           ],
                         ),
                     ],

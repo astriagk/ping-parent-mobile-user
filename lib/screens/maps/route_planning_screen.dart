@@ -169,25 +169,15 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                 ),
               // Waypoint markers
               MarkerLayer(
-                markers: _waypoints.asMap().entries.map((entry) {
+                markers: _waypoints.asMap().entries.map<Marker>((entry) {
                   int index = entry.key;
                   LatLng point = entry.value;
-                  bool isFirst = index == 0;
                   bool isLast = index == _waypoints.length - 1;
 
                   if (isLast) {
-                    return MapMarkers.dropMarker(
-                      point: point,
-                      context: context,
-                      onTap: null,
-                    );
+                    return MapMarkers.dropMarker(point, context);
                   } else {
-                    return MapMarkers.pickupMarker(
-                      point: point,
-                      number: isFirst ? 0 : index,
-                      context: context,
-                      onTap: null,
-                    );
+                    return MapMarkers.pickupMarker(point, context);
                   }
                 }).toList(),
               ),

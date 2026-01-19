@@ -29,6 +29,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 child: Text('Add Location'),
               ),
+
               //today's offer layout
               TodayOfferLayout()
             ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)

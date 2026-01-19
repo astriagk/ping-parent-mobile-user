@@ -11,7 +11,7 @@ class RentalScreen extends StatelessWidget {
               .then((value) => rentalCtrl.onInit()),
           child: Scaffold(
               body: Stack(children: [
-            AddLocationWidgets().googleMapLayout(),
+            AddLocationWidgets().mapLayout(),
             Positioned(top: 40, right: 20, child: CommonSwitchRider()),
             CommonIconButton(
                 icon: svgAssets.back,

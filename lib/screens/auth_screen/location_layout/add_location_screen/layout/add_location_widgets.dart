@@ -4,8 +4,8 @@ import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
 import '../../../../../config.dart';
 
 class AddLocationWidgets {
-  //google map layout
-  Widget googleMapLayout() {
+  //map layout
+  Widget mapLayout() {
     return Consumer<AddLocationProvider>(
       builder: (context, locationCtrl, child) {
         if (locationCtrl.position == null) {
@@ -28,10 +28,7 @@ class AddLocationWidgets {
             OSMTileLayer(),
             MarkerLayer(
               markers: [
-                MapMarkers.currentLocationMarker(
-                  point: currentLatLng,
-                  context: context,
-                ),
+                MapMarkers.currentLocationMarker(currentLatLng, context),
               ],
             ),
           ],

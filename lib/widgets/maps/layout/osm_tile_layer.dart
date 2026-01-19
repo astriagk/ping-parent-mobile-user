@@ -20,11 +20,12 @@ class OSMTileLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final defaultUrl = MapConfig.osmTileOptions.first['url']!;
+    final url = urlTemplate ?? MapConfig.selectedTileUrl;
     return TileLayer(
       key: tileKey,
-      urlTemplate: urlTemplate ?? defaultUrl,
+      urlTemplate: url,
       userAgentPackageName: MapConfig.userAgentPackageName,
+      retinaMode: RetinaMode.isHighDensity(context),
     );
   }
 }

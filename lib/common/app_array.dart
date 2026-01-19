@@ -150,9 +150,9 @@ class AppArray {
       "subtitle": "Used for map & location services"
     },
     {
-      'image': imageAssets.commingSoon,
-      'title': "Comming Soon",
-      "subtitle": "Stay tuned for updates"
+      'image': imageAssets.rideMap,
+      'title': "Free Maps",
+      "subtitle": "Used for free map services"
     },
   ];
 

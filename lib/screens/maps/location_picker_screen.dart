@@ -122,10 +122,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     OSMTileLayer(),
                     MarkerLayer(
                       markers: [
-                        MapMarkers.currentLocationMarker(
-                          point: _selectedLocation,
-                          context: context,
-                        ),
+                        MapMarkers.currentLocationMarker(_selectedLocation, context),
                       ],
                     ),
                   ],

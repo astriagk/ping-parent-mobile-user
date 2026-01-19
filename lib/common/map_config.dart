@@ -1,5 +1,15 @@
 /// Global app configuration and constants
 class MapConfig {
+  // Selected tile index (change this to switch map style)
+  // 0 = OSM Standard
+  // 1 = CartoDB Positron (Light)
+  // 2 = CartoDB Dark Matter
+  // 3 = Stamen Toner
+  // 4 = Stamen Watercolor
+  // 5 = Stamen Terrain
+  // 6 = OpenTopoMap
+  static const int selectedTileIndex = 7;
+
   // List of available OSM tile servers
   static const List<Map<String, String>> osmTileOptions = [
     {
@@ -30,8 +40,18 @@ class MapConfig {
       'name': 'OpenTopoMap',
       'url': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     },
+
+    {
+      'name': 'CartoDB Voyager',
+      'url':
+          'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    },
     // Add more as needed
   ];
+
+  // Get selected tile URL
+  static String get selectedTileUrl =>
+      osmTileOptions[selectedTileIndex]['url']!;
 
   static const String userAgentPackageName = 'com.pixelstrap.taxify_user_ui';
 }

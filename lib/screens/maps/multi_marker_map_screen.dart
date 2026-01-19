@@ -78,17 +78,13 @@ class _MultiMarkerMapScreenState extends State<MultiMarkerMapScreen> {
                 int index = entry.key;
                 MapLocation loc = entry.value;
                 return MapMarkers.pickupMarker(
-                  point: loc.latLng,
-                  number: index + 1,
-                  context: context,
+                  loc.latLng,
+                  context,
                   onTap: () => _onMarkerTap(index),
                 );
               }),
               // Drop marker (red)
-              MapMarkers.dropMarker(
-                point: _dropLocation.latLng,
-                context: context,
-              ),
+              MapMarkers.dropMarker(_dropLocation.latLng, context),
             ],
           ),
           // Draw polyline connecting all locations

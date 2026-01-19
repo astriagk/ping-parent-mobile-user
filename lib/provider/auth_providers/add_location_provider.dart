@@ -12,20 +12,46 @@ class AddLocationProvider extends ChangeNotifier {
   dynamic country;
   dynamic state;
 
-  // Dropdowns (unchanged)
+  // Indian states dropdown (ISO 3166-2:IN codes)
   List dialogDropDownItems = [
-    {'value': 1, 'label': 'Andhra Pradesh'},
-    {'value': 2, 'label': 'Bihar'},
-    {'value': 3, 'label': 'Gujarat'},
-    {'value': 4, 'label': 'Karnataka'},
-    {'value': 5, 'label': 'Madhya Pradesh'},
+    {'value': 'AP', 'label': 'Andhra Pradesh'},
+    {'value': 'AR', 'label': 'Arunachal Pradesh'},
+    {'value': 'AS', 'label': 'Assam'},
+    {'value': 'BR', 'label': 'Bihar'},
+    {'value': 'CG', 'label': 'Chhattisgarh'},
+    {'value': 'GA', 'label': 'Goa'},
+    {'value': 'GJ', 'label': 'Gujarat'},
+    {'value': 'HR', 'label': 'Haryana'},
+    {'value': 'HP', 'label': 'Himachal Pradesh'},
+    {'value': 'JH', 'label': 'Jharkhand'},
+    {'value': 'KA', 'label': 'Karnataka'},
+    {'value': 'KL', 'label': 'Kerala'},
+    {'value': 'MP', 'label': 'Madhya Pradesh'},
+    {'value': 'MH', 'label': 'Maharashtra'},
+    {'value': 'MN', 'label': 'Manipur'},
+    {'value': 'ML', 'label': 'Meghalaya'},
+    {'value': 'MZ', 'label': 'Mizoram'},
+    {'value': 'NL', 'label': 'Nagaland'},
+    {'value': 'OD', 'label': 'Odisha'},
+    {'value': 'PB', 'label': 'Punjab'},
+    {'value': 'RJ', 'label': 'Rajasthan'},
+    {'value': 'SK', 'label': 'Sikkim'},
+    {'value': 'TN', 'label': 'Tamil Nadu'},
+    {'value': 'TS', 'label': 'Telangana'},
+    {'value': 'TR', 'label': 'Tripura'},
+    {'value': 'UP', 'label': 'Uttar Pradesh'},
+    {'value': 'UK', 'label': 'Uttarakhand'},
+    {'value': 'WB', 'label': 'West Bengal'},
+    {'value': 'DL', 'label': 'Delhi'},
+    {'value': 'JK', 'label': 'Jammu and Kashmir'},
+    {'value': 'LA', 'label': 'Ladakh'},
+    {'value': 'PY', 'label': 'Puducherry'},
+    {'value': 'CH', 'label': 'Chandigarh'},
   ];
+
+  // Country dropdown (ISO 3166-1 alpha-2 codes)
   List countryDialogDropDownItems = [
-    {'value': 1, 'label': 'India'},
-    {'value': 2, 'label': 'Switzerland'},
-    {'value': 3, 'label': 'Japan'},
-    {'value': 4, 'label': 'United States'},
-    {'value': 5, 'label': 'Canada'},
+    {'value': 'IN', 'label': 'India'},
   ];
 
   // Get current device location and update position
@@ -63,6 +89,32 @@ class AddLocationProvider extends ChangeNotifier {
         cityCtrl.text = place!.locality ?? '';
         zipCtrl.text = place!.postalCode ?? '';
         areaCtrl.text = place!.administrativeArea ?? '';
+
+        // Reset country and state
+        country = null;
+        state = null;
+
+        // Use isoCountryCode directly if available, otherwise match by label
+        final isoCountry = place!.isoCountryCode?.toUpperCase();
+        if (isoCountry != null) {
+          final countryExists = countryDialogDropDownItems
+              .any((item) => item['value'] == isoCountry);
+          if (countryExists) {
+            country = isoCountry;
+          }
+        }
+
+        // Match state by label name (case-insensitive)
+        final stateName = place!.administrativeArea ?? '';
+        if (stateName.isNotEmpty) {
+          for (var item in dialogDropDownItems) {
+            if (item['label'].toString().toLowerCase() ==
+                stateName.toLowerCase()) {
+              state = item['value'];
+              break;
+            }
+          }
+        }
       }
       notifyListeners();
     } catch (e) {
