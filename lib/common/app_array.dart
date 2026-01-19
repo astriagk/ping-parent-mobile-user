@@ -144,16 +144,16 @@ class AppArray {
       'title': "Add Student",
       "subtitle": "Used for add your student details"
     },
-    {
-      'image': imageAssets.rideMap,
-      'title': "Maps Integration",
-      "subtitle": "Used for map & location services"
-    },
-    {
-      'image': imageAssets.rideMap,
-      'title': "Free Maps",
-      "subtitle": "Used for free map services"
-    },
+    // {
+    //   'image': imageAssets.rideMap,
+    //   'title': "Maps Integration",
+    //   "subtitle": "Used for map & location services"
+    // },
+    // {
+    //   'image': imageAssets.rideMap,
+    //   'title': "Free Maps",
+    //   "subtitle": "Used for free map services"
+    // },
   ];
 
   var offer = [

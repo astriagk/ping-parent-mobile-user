@@ -21,6 +21,9 @@ class CommonLocationLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasDropAddress =
+        droppingAddress != null && droppingAddress!.isNotEmpty;
+
     return Container(
         padding: padding ?? EdgeInsets.all(Insets.i15),
         decoration: BoxDecoration(
@@ -36,11 +39,13 @@ class CommonLocationLayout extends StatelessWidget {
                     height: Insets.i15,
                     width: Insets.i15,
                     svgAssets.saveLocation),
-                DottedVerticalLine(index: index ?? 10),
-                SvgPicture.asset(
-                    height: Insets.i15,
-                    width: Insets.i15,
-                    svgAssets.gpsDestination)
+                if (hasDropAddress) ...[
+                  DottedVerticalLine(index: index ?? 10),
+                  SvgPicture.asset(
+                      height: Insets.i15,
+                      width: Insets.i15,
+                      svgAssets.gpsDestination)
+                ]
               ]),
               HSpace(Insets.i8),
               Expanded(
@@ -62,25 +67,27 @@ class CommonLocationLayout extends StatelessWidget {
                                   .marginOnly(top: Insets.i2)
                               : Container()
                         ]),
-                    isDottedLine == true
-                        ? homeScreenWidget.dottedLineCommon(
-                            vertical: Insets.i10)
-                        : Divider(color: appTheme.stroke)
-                            .marginSymmetric(vertical: Insets.i10),
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("$droppingAddress",
-                              style: AppCss.lexendLight12
-                                  .textColor(appTheme.primary)
-                                  .textHeight(1.3)),
-                          isHavingDuration == true
-                              ? Text('4:36pm  |  Drop off',
-                                      style: AppCss.lexendLight12
-                                          .textColor(appTheme.hintText))
-                                  .marginOnly(top: Insets.i2)
-                              : Container()
-                        ])
+                    if (hasDropAddress) ...[
+                      isDottedLine == true
+                          ? homeScreenWidget.dottedLineCommon(
+                              vertical: Insets.i10)
+                          : Divider(color: appTheme.stroke)
+                              .marginSymmetric(vertical: Insets.i10),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("$droppingAddress",
+                                style: AppCss.lexendLight12
+                                    .textColor(appTheme.primary)
+                                    .textHeight(1.3)),
+                            isHavingDuration == true
+                                ? Text('4:36pm  |  Drop off',
+                                        style: AppCss.lexendLight12
+                                            .textColor(appTheme.hintText))
+                                    .marginOnly(top: Insets.i2)
+                                : Container()
+                          ])
+                    ]
                   ]))
             ]));
   }

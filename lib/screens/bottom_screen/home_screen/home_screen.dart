@@ -19,17 +19,6 @@ class HomeScreen extends StatelessWidget {
               CardLayout(),
               // top categories layout
               TopCategories(),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  route.pushNamed(
-                    context,
-                    routeName.addLocationScreen,
-                  );
-                },
-                child: Text('Add Location'),
-              ),
-
               //today's offer layout
               TodayOfferLayout()
             ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)

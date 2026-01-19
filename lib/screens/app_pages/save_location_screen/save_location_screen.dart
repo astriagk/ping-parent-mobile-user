@@ -15,34 +15,77 @@ class SaveLocationScreen extends StatelessWidget {
                   onTap: () =>
                       route.pushNamed(context, routeName.addNewLocationScreen),
                   title: appFonts.savedLocation,
-                  icon: true,
+                  //  TODO: hidden icon so user can't add multiple addresses quickly,
+                  //  it will be coming in next phase.
+                  icon: false,
                   suffixIcon: svgAssets.add),
-              body: slCtrl.saveLocationList.isNotEmpty
-                  ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: slCtrl.saveLocationList.map((e) {
-                            return Column(children: [
-                              //ICON WORK OR HOME EDIT AND DELETE LAYOUT
-                              WorkTitleLayout(e: e),
-                              //save location page save address layout
-                              SaveLocationWidgets()
-                                  .saveAddressLayout(e, context)
-                            ])
-                                .decorated(
-                                    color: appColor(context).appTheme.bgBox,
-                                    allRadius: Sizes.s10)
-                                .padding(bottom: Sizes.s20);
-                          }).toList())
-                      .padding(horizontal: Sizes.s20, top: Sizes.s25)
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                          Center(
-                              child: Container(
-                                  child: Text("No Address",
-                                      style: AppCss.lexendLight16
-                                          .textColor(appTheme.hintText))))
-                        ])));
+              // Use ternary operators directly in body (per screen_loading_pattern.md)
+              body: slCtrl.isLoading
+                  // 1. Loading state
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: appColor(context).appTheme.primary,
+                      ),
+                    )
+                  : slCtrl.errorMessage != null
+                      // 2. Error state
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: Sizes.s48,
+                                color: appColor(context).appTheme.alertZone,
+                              ),
+                              VSpace(Sizes.s16),
+                              TextWidgetCommon(
+                                text: slCtrl.errorMessage!,
+                                style: AppCss.lexendLight14.textColor(
+                                    appColor(context).appTheme.hintText),
+                                textAlign: TextAlign.center,
+                              ),
+                              VSpace(Sizes.s20),
+                              CommonButton(
+                                text: appFonts.refresh,
+                                onTap: () => slCtrl.refresh(),
+                              ).padding(horizontal: Sizes.s40),
+                            ],
+                          ),
+                        )
+                      : slCtrl.saveLocationList.isEmpty
+                          // 3. Empty state
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Center(
+                                  child: TextWidgetCommon(
+                                    text: "No Address",
+                                    style: AppCss.lexendLight16
+                                        .textColor(appTheme.hintText),
+                                  ),
+                                ),
+                              ],
+                            )
+                          // 4. Data state - using existing UI layout
+                          : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: slCtrl.saveLocationList.map((e) {
+                                    return Column(children: [
+                                      //ICON WORK OR HOME EDIT AND DELETE LAYOUT
+                                      WorkTitleLayout(e: e),
+                                      //save location page save address layout
+                                      SaveLocationWidgets()
+                                          .saveAddressLayout(e, context)
+                                    ])
+                                        .decorated(
+                                            color: appColor(context)
+                                                .appTheme
+                                                .bgBox,
+                                            allRadius: Sizes.s10)
+                                        .padding(bottom: Sizes.s20);
+                                  }).toList())
+                              .padding(horizontal: Sizes.s20, top: Sizes.s25)));
     });
   }
 }
