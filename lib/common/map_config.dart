@@ -40,13 +40,36 @@ class MapConfig {
       'name': 'OpenTopoMap',
       'url': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     },
-
     {
       'name': 'CartoDB Voyager',
       'url':
           'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
     },
-    // Add more as needed
+    {
+      'name': 'TomTom Basic Main (PNG)',
+      'url':
+          'https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=WQaLf0lFFvii7Co5xgJ6mawtRRiy3w8G',
+    },
+    {
+      'name': 'TomTom Basic Night (PNG)',
+      'url':
+          'https://api.tomtom.com/map/1/tile/basic/night/{z}/{x}/{y}.png?key=WQaLf0lFFvii7Co5xgJ6mawtRRiy3w8G',
+    },
+    {
+      'name': 'TomTom Basic Main Lite (Voyager-like)',
+      'url':
+          'https://api.tomtom.com/map/1/tile/basic/main-lite/{z}/{x}/{y}.png?key=WQaLf0lFFvii7Co5xgJ6mawtRRiy3w8G',
+    },
+    {
+      'name': 'TomTom Basic Main',
+      'url':
+          'https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=WQaLf0lFFvii7Co5xgJ6mawtRRiy3w8G',
+    },
+    {
+      'name': 'TomTom Labels Main Lite',
+      'url':
+          'https://api.tomtom.com/map/1/tile/labels/main-lite/{z}/{x}/{y}.png?key=WQaLf0lFFvii7Co5xgJ6mawtRRiy3w8G',
+    }
   ];
 
   // Get selected tile URL

@@ -1,5 +1,6 @@
 import 'package:taxify_user_ui/config.dart';
 import 'package:taxify_user_ui/screens/app_pages/save_location_screen/save_location_widgets.dart';
+import 'package:taxify_user_ui/widgets/skeletons/save_location_skeleton.dart';
 
 class SaveLocationScreen extends StatelessWidget {
   const SaveLocationScreen({super.key});
@@ -21,12 +22,8 @@ class SaveLocationScreen extends StatelessWidget {
                   suffixIcon: svgAssets.add),
               // Use ternary operators directly in body (per screen_loading_pattern.md)
               body: slCtrl.isLoading
-                  // 1. Loading state
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: appColor(context).appTheme.primary,
-                      ),
-                    )
+                  // 1. Loading state - skeleton loader
+                  ? const SaveLocationListSkeleton(itemCount: 1)
                   : slCtrl.errorMessage != null
                       // 2. Error state
                       ? Center(
