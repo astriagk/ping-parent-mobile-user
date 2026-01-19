@@ -1,5 +1,7 @@
 import 'package:taxify_user_ui/config.dart';
 
+import 'layout/maps_explorer_layout.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -19,17 +21,8 @@ class HomeScreen extends StatelessWidget {
               CardLayout(),
               // top categories layout
               TopCategories(),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  route.pushNamed(
-                    context,
-                    routeName.addLocationScreen,
-                  );
-                },
-                child: Text('Add Location'),
-              ),
-
+              // maps explorer layout
+              MapsExplorerLayout(),
               //today's offer layout
               TodayOfferLayout()
             ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
