@@ -209,11 +209,6 @@ class AddStudentProvider extends ChangeNotifier {
       final studentService = StudentService(ApiClient());
       final payload = request.toJson();
 
-      // Print the constructed payload
-      print('=== API PAYLOAD ===');
-      print(payload);
-      print('==================');
-
       final response = isEditMode
           ? await studentService.updateStudent(currentStudent!.id!, payload)
           : await studentService.createStudent(payload);

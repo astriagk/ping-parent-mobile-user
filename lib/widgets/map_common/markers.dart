@@ -4,16 +4,17 @@ import '../../config.dart';
 /// Uses app theme colors and consistent styling
 class MapMarkers {
   /// Default marker size
-  static const double defaultSize = 40.0;
+  static double defaultSize = Sizes.s40;
 
   /// Pickup location marker (green pin with optional label)
   static Marker pickupMarker(
     LatLng point,
     BuildContext context, {
     VoidCallback? onTap,
-    double size = defaultSize,
+    double? size,
     String? label,
   }) {
+    size ??= Sizes.s40;
     final theme = appColor(context).appTheme;
     return Marker(
       point: point,
@@ -52,9 +53,10 @@ class MapMarkers {
     LatLng point,
     BuildContext context, {
     VoidCallback? onTap,
-    double size = defaultSize,
+    double? size,
     String? label,
   }) {
+    size ??= Sizes.s40;
     final theme = appColor(context).appTheme;
     return Marker(
       point: point,
@@ -92,43 +94,17 @@ class MapMarkers {
   static Marker currentLocationMarker(
     LatLng point,
     BuildContext context, {
-    double size = 24.0,
+    double? size,
   }) {
-    final theme = appColor(context).appTheme;
+    size ??= Sizes.s40;
     return Marker(
       point: point,
-      width: size * 2,
-      height: size * 2,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Outer pulse ring
-          Container(
-            width: size * 2,
-            height: size * 2,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.primary.withValues(alpha: 0.2),
-            ),
-          ),
-          // Inner dot
-          Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.primary,
-              border: Border.all(color: Colors.white, width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.primary.withValues(alpha: 0.4),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-          ),
-        ],
+      width: size,
+      height: size,
+      child: SvgPicture.asset(
+        svgAssets.locationPin,
+        width: size,
+        height: size,
       ),
     );
   }
@@ -138,9 +114,10 @@ class MapMarkers {
     LatLng point,
     BuildContext context, {
     VoidCallback? onTap,
-    double size = defaultSize,
+    double? size,
     double? heading,
   }) {
+    size ??= Sizes.s40;
     final theme = appColor(context).appTheme;
     return Marker(
       point: point,
@@ -156,7 +133,7 @@ class MapMarkers {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: Colors.black.withOpacity(0.2),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -178,9 +155,10 @@ class MapMarkers {
     LatLng point,
     BuildContext context, {
     VoidCallback? onTap,
-    double size = defaultSize,
+    double? size,
     String? label,
   }) {
+    size ??= Sizes.s40;
     final theme = appColor(context).appTheme;
     return Marker(
       point: point,
@@ -198,7 +176,7 @@ class MapMarkers {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: theme.primary.withValues(alpha: 0.3),
+                    color: theme.primary.withOpacity(0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -235,33 +213,17 @@ class MapMarkers {
     LatLng point,
     BuildContext context, {
     VoidCallback? onTap,
-    double size = defaultSize,
+    double? size,
   }) {
-    final theme = appColor(context).appTheme;
+    size ??= Sizes.s40;
     return Marker(
       point: point,
       width: size,
       height: size,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.yellowIcon,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: theme.yellowIcon.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.home,
-            color: Colors.white,
-            size: size * 0.6,
-          ),
-        ),
+      child: SvgPicture.asset(
+        svgAssets.homeDark,
+        width: size,
+        height: size,
       ),
     );
   }
@@ -272,9 +234,10 @@ class MapMarkers {
     BuildContext context, {
     required int number,
     VoidCallback? onTap,
-    double size = 32.0,
+    double? size,
     Color? color,
   }) {
+    size ??= 32.0;
     final theme = appColor(context).appTheme;
     final markerColor = color ?? theme.primary;
     return Marker(
@@ -314,10 +277,11 @@ class MapMarkers {
     required IconData icon,
     Color? color,
     Color iconColor = Colors.white,
-    double size = defaultSize,
+    double? size,
     VoidCallback? onTap,
     String? tooltip,
   }) {
+    size ??= Sizes.s40;
     final theme = appColor(context).appTheme;
     final markerColor = color ?? theme.primary;
     return Marker(
@@ -355,9 +319,10 @@ class MapMarkers {
   static Marker svgMarker({
     required LatLng point,
     required String assetPath,
-    double size = defaultSize,
+    double? size,
     VoidCallback? onTap,
   }) {
+    size ??= Sizes.s40;
     return Marker(
       point: point,
       width: size,
@@ -377,10 +342,11 @@ class MapMarkers {
   static Marker imageMarker({
     required LatLng point,
     required String imageUrl,
-    double size = defaultSize,
+    double? size,
     VoidCallback? onTap,
     BoxFit fit = BoxFit.cover,
   }) {
+    size ??= Sizes.s40;
     return Marker(
       point: point,
       width: size,

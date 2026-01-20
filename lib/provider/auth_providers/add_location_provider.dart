@@ -128,10 +128,8 @@ class AddLocationProvider extends ChangeNotifier {
         latLng.latitude,
         latLng.longitude,
       );
-      print('placemarks===>$placemarks');
       if (placemarks.isNotEmpty) {
         place = placemarks.first;
-        print('place===>$place');
         address =
             '${place!.street}, ${place!.locality}, ${place!.administrativeArea}, ${place!.country}';
 
