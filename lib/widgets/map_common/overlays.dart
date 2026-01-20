@@ -1,116 +1,8 @@
-import 'package:flutter/material.dart';
-
-/// Map controls overlay widget
-/// Provides zoom, location, and layer controls for the map
-class OFMMapControls extends StatelessWidget {
-  final VoidCallback? onZoomIn;
-  final VoidCallback? onZoomOut;
-  final VoidCallback? onMyLocation;
-  final VoidCallback? onLayers;
-  final VoidCallback? onCompass;
-  final bool showLayersButton;
-  final bool showCompassButton;
-  final Color? backgroundColor;
-  final Color? iconColor;
-  final double buttonSize;
-
-  const OFMMapControls({
-    super.key,
-    this.onZoomIn,
-    this.onZoomOut,
-    this.onMyLocation,
-    this.onLayers,
-    this.onCompass,
-    this.showLayersButton = false,
-    this.showCompassButton = false,
-    this.backgroundColor,
-    this.iconColor,
-    this.buttonSize = 48,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = backgroundColor ?? Colors.white;
-    final icColor = iconColor ?? Colors.grey.shade800;
-
-    return Positioned(
-      right: 16,
-      bottom: 100,
-      child: Column(
-        children: [
-          if (showCompassButton && onCompass != null) ...[
-            _buildControlButton(
-              icon: Icons.explore,
-              onPressed: onCompass,
-              bgColor: bgColor,
-              icColor: icColor,
-            ),
-            const SizedBox(height: 8),
-          ],
-          if (showLayersButton && onLayers != null) ...[
-            _buildControlButton(
-              icon: Icons.layers,
-              onPressed: onLayers,
-              bgColor: bgColor,
-              icColor: icColor,
-            ),
-            const SizedBox(height: 8),
-          ],
-          _buildControlButton(
-            icon: Icons.add,
-            onPressed: onZoomIn,
-            bgColor: bgColor,
-            icColor: icColor,
-          ),
-          const SizedBox(height: 8),
-          _buildControlButton(
-            icon: Icons.remove,
-            onPressed: onZoomOut,
-            bgColor: bgColor,
-            icColor: icColor,
-          ),
-          const SizedBox(height: 8),
-          _buildControlButton(
-            icon: Icons.my_location,
-            onPressed: onMyLocation,
-            bgColor: bgColor,
-            icColor: Colors.blue,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildControlButton({
-    required IconData icon,
-    VoidCallback? onPressed,
-    required Color bgColor,
-    required Color icColor,
-  }) {
-    return Material(
-      elevation: 4,
-      borderRadius: BorderRadius.circular(8),
-      shadowColor: Colors.black26,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: buttonSize,
-          height: buttonSize,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: icColor, size: buttonSize * 0.5),
-        ),
-      ),
-    );
-  }
-}
+import '../../config.dart';
 
 /// Location info card overlay
 /// Shows selected location details with optional navigation
-class OFMLocationInfoCard extends StatelessWidget {
+class MapLocationInfoCard extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? address;
@@ -121,7 +13,7 @@ class OFMLocationInfoCard extends StatelessWidget {
   final VoidCallback? onShare;
   final Widget? leading;
 
-  const OFMLocationInfoCard({
+  const MapLocationInfoCard({
     super.key,
     required this.title,
     this.subtitle,
@@ -136,6 +28,8 @@ class OFMLocationInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = appColor(context).appTheme;
+
     return Positioned(
       bottom: 0,
       left: 0,
@@ -144,9 +38,9 @@ class OFMLocationInfoCard extends StatelessWidget {
         elevation: 8,
         child: Container(
           padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          decoration: BoxDecoration(
+            color: theme.bgBox,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: SafeArea(
             top: false,
@@ -161,7 +55,7 @@ class OFMLocationInfoCard extends StatelessWidget {
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: theme.lightText.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -179,19 +73,13 @@ class OFMLocationInfoCard extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
+                            style: AppCss.lexendMedium18.textColor(theme.darkText),
                           ),
                           if (subtitle != null) ...[
                             const SizedBox(height: 2),
                             Text(
                               subtitle!,
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 14,
-                              ),
+                              style: AppCss.lexendMedium14.textColor(theme.lightText),
                             ),
                           ],
                         ],
@@ -199,7 +87,7 @@ class OFMLocationInfoCard extends StatelessWidget {
                     ),
                     if (onClose != null)
                       IconButton(
-                        icon: const Icon(Icons.close),
+                        icon: Icon(Icons.close, color: theme.darkText),
                         onPressed: onClose,
                       ),
                   ],
@@ -209,15 +97,12 @@ class OFMLocationInfoCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.location_on, size: 16, color: Colors.grey.shade600),
+                      Icon(Icons.location_on, size: 16, color: theme.lightText),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           address!,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 13,
-                          ),
+                          style: AppCss.lexendMedium13.textColor(theme.lightText),
                         ),
                       ),
                     ],
@@ -229,15 +114,21 @@ class OFMLocationInfoCard extends StatelessWidget {
                   Row(
                     children: [
                       if (distance != null) ...[
-                        Icon(Icons.straighten, size: 16, color: Colors.grey.shade700),
+                        Icon(Icons.straighten, size: 16, color: theme.darkText),
                         const SizedBox(width: 4),
-                        Text(distance!, style: const TextStyle(fontWeight: FontWeight.w500)),
+                        Text(
+                          distance!,
+                          style: AppCss.lexendMedium14.textColor(theme.darkText),
+                        ),
                         const SizedBox(width: 16),
                       ],
                       if (duration != null) ...[
-                        Icon(Icons.access_time, size: 16, color: Colors.grey.shade700),
+                        Icon(Icons.access_time, size: 16, color: theme.darkText),
                         const SizedBox(width: 4),
-                        Text(duration!, style: const TextStyle(fontWeight: FontWeight.w500)),
+                        Text(
+                          duration!,
+                          style: AppCss.lexendMedium14.textColor(theme.darkText),
+                        ),
                       ],
                     ],
                   ),
@@ -252,9 +143,12 @@ class OFMLocationInfoCard extends StatelessWidget {
                           child: ElevatedButton.icon(
                             onPressed: onNavigate,
                             icon: const Icon(Icons.directions, color: Colors.white),
-                            label: const Text('Navigate', style: TextStyle(color: Colors.white)),
+                            label: Text(
+                              'Navigate',
+                              style: AppCss.lexendMedium14.textColor(Colors.white),
+                            ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: theme.primary,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -267,9 +161,9 @@ class OFMLocationInfoCard extends StatelessWidget {
                       if (onShare != null)
                         IconButton(
                           onPressed: onShare,
-                          icon: const Icon(Icons.share),
+                          icon: Icon(Icons.share, color: theme.darkText),
                           style: IconButton.styleFrom(
-                            backgroundColor: Colors.grey.shade200,
+                            backgroundColor: theme.lightText.withValues(alpha: 0.1),
                           ),
                         ),
                     ],
@@ -285,15 +179,16 @@ class OFMLocationInfoCard extends StatelessWidget {
 }
 
 /// Route info card showing distance, duration, and waypoints
-class OFMRouteInfoCard extends StatelessWidget {
+class MapRouteInfoCard extends StatelessWidget {
   final String distance;
   final String duration;
   final int waypointCount;
   final VoidCallback? onStartNavigation;
   final VoidCallback? onClose;
   final VoidCallback? onOptimize;
+  final String? trafficInfo;
 
-  const OFMRouteInfoCard({
+  const MapRouteInfoCard({
     super.key,
     required this.distance,
     required this.duration,
@@ -301,16 +196,20 @@ class OFMRouteInfoCard extends StatelessWidget {
     this.onStartNavigation,
     this.onClose,
     this.onOptimize,
+    this.trafficInfo,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = appColor(context).appTheme;
+
     return Positioned(
       top: 16,
       left: 16,
       right: 16,
       child: Card(
         elevation: 4,
+        color: theme.bgBox,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -320,35 +219,45 @@ class OFMRouteInfoCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.route, color: Colors.blue),
+                  Icon(Icons.route, color: theme.primary),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'Route Information',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: AppCss.lexendMedium16.textColor(theme.darkText),
                   ),
                   const Spacer(),
                   if (onClose != null)
                     GestureDetector(
                       onTap: onClose,
-                      child: const Icon(Icons.close, size: 20),
+                      child: Icon(Icons.close, size: 20, color: theme.darkText),
                     ),
                 ],
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  _buildInfoItem(Icons.straighten, distance, 'Distance'),
+                  _buildInfoItem(context, Icons.straighten, distance, 'Distance'),
                   const SizedBox(width: 24),
-                  _buildInfoItem(Icons.access_time, duration, 'Duration'),
+                  _buildInfoItem(context, Icons.access_time, duration, 'Duration'),
                   if (waypointCount > 0) ...[
                     const SizedBox(width: 24),
-                    _buildInfoItem(Icons.place, '$waypointCount', 'Stops'),
+                    _buildInfoItem(context, Icons.place, '$waypointCount', 'Stops'),
                   ],
                 ],
               ),
+              if (trafficInfo != null) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.traffic, size: 16, color: theme.yellowIcon),
+                    const SizedBox(width: 4),
+                    Text(
+                      trafficInfo!,
+                      style: AppCss.lexendMedium12.textColor(theme.yellowIcon),
+                    ),
+                  ],
+                ),
+              ],
               if (onStartNavigation != null || onOptimize != null) ...[
                 const SizedBox(height: 12),
                 Row(
@@ -356,10 +265,15 @@ class OFMRouteInfoCard extends StatelessWidget {
                     if (onOptimize != null) ...[
                       OutlinedButton.icon(
                         onPressed: onOptimize,
-                        icon: const Icon(Icons.auto_fix_high, size: 18),
-                        label: const Text('Optimize'),
+                        icon: Icon(Icons.auto_fix_high, size: 18, color: theme.primary),
+                        label: Text(
+                          'Optimize',
+                          style: AppCss.lexendMedium12.textColor(theme.primary),
+                        ),
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          side: BorderSide(color: theme.primary),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -368,10 +282,14 @@ class OFMRouteInfoCard extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: onStartNavigation,
-                          icon: const Icon(Icons.navigation, color: Colors.white, size: 18),
-                          label: const Text('Start', style: TextStyle(color: Colors.white)),
+                          icon: const Icon(Icons.navigation,
+                              color: Colors.white, size: 18),
+                          label: Text(
+                            'Start',
+                            style: AppCss.lexendMedium14.textColor(Colors.white),
+                          ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: theme.primary,
                             padding: const EdgeInsets.symmetric(vertical: 8),
                           ),
                         ),
@@ -386,30 +304,26 @@ class OFMRouteInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String value, String label) {
+  Widget _buildInfoItem(BuildContext context, IconData icon, String value, String label) {
+    final theme = appColor(context).appTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: Colors.grey.shade600),
+            Icon(icon, size: 16, color: theme.lightText),
             const SizedBox(width: 4),
             Text(
               value,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: AppCss.lexendMedium16.textColor(theme.darkText),
             ),
           ],
         ),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-          ),
+          style: AppCss.lexendMedium12.textColor(theme.lightText),
         ),
       ],
     );
@@ -417,32 +331,36 @@ class OFMRouteInfoCard extends StatelessWidget {
 }
 
 /// Loading overlay for map
-class OFMLoadingOverlay extends StatelessWidget {
+class MapLoadingOverlay extends StatelessWidget {
   final String? message;
-  final Color? backgroundColor;
 
-  const OFMLoadingOverlay({
+  const MapLoadingOverlay({
     super.key,
     this.message,
-    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = appColor(context).appTheme;
+
     return Container(
-      color: backgroundColor ?? Colors.black.withValues(alpha: 0.3),
+      color: Colors.black.withValues(alpha: 0.3),
       child: Center(
         child: Card(
+          color: theme.bgBox,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(),
+                CircularProgressIndicator(color: theme.primary),
                 if (message != null) ...[
                   const SizedBox(height: 16),
-                  Text(message!),
+                  Text(
+                    message!,
+                    style: AppCss.lexendMedium14.textColor(theme.darkText),
+                  ),
                 ],
               ],
             ),
@@ -454,7 +372,7 @@ class OFMLoadingOverlay extends StatelessWidget {
 }
 
 /// Search bar overlay for map
-class OFMSearchBar extends StatelessWidget {
+class MapSearchBar extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText;
   final VoidCallback? onTap;
@@ -463,7 +381,7 @@ class OFMSearchBar extends StatelessWidget {
   final VoidCallback? onClear;
   final bool readOnly;
 
-  const OFMSearchBar({
+  const MapSearchBar({
     super.key,
     this.controller,
     this.hintText,
@@ -476,6 +394,8 @@ class OFMSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = appColor(context).appTheme;
+
     return Positioned(
       top: MediaQuery.of(context).padding.top + 8,
       left: 16,
@@ -489,12 +409,14 @@ class OFMSearchBar extends StatelessWidget {
           onTap: onTap,
           onChanged: onChanged,
           onSubmitted: onSubmitted,
+          style: AppCss.lexendMedium14.textColor(theme.darkText),
           decoration: InputDecoration(
             hintText: hintText ?? 'Search location...',
-            prefixIcon: const Icon(Icons.search),
+            hintStyle: AppCss.lexendMedium14.textColor(theme.lightText),
+            prefixIcon: Icon(Icons.search, color: theme.lightText),
             suffixIcon: controller?.text.isNotEmpty == true
                 ? IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: Icon(Icons.clear, color: theme.lightText),
                     onPressed: () {
                       controller?.clear();
                       onClear?.call();
@@ -506,8 +428,9 @@ class OFMSearchBar extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            fillColor: theme.bgBox,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ),
@@ -516,7 +439,7 @@ class OFMSearchBar extends StatelessWidget {
 }
 
 /// Tracking stats overlay
-class OFMTrackingStats extends StatelessWidget {
+class MapTrackingStats extends StatelessWidget {
   final String distance;
   final String duration;
   final String? speed;
@@ -524,7 +447,7 @@ class OFMTrackingStats extends StatelessWidget {
   final bool isTracking;
   final VoidCallback? onToggleTracking;
 
-  const OFMTrackingStats({
+  const MapTrackingStats({
     super.key,
     required this.distance,
     required this.duration,
@@ -536,23 +459,26 @@ class OFMTrackingStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = appColor(context).appTheme;
+
     return Positioned(
       top: 16,
       left: 16,
       right: 16,
       child: Card(
         elevation: 4,
+        color: theme.bgBox,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStatItem(Icons.straighten, distance, 'Distance'),
-              _buildStatItem(Icons.access_time, duration, 'Duration'),
-              if (speed != null) _buildStatItem(Icons.speed, speed!, 'Speed'),
+              _buildStatItem(context, Icons.straighten, distance, 'Distance'),
+              _buildStatItem(context, Icons.access_time, duration, 'Duration'),
+              if (speed != null) _buildStatItem(context, Icons.speed, speed!, 'Speed'),
               if (pointsCount != null)
-                _buildStatItem(Icons.location_on, '$pointsCount', 'Points'),
+                _buildStatItem(context, Icons.location_on, '$pointsCount', 'Points'),
             ],
           ),
         ),
@@ -560,25 +486,21 @@ class OFMTrackingStats extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(IconData icon, String value, String label) {
+  Widget _buildStatItem(BuildContext context, IconData icon, String value, String label) {
+    final theme = appColor(context).appTheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 24, color: Colors.blue),
+        Icon(icon, size: 24, color: theme.primary),
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppCss.lexendMedium16.textColor(theme.darkText),
         ),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-          ),
+          style: AppCss.lexendMedium12.textColor(theme.lightText),
         ),
       ],
     );

@@ -1,8 +1,9 @@
-import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
-import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+import '../../widgets/maps/layout/osm_tile_layer.dart';
 
 import '../../config.dart';
-import 'package:taxify_user_ui/common/map_config.dart';
+import '../../common/map_config.dart';
+
+import '../../widgets/map_common/markers.dart';
 
 /// Basic OpenStreetMap example with user location
 /// Shows how to display a simple map with current location marker
@@ -121,7 +122,8 @@ class _BasicMapScreenState extends State<BasicMapScreen> {
                       if (_currentLocation != null)
                         MarkerLayer(
                           markers: [
-                            MapMarkers.currentLocationMarker(_currentLocation!, context),
+                            MapMarkers.currentLocationMarker(
+                                _currentLocation!, context),
                           ],
                         ),
                     ],

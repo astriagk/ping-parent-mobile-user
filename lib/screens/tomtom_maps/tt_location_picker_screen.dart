@@ -178,7 +178,7 @@ class _TTLocationPickerScreenState extends State<TTLocationPickerScreen> {
                     const TTTileLayer(),
                     MarkerLayer(
                       markers: [
-                        TTMarkers.pickupMarker(_selectedLocation),
+                        MapMarkers.pickupMarker(_selectedLocation, context),
                       ],
                     ),
                   ],

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
-import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+import 'package:taxify_user_ui/widgets/map_common/markers.dart';
 
 import '../../config.dart';
 
@@ -151,7 +151,8 @@ class _RealtimeTrackingScreenState extends State<RealtimeTrackingScreen> {
                     if (_currentLocation != null)
                       MarkerLayer(
                         markers: [
-                          MapMarkers.currentLocationMarker(_currentLocation!, context),
+                          MapMarkers.currentLocationMarker(
+                              _currentLocation!, context),
                         ],
                       ),
                   ],

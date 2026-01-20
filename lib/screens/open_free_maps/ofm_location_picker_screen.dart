@@ -179,7 +179,7 @@ class _OFMLocationPickerScreenState extends State<OFMLocationPickerScreen> {
                     const OFMTileLayer(),
                     MarkerLayer(
                       markers: [
-                        OFMMarkers.pickupMarker(_selectedLocation),
+                        MapMarkers.pickupMarker(_selectedLocation, context),
                       ],
                     ),
                   ],
