@@ -15,7 +15,7 @@ class AcceptRideScreen extends StatelessWidget {
               }),
           child: Scaffold(
               body: Stack(children: [
-            AddLocationWidgets().googleMapLayout(),
+            AddLocationWidgets().mapLayout(),
             Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

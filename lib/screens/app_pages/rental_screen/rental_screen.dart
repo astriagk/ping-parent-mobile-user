@@ -11,7 +11,7 @@ class RentalScreen extends StatelessWidget {
               .then((value) => rentalCtrl.onInit()),
           child: Scaffold(
               body: Stack(children: [
-            AddLocationWidgets().googleMapLayout(),
+            AddLocationWidgets().mapLayout(),
             Positioned(top: 40, right: 20, child: CommonSwitchRider()),
             CommonIconButton(
                 icon: svgAssets.back,
@@ -20,7 +20,7 @@ class RentalScreen extends StatelessWidget {
                   rentalCtrl.price.text.isEmpty;
                   rentalCtrl.selectedIndex = null;
                   rentalCtrl.hourSelectedIndex = null;
-                  rentalCtrl.notifyListeners();
+                  // rentalCtrl.notifyListeners(); // Removed: Only call within provider
                   route.pop(context);
                 }).padding(horizontal: Sizes.s20, vertical: Sizes.s30),
             Align(

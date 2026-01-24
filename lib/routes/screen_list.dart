@@ -19,7 +19,6 @@ export 'package:taxify_user_ui/screens/app_pages/notification/empty_notification
 export 'package:taxify_user_ui/screens/app_pages/notification/notification_screen.dart';
 export 'package:taxify_user_ui/screens/screens_extensions.dart';
 export 'package:taxify_user_ui/screens/bottom_screen/home_screen/layout/card_layout.dart';
-export 'package:taxify_user_ui/screens/bottom_screen/home_screen/layout/home_widgets.dart';
 export 'package:taxify_user_ui/screens/bottom_screen/home_screen/layout/top_categories.dart';
 export 'package:taxify_user_ui/screens/bottom_screen/home_screen/layout/today_offer.dart';
 export 'package:taxify_user_ui/screens/auth_screen/location_layout/add_new_location/add_new_location.dart';
@@ -75,7 +74,6 @@ export 'package:taxify_user_ui/screens/app_pages/out_station_screen/layout/app_b
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/timer_and_text_layout.dart';
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/date_payment_type_layout.dart';
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/finding_driver_widgets.dart';
-export 'package:taxify_user_ui/screens/app_pages/finding_driver/layout/finding_location_layout.dart';
 export 'package:taxify_user_ui/screens/app_pages/finding_driver/finding_driver_screen.dart';
 export 'package:taxify_user_ui/screens/app_pages/rental_screen/rental_screen.dart';
 export 'package:taxify_user_ui/screens/app_pages/rental_screen/layout/choose_package_list.dart';

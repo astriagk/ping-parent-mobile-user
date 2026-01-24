@@ -1,12 +1,13 @@
 import 'package:taxify_user_ui/config.dart';
+import '../../../provider/app_pages_providers/user_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<SettingProvider, DashBoardProvider>(
-        builder: (context, settingCtrl, dash, child) {
+    return Consumer3<SettingProvider, DashBoardProvider, UserProvider>(
+        builder: (context, settingCtrl, dash, userProvider, child) {
       return StatefulWrapper(
           onInit: () => Future.delayed(DurationClass.ms150)
               .then((value) => settingCtrl.init()),
@@ -34,8 +35,11 @@ class SettingsScreen extends StatelessWidget {
                                                 cornerSmoothing: 1)))),
                                 child: Column(children: [
                                   //My wallet Balance layout
-                                  SettingScreenWidgets()
-                                      .myWalletLayout(context),
+                                  SettingScreenWidgets().myWalletLayout(
+                                    context,
+                                    userName: userProvider.userData?.name,
+                                    userEmail: userProvider.userData?.email,
+                                  ),
                                   //setting screen all data list layout
                                   const SettingListLayout()
                                 ]).padding(
@@ -44,7 +48,9 @@ class SettingsScreen extends StatelessWidget {
                                     bottom: Sizes.s50))
                             .paddingDirectional(vertical: Sizes.s70)),
                     //setting screen profile image layout
-                    SettingScreenWidgets().settingProfileImage()
+                    SettingScreenWidgets().settingProfileImage(
+                      photoUrl: userProvider.userData?.photoUrl,
+                    )
                   ]))));
     });
   }

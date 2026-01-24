@@ -19,56 +19,63 @@ class TextFieldLayout extends StatelessWidget {
                 controller: locationCtrl.streetCtrl,
                 hintText: appFonts.street,
                 icon: svgAssets.routing),
-            //common title
+            //common title (read-only, auto-filled from map)
             TextWidgetCommon(text: appFonts.country),
-            //country dropdown
-            CommonDropDownMenu(
-                    isSVG: false,
-                    svgIcon: svgAssets.global,
-                    value: locationCtrl.country,
-                    onChanged: (newValue) =>
-                        locationCtrl.countryChange(newValue),
-                    hintText: appFonts.country,
-                    itemsList: locationCtrl.countryDialogDropDownItems
-                        .map((item) => DropdownMenuItem<dynamic>(
-                            value: item['value'],
-                            child: TextWidgetCommon(text: item['label'])))
-                        .toList())
-                .padding(top: Sizes.s8, bottom: Sizes.s20),
-            //common title
+            //country dropdown (disabled - auto-filled from map)
+            IgnorePointer(
+                child: Opacity(
+                    opacity: 0.6,
+                    child: CommonDropDownMenu(
+                            isSVG: false,
+                            svgIcon: svgAssets.global,
+                            value: locationCtrl.country,
+                            onChanged: null,
+                            hintText: appFonts.country,
+                            itemsList: locationCtrl.countryDialogDropDownItems
+                                .map((item) => DropdownMenuItem<dynamic>(
+                                    value: item['value'],
+                                    child: TextWidgetCommon(text: item['label'])))
+                                .toList())
+                        .padding(top: Sizes.s8, bottom: Sizes.s20))),
+            //common title (read-only, auto-filled from map)
             TextWidgetCommon(text: appFonts.state),
-            //state dropdown
-            CommonDropDownMenu(
-                    isSVG: false,
-                    svgIcon: svgAssets.global,
-                    value: locationCtrl.state,
-                    onChanged: (newValue) => locationCtrl.stateChange(newValue),
-                    hintText: appFonts.state,
-                    itemsList: locationCtrl.dialogDropDownItems
-                        .map((item) => DropdownMenuItem<dynamic>(
-                            value: item['value'],
-                            child: TextWidgetCommon(text: item['label'])))
-                        .toList())
-                .padding(top: Sizes.s8, bottom: Sizes.s20),
+            //state dropdown (disabled - auto-filled from map)
+            IgnorePointer(
+                child: Opacity(
+                    opacity: 0.6,
+                    child: CommonDropDownMenu(
+                            isSVG: false,
+                            svgIcon: svgAssets.global,
+                            value: locationCtrl.state,
+                            onChanged: null,
+                            hintText: appFonts.state,
+                            itemsList: locationCtrl.dialogDropDownItems
+                                .map((item) => DropdownMenuItem<dynamic>(
+                                    value: item['value'],
+                                    child: TextWidgetCommon(text: item['label'])))
+                                .toList())
+                        .padding(top: Sizes.s8, bottom: Sizes.s20))),
             //common title and text-field layout
             LocationWidgets().commonTextFields(context,
                 title: appFonts.area,
                 controller: locationCtrl.areaCtrl,
                 hintText: appFonts.area,
                 icon: svgAssets.location),
-            //common title and text-field layout
+            //common title and text-field layout (read-only, auto-filled from map)
             LocationWidgets().commonTextFields(context,
                 title: appFonts.city,
                 controller: locationCtrl.cityCtrl,
                 hintText: appFonts.city,
-                icon: svgAssets.location),
-            //common title and text-field layout
+                icon: svgAssets.location,
+                readOnly: true),
+            //common title and text-field layout (read-only, auto-filled from map)
             LocationWidgets()
                 .commonTextFields(context,
                     title: appFonts.zip,
                     controller: locationCtrl.zipCtrl,
                     hintText: appFonts.zip,
-                    icon: svgAssets.gps)
+                    icon: svgAssets.gps,
+                    readOnly: true)
                 .padding(bottom: Insets.i40)
           ])
               .paddingOnly(bottom: Sizes.s30)

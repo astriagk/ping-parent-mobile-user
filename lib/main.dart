@@ -1,5 +1,8 @@
 import 'package:flutter/services.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/driver_provider.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/my_wallet_provider.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
 import 'config.dart';
 
 void main() async {
@@ -26,6 +29,7 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(
                       create: (_) => LanguageProvider(snapData.data!)),
                   ChangeNotifierProvider(create: (_) => CurrencyProvider()),
+                  ChangeNotifierProvider(create: (_) => UserProvider()),
                   ChangeNotifierProvider(create: (_) => SplashProvider()),
                   ChangeNotifierProvider(create: (_) => SignInProvider()),
                   ChangeNotifierProvider(create: (_) => OtpProvider()),
@@ -39,7 +43,6 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => PromoProvider()),
                   ChangeNotifierProvider(create: (_) => MyWalletProvider()),
                   ChangeNotifierProvider(create: (_) => SaveLocationProvider()),
-                  ChangeNotifierProvider(create: (_) => CurrencyProvider()),
                   ChangeNotifierProvider(create: (_) => AppSettingProvider()),
                   ChangeNotifierProvider(create: (_) => ChatProvider()),
                   ChangeNotifierProvider(create: (_) => DateTimeProvider()),
@@ -59,7 +62,10 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => MyRideScreenProvider()),
                   ChangeNotifierProvider(
                       create: (_) => CompletedRideProvider()),
-                  ChangeNotifierProvider(create: (_) => AcceptRideProvider())
+                  ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
+                  ChangeNotifierProvider(create: (_) => AddStudentProvider()),
+                  ChangeNotifierProvider(create: (_) => DriverProvider()),
+                  ChangeNotifierProvider(create: (_) => SubscriptionsProvider())
                 ],
                 child: Consumer<ThemeService>(builder: (context, theme, child) {
                   return Consumer<LanguageProvider>(
@@ -96,11 +102,7 @@ class MyApp extends StatelessWidget {
                     darkTheme: AppTheme.fromType(ThemeType.dark).themeData,
                     themeMode: ThemeMode.light,
                     debugShowCheckedModeBanner: false,
-                    home: const Scaffold(
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    )));
+                    home: const SplashLayout()));
           }
         });
   }

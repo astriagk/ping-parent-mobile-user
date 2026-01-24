@@ -1,5 +1,7 @@
 import 'package:taxify_user_ui/config.dart';
 
+import 'layout/maps_explorer_layout.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -14,16 +16,16 @@ class HomeScreen extends StatelessWidget {
               }),
           child: Scaffold(
               body: ListView(padding: EdgeInsets.zero, children: [
-            const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //card layout
-                  CardLayout(),
-                  // top categories layout
-                  TopCategories(),
-                  //today's offer layout
-                  TodayOfferLayout()
-                ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              //card layout
+              CardLayout(),
+              // top categories layout
+              TopCategories(),
+              // maps explorer layout
+              MapsExplorerLayout(),
+              //today's offer layout
+              TodayOfferLayout()
+            ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
           ])));
     });
   }

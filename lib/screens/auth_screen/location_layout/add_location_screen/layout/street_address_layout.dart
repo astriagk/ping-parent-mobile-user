@@ -31,21 +31,12 @@ class StreetAddressLayout extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                 TextWidgetCommon(
-                                    text: locationCtrl.currentAddress ?? "",
+                                    text: locationCtrl.formattedAddress,
                                     textAlign: TextAlign.start,
                                     style: AppCss.lexendSemiBold14
                                         .textColor(
                                             appColor(context).appTheme.darkText)
                                         .textHeight(1.2)),
-                                VSpace(Sizes.s8),
-                                TextWidgetCommon(
-                                    text: locationCtrl.street ?? "",
-                                    textAlign: TextAlign.start,
-                                    style: AppCss.lexendRegular14
-                                        .textColor(appColor(context)
-                                            .appTheme
-                                            .lightText)
-                                        .textHeight(1.2))
                               ]))
                         ])
                         .padding(vertical: Sizes.s20, horizontal: Sizes.s20)

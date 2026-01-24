@@ -11,10 +11,16 @@ class AppFonts {
   final french = "french";
   final spanish = "spanish";
 
+  final available = 'Available';
+  final unavailable = 'Unavailable';
+
+  final retry = 'Retry';
+
   // auth screen
   final home = "Home";
   final category = "Category";
   final myRides = "My Rides";
+  final mySubscriptions = "Subscriptions";
   final settings = "Settings";
   final createYourAccount = "Create Your Account";
   final exploreYourLife = "Explore Your Life By Joining With Ride.";
@@ -59,6 +65,8 @@ class AppFonts {
   final continueBtn = "Continue";
   final bookSuccessfully = "Booking Successfully";
   final noInternet = "No Internet";
+  final somethingWentWrong = "Something Went Wrong";
+  final tryAgain = "Try Again";
 
   //notification
   final notification = "Notifications";
@@ -72,7 +80,7 @@ class AppFonts {
   final off = "30% off";
   final rating = "4.5";
   final validTill = "Valid Till";
-  final topCategories = "Top Categories";
+  final topCategories = "Get Started";
   final addNewLocation = "Add New Location";
   final searchDestinations = "Search Destinations";
   final dateTimeSchedule = "Date Time Schedule";
@@ -91,6 +99,61 @@ class AppFonts {
   final terms = "Terms";
   final auto = "Auto";
   final bike = "Bike";
+
+  // add student screen
+  final addStudent = "Add Student";
+  final studentList = "Student List";
+  final noStudentsAdded = "No Students Added Yet.";
+  final addYourFirstStudent =
+      "Add your first student to start tracking their school transportation";
+  final studentName = "Student Name";
+  final enterStudentName = "Enter Student Name";
+  final schoolName = "School Name";
+  final enterSchoolName = "Enter School Name";
+  final pickupAddress = "Pickup Address";
+  final enterPickupAddress = "Enter Pickup Address";
+  final saveStudent = "Save Student";
+  final updateStudent = "Update Student";
+  final studentClass = "Class";
+  final selectClass = "Select Class";
+  final section = "Section";
+  final enterSection = "Enter Section";
+  final rollNumber = "Roll Number";
+  final enterRollNumber = "Enter Roll Number";
+  final gender = "Gender";
+  final selectGender = "Select Gender";
+  final dateOfBirth = "Date of Birth";
+  final enterDateOfBirth = "Enter Date of Birth";
+  final hintDateOfBirth = "DD/MM/YYYY";
+  final emergencyContact = "Emergency Contact";
+  final enterEmergencyContact = "Enter Emergency Contact";
+  final medicalInfo = "Medical Info";
+  final enterMedicalInfo = "Enter Medical Info";
+  final addStudentPhoto = "Add Student Photo";
+  final selectPhoto = "Select Photo";
+  final openCamera = "Open Camera";
+  final selectFromGallery = "Select From Gallery";
+  final studentUpdatedSuccessfully = "Student updated successfully";
+  final studentCreatedSuccessfully = "Student created successfully";
+
+  // assign driver screen
+  final assignDriver = "Assign Driver";
+  final pleaseSelectStudentFirst =
+      "Please select a student first from the student list";
+  final driverIdNotAvailable = 'Driver ID not available';
+  final confirmAssignDriver =
+      "Are you sure you want to assign this driver to this student?";
+  final driverAssignedSuccessfully = 'Driver assigned successfully';
+  final failedToAssignDriver = 'Failed to assign driver';
+  final searchByNameIdOrEmail = 'Search by name, ID, or email';
+  final searchForDriverByNameIdOrEmail =
+      'Search for a driver by name, ID, or email';
+
+  // subscription management screen
+  final subscriptionManagement = "Subscription Management";
+  final noSubscriptionPlansAvailable = "No subscription plans available";
+  final noSubscriptionPlansDescription =
+      "There are no subscription plans at the moment. Please check back later.";
 
   //setting screen
   final general = "General";
@@ -122,12 +185,13 @@ class AppFonts {
   final swiftHint = "DBSSINBB";
   final update = "Update";
   final updateProfile = "Update Profile";
+  final updatingProfile = "Updating Profile...";
   final profileSetting = "Profile Setting";
   final homeWasYourRide = "How was your ride?";
   final appSettings = "App Settings";
   final rtl = "RTL";
-  final jonathanHiggins = "Jonathan Higgins";
-  final userMail = "zaindorwart12@gmail.com";
+  final yourName = "Your Name";
+  final yourEmail = "Your Email";
   final myWalletBalance = "My Wallet Balance";
   final walletValue = "156.23";
   final online = "Online";

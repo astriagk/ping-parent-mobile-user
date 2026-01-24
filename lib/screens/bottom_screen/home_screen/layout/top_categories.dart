@@ -1,4 +1,7 @@
+import 'package:taxify_user_ui/screens/open_free_maps/ofm_examples_menu.dart';
+
 import '../../../../config.dart';
+import '../../../maps/maps_examples_menu.dart';
 
 class TopCategories extends StatelessWidget {
   const TopCategories({super.key});
@@ -38,14 +41,23 @@ class TopCategories extends StatelessWidget {
                                 ])).inkWell(onTap: () {
                           if (e.key == 0) {
                             route.pushNamed(
-                                context, routeName.searchLocationScreen);
+                                context, routeName.studentListScreen);
                           }
                           if (e.key == 1) {
-                            route.pushNamed(
-                                context, routeName.outStationScreen);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MapsExamplesMenu()),
+                            );
                           }
                           if (e.key == 2) {
-                            route.pushNamed(context, routeName.rentalScreen);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const OFMExamplesMenu()),
+                            );
                           }
                         }))
                     .toList())

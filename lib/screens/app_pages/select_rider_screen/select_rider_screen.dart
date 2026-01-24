@@ -11,7 +11,7 @@ class SelectRiderScreen extends StatelessWidget {
               .then((value) => riderCtrl.onInit()),
           child: Scaffold(
               body: Stack(children: [
-            AddLocationWidgets().googleMapLayout(),
+            AddLocationWidgets().mapLayout(),
             CommonIconButton(
                 icon: svgAssets.back,
                 onTap: () => riderCtrl.isInfo

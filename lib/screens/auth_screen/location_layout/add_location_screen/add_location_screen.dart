@@ -10,15 +10,14 @@ class AddLocationScreen extends StatelessWidget {
       return StatefulWrapper(
           onInit: () =>
               Future.delayed(const Duration(milliseconds: 50)).then((value) {
-                locationCtrl.onInit();
+                locationCtrl.getCurrentLocation();
               }),
           child: Scaffold(
               body: Stack(children: [
-            // VSpace(Sizes.s10),
             if (locationCtrl.position != null)
               SizedBox(
                   child: Stack(children: [
-                AddLocationWidgets().googleMapLayout(),
+                AddLocationWidgets().mapLayout(),
                 CommonIconButton(
                         icon: svgAssets.back,
                         bgColor: appColor(context).appTheme.white,

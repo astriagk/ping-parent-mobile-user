@@ -2,15 +2,15 @@ import '../../../../config.dart';
 
 class SettingScreenWidgets {
   //My wallet Balance layout
-  Widget myWalletLayout(context) {
+  Widget myWalletLayout(context, {String? userName, String? userEmail}) {
     return Column(children: [
       TextWidgetCommon(
-          text: appFonts.jonathanHiggins,
+          text: userName ?? appFonts.yourName,
           style: AppCss.lexendRegular14
               .textColor(appColor(context).appTheme.darkText)),
       VSpace(Sizes.s5),
       TextWidgetCommon(
-          text: appFonts.userMail,
+          text: userEmail ?? appFonts.yourEmail,
           style: AppCss.lexendMedium12
               .textColor(appColor(context).appTheme.lightText)),
       Column(children: [
@@ -88,9 +88,22 @@ class SettingScreenWidgets {
       .padding(vertical: Sizes.s12);
 
   //setting screen profile image layout
-  Widget settingProfileImage() => Align(
-          alignment: Alignment.topCenter,
-          child: Image.asset(imageAssets.profileImg,
-              height: Sizes.s82, width: Sizes.s82))
-      .padding(top: Sizes.s30);
+  Widget settingProfileImage({String? photoUrl}) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: photoUrl != null && photoUrl.isNotEmpty
+          ? Image.network(
+              photoUrl,
+              height: Sizes.s82,
+              width: Sizes.s82,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(imageAssets.profileImg,
+                    height: Sizes.s82, width: Sizes.s82);
+              },
+            ).clipRRect(all: Sizes.s41)
+          : Image.asset(imageAssets.profileImg,
+              height: Sizes.s82, width: Sizes.s82),
+    ).padding(top: Sizes.s30);
+  }
 }

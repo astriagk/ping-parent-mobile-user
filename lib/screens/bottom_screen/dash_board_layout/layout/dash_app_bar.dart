@@ -116,7 +116,7 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 text: dashCtrl.currentTab == 1
                                     ? "Categories"
                                     : dashCtrl.currentTab == 2
-                                        ? "MyRide"
+                                        ? appFonts.mySubscriptions
                                         : "Settings",
                                 style: AppCss.lexendBold20.textColor(
                                     appColor(context).appTheme.darkText)),

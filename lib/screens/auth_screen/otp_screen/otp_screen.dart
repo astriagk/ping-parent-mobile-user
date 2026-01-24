@@ -2,7 +2,7 @@ import '../../../config.dart';
 import '../../../api/services/auth_service.dart';
 import '../../../api/api_client.dart';
 import '../../../api/models/verify_otp_response.dart';
-import '../../../helper/auth_helper.dart';
+import '../../../provider/app_pages_providers/user_provider.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -37,19 +37,13 @@ class _OtpScreenState extends State<OtpScreen> {
 
       if (!mounted) return;
 
-      // Clear OTP input
-      final otpProvider = Provider.of<OtpProvider>(context, listen: false);
-
       if (response.success) {
-        // Save authentication data
-        if (response.token != null && response.user != null) {
-          await AuthHelper.saveAuthData(
-            token: response.token!,
-            user: response.user!,
-          );
-        }
+        // Authentication data is already saved by AuthService._saveUserSession()
 
         if (!mounted) return;
+
+        // Fetch user profile and store in global state
+        await context.read<UserProvider>().fetchUserProfile();
 
         // Clear OTP input
         otpCtrl.pinController.text = "";

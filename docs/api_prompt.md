@@ -1,97 +1,298 @@
 # API Integration Prompt Guide
 
-Use this document to provide details for new or existing API endpoints. Based on your input, the integration code will be generated or updated in the appropriate files.
-
-## How to Use
-
-1. Copy the template below for each API you want to add or update.
-2. Fill in the details for endpoint, request, response, and error.
-3. Save the file. The automation will use this information to update your codebase.
+Use this document to define new API endpoints. An AI agent will use this information to generate all necessary integration code following the project's existing patterns.
 
 ---
 
-## API Integration Template
+## Project Architecture Summary
 
-### Endpoint Name
+This project follows a **Service-Provider-Model** pattern:
 
-`<A short, descriptive name for the endpoint>`
+```
+lib/api/
+├── endpoints.dart              # URL definitions
+├── models/                     # Response & Request models
+├── services/                   # API service classes
+└── interfaces/                 # Service contracts
 
-### Endpoint URL
-
-`<The full URL or path for the endpoint>`
-
-### HTTP Method
-
-`GET | POST | PUT | DELETE | PATCH`
-
-### Request Payload (JSON)
-
-```json
-{
-  // Example request body
-}
+lib/provider/
+└── app_pages_providers/        # State management with ChangeNotifier
 ```
 
-### Response Example (JSON)
+**Key Patterns:**
 
-```json
-{
-  // Example response body
-}
-```
-
-### Error Example (JSON)
-
-```json
-{
-  // Example error response
-}
-```
-
-### Notes
-
-- Any special notes or requirements for this endpoint.
+- JSON field mapping: API uses `snake_case`, Dart models use `camelCase`
+- MongoDB ObjectId: mapped from `_id` to `id`
+- All responses have: `success`, `data`, `message`, `error` fields
+- Services use `ApiClient` for HTTP requests with automatic auth token injection
+- Providers call services and manage UI state with `notifyListeners()`
 
 ---
 
-## Example
+## API Definition Template
 
-### Endpoint Name
+Copy and fill this template for each new endpoint:
 
-Get User Profile
+```yaml
+ENDPOINT_NAME:
+HTTP_METHOD: GET | POST | PUT | PATCH | DELETE
+URL_PATH:
+REQUIRES_AUTH: true | false
 
-### Endpoint URL
+URL_PARAMS:
 
-https://api.example.com/user/profile
+REQUEST_PAYLOAD:
 
-### HTTP Method
+RESPONSE_PAYLOAD:
 
-GET
+SUCCESS_RESPONSE_EXAMPLE:
 
-### Request Payload (JSON)
+ERROR_RESPONSE_EXAMPLE:
 
-```json
-{}
+SERVICE_FILE: existing:<name> | new:<name>
+PROVIDER_FILE: existing:<name> | new:<name>
+
+NOTES:
 ```
 
-### Response Example (JSON)
+---
 
-```json
-{
-  "id": "123",
-  "name": "John Doe",
-  "status": "active"
+## Files to Generate/Update
+
+When processing an API definition, the AI should:
+
+1. **Endpoint** (`lib/api/endpoints.dart`)
+
+   - Add new endpoint URL constant or static method
+
+2. **Response Model** (`lib/api/models/<name>_response.dart`)
+
+   - Create response class with `fromJson()` factory
+   - Create nested model classes if needed
+
+3. **Request Model** (`lib/api/models/<name>_request.dart`) - if POST/PUT/PATCH
+
+   - Create request class with `toJson()` method
+   - Only include non-null optional fields
+
+4. **Service Interface** (`lib/api/interfaces/<name>_service_interface.dart`)
+
+   - Add method signature or create new interface
+
+5. **Service** (`lib/api/services/<name>_service.dart`)
+
+   - Implement the API call method
+   - Use `_handleMutationResponse()` for POST/PUT/PATCH/DELETE
+
+6. **Provider** (`lib/provider/app_pages_providers/<name>_provider.dart`)
+   - Add state variables, loading flags
+   - Implement fetch/create/update methods
+   - Call `notifyListeners()` after state changes
+
+---
+
+## Code Generation Patterns
+
+### Endpoint Definition
+
+```dart
+// Static URL
+static const String myStudents = '$baseUrl/students/my-students';
+
+// Dynamic URL with parameter
+static String updateStudent(String id) => '$baseUrl/students/$id';
+```
+
+### Response Model
+
+```dart
+class DriverListResponse {
+  final bool success;
+  final List<Driver> data;
+  final String? message;
+
+  DriverListResponse({required this.success, required this.data, this.message});
+
+  factory DriverListResponse.fromJson(Map<String, dynamic> json) {
+    return DriverListResponse(
+      success: json['success'] ?? false,
+      data: json['data'] != null
+          ? (json['data'] as List).map((e) => Driver.fromJson(e)).toList()
+          : [],
+      message: json['message'],
+    );
+  }
 }
 ```
 
-### Error Example (JSON)
+### Service Method
 
-```json
-{
-  "error": "User not found"
+```dart
+// GET request
+Future<DriverListResponse> getAssignedDrivers() async {
+  final response = await _apiClient.get(Endpoints.assignedDrivers);
+  return DriverListResponse.fromJson(jsonDecode(response.body));
+}
+
+// POST request
+Future<Map<String, dynamic>> assignDriver(Map<String, dynamic> data) async {
+  final response = await _apiClient.post(
+    Endpoints.assignDriver,
+    headers: _jsonHeaders,
+    body: jsonEncode(data),
+  );
+  return _handleMutationResponse(
+    response, 'Driver assigned successfully', 'Failed to assign driver'
+  );
 }
 ```
 
-### Notes
+### Provider Method
 
-- Requires authentication token in headers.
+```dart
+List<Driver> driverList = [];
+bool isLoading = false;
+String? errorMessage;
+
+Future<void> fetchDrivers() async {
+  isLoading = true;
+  errorMessage = null;
+  notifyListeners();
+
+  try {
+    final driverService = DriverService(ApiClient());
+    final response = await driverService.getAssignedDrivers();
+
+    if (response.success) {
+      driverList = response.data;
+    } else {
+      errorMessage = response.message ?? 'Failed to fetch drivers';
+    }
+  } catch (e) {
+    errorMessage = 'An error occurred. Please try again.';
+  }
+
+  isLoading = false;
+  notifyListeners();
+}
+```
+
+---
+
+## Usage in Screens
+
+### 1. Register Provider in main.dart
+
+```dart
+MultiProvider(
+  providers: [
+    // ... existing providers
+    ChangeNotifierProvider(create: (_) => DriverProvider()),
+  ],
+  child: MyApp(),
+)
+```
+
+### 2. Screen with Consumer Pattern
+
+```dart
+class DriverListScreen extends StatelessWidget {
+  const DriverListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DriverProvider>(
+      builder: (context, driverCtrl, child) {
+        return StatefulWrapper(
+          onInit: () => Future.delayed(DurationClass.ms150)
+              .then((value) => driverCtrl.onInit()),
+          child: Scaffold(
+            appBar: CommonAppBarLayout1(title: 'Drivers'),
+            body: driverCtrl.isLoading
+                ? const LoadingSkeleton()
+                : driverCtrl.errorMessage != null
+                    ? CommonErrorState(
+                        title: appFonts.somethingWentWrong,
+                        description: driverCtrl.errorMessage!,
+                        onButtonTap: () => driverCtrl.fetchDrivers(),
+                      )
+                    : driverCtrl.driverList.isEmpty
+                        ? CommonEmptyState(mainText: 'No drivers found')
+                        : ListView.builder(
+                            itemCount: driverCtrl.driverList.length,
+                            itemBuilder: (context, index) {
+                              final driver = driverCtrl.driverList[index];
+                              return _buildDriverCard(context, driver);
+                            },
+                          ),
+          ),
+        );
+      },
+    );
+  }
+}
+```
+
+### 3. Access Provider Without Rebuild
+
+```dart
+// Read once (doesn't listen for changes)
+final driverCtrl = context.read<DriverProvider>();
+driverCtrl.fetchDrivers();
+
+// Watch for changes (rebuilds on change)
+final driverList = context.watch<DriverProvider>().driverList;
+```
+
+### 4. Call Provider Method on Button Tap
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    final provider = context.read<DriverProvider>();
+    final success = await provider.assignDriver(driverId, studentId);
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Driver assigned successfully')),
+      );
+    }
+  },
+  child: Text('Assign Driver'),
+)
+```
+
+### 5. Navigate and Refresh on Return
+
+```dart
+onTap: () async {
+  await route.pushNamed(context, routeName.editDriverScreen);
+  // Refresh list when returning
+  context.read<DriverProvider>().fetchDrivers();
+}
+```
+
+---
+
+## Your API Definitions Below
+
+```yaml
+ENDPOINT_NAME:
+HTTP_METHOD:
+URL_PATH:
+REQUIRES_AUTH:
+
+URL_PARAMS:
+
+REQUEST_PAYLOAD:
+
+RESPONSE_PAYLOAD:
+
+SUCCESS_RESPONSE_EXAMPLE:
+
+ERROR_RESPONSE_EXAMPLE:
+
+SERVICE_FILE:
+PROVIDER_FILE:
+
+NOTES:
+```

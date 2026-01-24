@@ -7,7 +7,8 @@ class LocationWidgets {
       String? hintText,
       String? icon,
       TextEditingController? controller,
-      bool? prefixIcon}) {
+      bool? prefixIcon,
+      bool readOnly = false}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       TextWidgetCommon(
           text: title,
@@ -16,6 +17,7 @@ class LocationWidgets {
       TextFieldCommon(
               controller: controller,
               hintText: hintText,
+              readOnly: readOnly,
               prefixIcon: prefixIcon != true
                   ? SvgPicture.asset("$icon", fit: BoxFit.scaleDown)
                   : const SizedBox.shrink())
@@ -51,7 +53,7 @@ class LocationWidgets {
                       allRadius: Sizes.s8,
                       color: appColor(context).appTheme.white)
                   .inkWell(
-                      onTap: () => locationCtrl.currentLocation()))).padding(
+                      onTap: () => locationCtrl.getCurrentLocation()))).padding(
           bottom: Sizes.s20, horizontal: Sizes.s20);
     });
   }
