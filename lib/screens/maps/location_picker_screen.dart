@@ -1,5 +1,5 @@
 import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
-import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+import 'package:taxify_user_ui/widgets/map_common/markers.dart';
 
 import '../../config.dart';
 
@@ -122,7 +122,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     OSMTileLayer(),
                     MarkerLayer(
                       markers: [
-                        MapMarkers.currentLocationMarker(_selectedLocation, context),
+                        MapMarkers.currentLocationMarker(
+                            _selectedLocation, context),
                       ],
                     ),
                   ],

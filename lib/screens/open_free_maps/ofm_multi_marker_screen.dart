@@ -160,7 +160,7 @@ class _OFMMultiMarkerScreenState extends State<OFMMultiMarkerScreen> {
       ..._pickupLocations.map((loc) => loc.latLng),
       _dropLocation.latLng,
     ];
-    OFMUtils.fitBounds(_mapController, allPoints);
+    MapUtils.fitBounds(_mapController, allPoints);
   }
 
   @override
@@ -195,11 +195,12 @@ class _OFMMultiMarkerScreenState extends State<OFMMultiMarkerScreen> {
               // Polyline connecting all locations
               PolylineLayer(
                 polylines: [
-                  OFMPolylines.activeRoute(
+                  MapPolylines.activeRoute(
                     [
                       ..._pickupLocations.map((loc) => loc.latLng),
                       _dropLocation.latLng,
                     ],
+                    context,
                   ),
                 ],
               ),
@@ -210,16 +211,18 @@ class _OFMMultiMarkerScreenState extends State<OFMMultiMarkerScreen> {
                   ..._pickupLocations.asMap().entries.map((entry) {
                     int index = entry.key;
                     OFMLocation loc = entry.value;
-                    return OFMMarkers.numberedMarker(
+                    return MapMarkers.numberedMarker(
                       loc.latLng,
+                      context,
                       number: index + 1,
                       color: Colors.green.shade700,
                       onTap: () => _onMarkerTap(index),
                     );
                   }),
                   // Drop marker
-                  OFMMarkers.dropMarker(
+                  MapMarkers.dropMarker(
                     _dropLocation.latLng,
+                    context,
                     onTap: _onDropMarkerTap,
                   ),
                 ],

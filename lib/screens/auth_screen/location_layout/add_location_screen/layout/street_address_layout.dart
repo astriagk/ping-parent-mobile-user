@@ -7,7 +7,6 @@ class StreetAddressLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AddLocationProvider>(
         builder: (context, locationCtrl, child) {
-      print("address===>${locationCtrl.formattedAddress}");
       return Align(
           alignment: Alignment.bottomCenter,
           child: Container(

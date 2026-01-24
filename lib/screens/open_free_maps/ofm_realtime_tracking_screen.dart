@@ -207,16 +207,17 @@ class _OFMRealtimeTrackingScreenState extends State<OFMRealtimeTrackingScreen> {
                         if (_routePath.length > 1)
                           PolylineLayer(
                             polylines: [
-                              OFMPolylines.activeRoute(
+                              MapPolylines.activeRoute(
                                 _routePath,
-                                strokeWidth: 5,
+                                context,
                               ),
                             ],
                           ),
                         // Current location marker
                         MarkerLayer(
                           markers: [
-                            OFMMarkers.currentLocationMarker(_currentLocation!),
+                            MapMarkers.currentLocationMarker(
+                                _currentLocation!, context),
                           ],
                         ),
                       ],
@@ -238,12 +239,12 @@ class _OFMRealtimeTrackingScreenState extends State<OFMRealtimeTrackingScreen> {
                             children: [
                               _buildStatItem(
                                 Icons.straighten,
-                                OFMUtils.formatDistance(_totalDistance),
+                                MapUtils.formatDistance(_totalDistance),
                                 'Distance',
                               ),
                               _buildStatItem(
                                 Icons.speed,
-                                OFMUtils.formatSpeed(_currentSpeed),
+                                MapUtils.formatSpeed(_currentSpeed),
                                 'Speed',
                               ),
                               _buildStatItem(

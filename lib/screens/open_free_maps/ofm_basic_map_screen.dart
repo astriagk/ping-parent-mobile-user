@@ -226,7 +226,7 @@ class _OFMBasicMapScreenState extends State<OFMBasicMapScreen> {
             if (_currentLocation != null)
               MarkerLayer(
                 markers: [
-                  OFMMarkers.currentLocationMarker(_currentLocation!),
+                  MapMarkers.currentLocationMarker(_currentLocation!, context),
                 ],
               ),
           ],
@@ -264,7 +264,7 @@ class _OFMBasicMapScreenState extends State<OFMBasicMapScreen> {
           ),
         ),
         // Map controls
-        OFMMapControls(
+        MapControls(
           onZoomIn: () {
             final zoom = _mapController.camera.zoom;
             _mapController.move(_mapController.camera.center, zoom + 1);

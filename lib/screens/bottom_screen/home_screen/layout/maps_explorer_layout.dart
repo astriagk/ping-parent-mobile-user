@@ -72,7 +72,7 @@ class MapsExplorerLayout extends StatelessWidget {
               _buildMapCard(
                 context,
                 title: "TomTom",
-                subtitle: "2 screens",
+                subtitle: "6 screens",
                 icon: Icons.explore_outlined,
                 color: Colors.blue,
                 badge: "Premium",

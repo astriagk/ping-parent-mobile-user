@@ -83,7 +83,7 @@ class _OFMRoutePlanningScreenState extends State<OFMRoutePlanningScreen> {
           _routeInfo = route;
         });
         if (_mapReady) {
-          OFMUtils.fitBounds(_mapController, _waypoints);
+          MapUtils.fitBounds(_mapController, _waypoints);
         }
       } else {
         if (mounted) {
@@ -131,7 +131,7 @@ class _OFMRoutePlanningScreenState extends State<OFMRoutePlanningScreen> {
         });
 
         if (_mapReady) {
-          OFMUtils.fitBounds(_mapController, _waypoints);
+          MapUtils.fitBounds(_mapController, _waypoints);
         }
 
         if (mounted) {
@@ -309,14 +309,9 @@ class _OFMRoutePlanningScreenState extends State<OFMRoutePlanningScreen> {
                     if (_routePoints.isNotEmpty)
                       PolylineLayer(
                         polylines: [
-                          OFMPolylines.activeRoute(
+                          MapPolylines.activeRoute(
                             _routePoints,
-                            color: _selectedProfile == OFMRouteProfile.walking
-                                ? Colors.orange
-                                : _selectedProfile == OFMRouteProfile.cycling
-                                    ? Colors.green
-                                    : Colors.blue,
-                            strokeWidth: 5,
+                            context,
                           ),
                         ],
                       ),
@@ -330,20 +325,23 @@ class _OFMRoutePlanningScreenState extends State<OFMRoutePlanningScreen> {
                           final isLast = index == _waypoints.length - 1;
 
                           if (isFirst) {
-                            return OFMMarkers.pickupMarker(
+                            return MapMarkers.pickupMarker(
                               point,
+                              context,
                               label: 'Start',
                               onTap: () => _showWaypointOptions(index),
                             );
                           } else if (isLast && _waypoints.length > 1) {
-                            return OFMMarkers.dropMarker(
+                            return MapMarkers.dropMarker(
                               point,
+                              context,
                               label: 'End',
                               onTap: () => _showWaypointOptions(index),
                             );
                           } else {
-                            return OFMMarkers.numberedMarker(
+                            return MapMarkers.numberedMarker(
                               point,
+                              context,
                               number: index + 1,
                               color: Colors.blue,
                               onTap: () => _showWaypointOptions(index),

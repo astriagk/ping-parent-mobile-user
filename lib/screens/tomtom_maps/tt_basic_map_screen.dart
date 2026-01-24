@@ -225,7 +225,7 @@ class _TTBasicMapScreenState extends State<TTBasicMapScreen> {
             if (_currentLocation != null)
               MarkerLayer(
                 markers: [
-                  TTMarkers.currentLocationMarker(_currentLocation!),
+                  MapMarkers.currentLocationMarker(_currentLocation!, context),
                 ],
               ),
           ],
@@ -263,7 +263,7 @@ class _TTBasicMapScreenState extends State<TTBasicMapScreen> {
           ),
         ),
         // Map controls
-        TTMapControls(
+        MapControls(
           onZoomIn: () {
             final zoom = _mapController.camera.zoom;
             _mapController.move(_mapController.camera.center, zoom + 1);

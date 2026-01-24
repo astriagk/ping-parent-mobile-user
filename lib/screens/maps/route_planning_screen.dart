@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
-import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+import 'package:taxify_user_ui/widgets/map_common/markers.dart';
 import '../../config.dart';
 
 /// Route planning with OSRM (Open Source Routing Machine)

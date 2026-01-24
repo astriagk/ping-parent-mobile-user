@@ -17,6 +17,10 @@ import '../open_free_maps/ofm_route_planning_screen.dart';
 // TomTom Maps (Premium maps)
 import '../tomtom_maps/tt_basic_map_screen.dart';
 import '../tomtom_maps/tt_location_picker_screen.dart';
+import '../tomtom_maps/tt_traffic_flow_screen.dart';
+import '../tomtom_maps/tt_traffic_incidents_screen.dart';
+import '../tomtom_maps/tt_advanced_routing_screen.dart';
+import '../tomtom_maps/tt_poi_search_screen.dart';
 
 /// Maps Explorer Screen
 /// Shows all available map providers and their features
@@ -216,8 +220,9 @@ class MapsExplorerScreen extends StatelessWidget {
             features: [
               'High-quality map tiles',
               'Real-time traffic data',
-              'Turn-by-turn navigation',
-              'Search & geocoding API',
+              'Traffic incidents',
+              'Advanced routing',
+              'POI search',
             ],
             maps: [
               _MapItem(
@@ -251,6 +256,50 @@ class MapsExplorerScreen extends StatelessWidget {
                     );
                   }
                 },
+              ),
+              _MapItem(
+                title: 'Traffic Flow',
+                description: 'Real-time traffic visualization',
+                icon: Icons.traffic,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TTTrafficFlowScreen(),
+                  ),
+                ),
+              ),
+              _MapItem(
+                title: 'Traffic Incidents',
+                description: 'Accidents, road closures & alerts',
+                icon: Icons.warning_amber,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TTTrafficIncidentsScreen(),
+                  ),
+                ),
+              ),
+              _MapItem(
+                title: 'Advanced Routing',
+                description: 'Traffic-aware with alternatives',
+                icon: Icons.route,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TTAdvancedRoutingScreen(),
+                  ),
+                ),
+              ),
+              _MapItem(
+                title: 'POI Search',
+                description: 'Search restaurants, gas stations & more',
+                icon: Icons.search,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TTPoiSearchScreen(),
+                  ),
+                ),
               ),
             ],
           ),
@@ -305,7 +354,7 @@ class MapsExplorerScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '3 providers with 12 map examples',
+                    '3 providers with 16 map examples',
                     style: TextStyle(
                       color: Colors.blue.shade700,
                       fontSize: 13,
@@ -542,7 +591,7 @@ class MapsExplorerScreen extends StatelessWidget {
                 _buildTableRow('Tiles', 'Basic', 'Good', 'Premium'),
                 _buildTableRow('Traffic', 'No', 'No', 'Yes'),
                 _buildTableRow('Routing', 'OSRM', 'OSRM', 'TomTom'),
-                _buildTableRow('Screens', '5', '5', '2'),
+                _buildTableRow('Screens', '5', '5', '6'),
               ],
             ),
           ],
