@@ -273,7 +273,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
         driverName: driver.name,
         rating: (driver.rating != null && driver.rating! > 0)
             ? driver.rating!.toStringAsFixed(1)
-            : null,
+            : '',
         userRatingNumber: ' (${driver.totalTrips ?? 0})',
         carName:
             '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
