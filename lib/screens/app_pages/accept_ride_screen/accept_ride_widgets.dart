@@ -1,15 +1,25 @@
 import 'package:taxify_user_ui/config.dart';
+import 'dart:convert';
 
 class AcceptRideWidgets {
   driverDetailsAndOtp() =>
       Consumer<AcceptRideProvider>(builder: (context, acceptCtrl, child) {
+        final acceptCtrlData = {
+          'driverProfile': acceptCtrl.driverProfile,
+          'isPayment': acceptCtrl.isPayment,
+          'isRetry': acceptCtrl.isRetry,
+          'isDrag': acceptCtrl.isDrag,
+        };
+        print('acceptCtrl JSON: ${jsonEncode(acceptCtrlData)}');
         return StatefulWrapper(
             onInit: () => Future.delayed(DurationClass.ms150)
                 .then((value) => acceptCtrl.getArgument(context)),
             child: Column(children: [
               Row(children: [
-                Image.asset("${acceptCtrl.driverProfile ?? ""}",
-                    height: Sizes.s46, width: Sizes.s46),
+                Image.asset(
+                    "${acceptCtrl.driverProfile ?? imageAssets.profileImg}",
+                    height: Sizes.s46,
+                    width: Sizes.s46),
                 HSpace(Sizes.s8),
                 Expanded(
                     child: Row(
@@ -19,7 +29,7 @@ class AcceptRideWidgets {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(children: [
-                              TextWidgetCommon(text: acceptCtrl.driverName),
+                              TextWidgetCommon(text: 'Driver Name'),
                               HSpace(Sizes.s4),
                               SvgPicture.asset(svgAssets.infoCircle).inkWell(
                                   onTap: () => route.pushNamed(
@@ -32,9 +42,9 @@ class AcceptRideWidgets {
                                   Row(children: [
                                     SvgPicture.asset(svgAssets.star),
                                     HSpace(Sizes.s6),
-                                    TextWidgetCommon(text: acceptCtrl.rating),
+                                    TextWidgetCommon(text: '4.5'),
                                     TextWidgetCommon(
-                                        text: acceptCtrl.userRatingNumber,
+                                        text: '(120)',
                                         color: appColor(context)
                                             .appTheme
                                             .lightText)
@@ -76,7 +86,7 @@ class AcceptRideWidgets {
                         children: [
                           Row(children: [
                             TextWidgetCommon(
-                                text: acceptCtrl.code,
+                                text: 'CLMV069',
                                 fontSize: Sizes.s18,
                                 fontWeight: FontWeight.w600),
                             HSpace(Sizes.s6),
@@ -84,7 +94,7 @@ class AcceptRideWidgets {
                           ]),
                           VSpace(Sizes.s4),
                           TextWidgetCommon(
-                              text: acceptCtrl.carName,
+                              text: 'Car Name',
                               fontWeight: FontWeight.w400,
                               fontSize: Sizes.s14)
                         ]),

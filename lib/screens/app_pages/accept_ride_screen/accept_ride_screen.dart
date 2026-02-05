@@ -5,13 +5,24 @@ class AcceptRideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<AcceptRideProvider, CancelRideProvider,
-            SelectRiderProvider>(
-        builder: (context1, acceptCtrl, cancelCtrl, rideCtrl, child) {
+    return Consumer4<AcceptRideProvider, CancelRideProvider,
+            SelectRiderProvider, TripTrackingProvider>(
+        builder: (context1, acceptCtrl, cancelCtrl, rideCtrl, tripTrackingCtrl,
+            child) {
       return StatefulWrapper(
           onInit: () => Future.delayed(DurationClass.ms150).then((value) {
                 acceptCtrl.getArgument(context);
                 rideCtrl.onInit();
+
+                // Initialize trip tracking and subscribe to WebSocket events
+                tripTrackingCtrl.init();
+                print(
+                    '═══════════════════════════════════════════════════════');
+                print('🎯 [ACCEPT RIDE SCREEN] Initialized Trip Tracking');
+                print(
+                    '   Active Trips: ${tripTrackingCtrl.activeTrips.length}');
+                print(
+                    '═══════════════════════════════════════════════════════');
               }),
           child: Scaffold(
               body: Stack(children: [
