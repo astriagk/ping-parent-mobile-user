@@ -7,12 +7,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ChooseRiderProvider, HomeScreenProvider>(
-        builder: (context, chooseCtrl, homeCtrl, child) {
+    return Consumer3<ChooseRiderProvider, HomeScreenProvider,
+            TripTrackingProvider>(
+        builder: (context, chooseCtrl, homeCtrl, tripCtrl, child) {
       return StatefulWrapper(
           onInit: () => Future.delayed(DurationClass.ms150).then((value) {
                 homeCtrl.init();
                 chooseCtrl.onInit();
+                tripCtrl.init();
               }),
           child: Scaffold(
               body: ListView(padding: EdgeInsets.zero, children: [
@@ -22,7 +24,7 @@ class HomeScreen extends StatelessWidget {
               // top categories layout
               TopCategories(),
               // maps explorer layout
-              MapsExplorerLayout(),
+              // MapsExplorerLayout(),
               //today's offer layout
               TodayOfferLayout()
             ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)

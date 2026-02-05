@@ -50,18 +50,11 @@ class AcceptRideScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             TextWidgetCommon(
-                                text: "Your ride is confirmed",
+                                text: "Your ride",
                                 fontWeight: FontWeight.w600,
                                 fontSize: Sizes.s16),
-                            rideCtrl.selectedIndex != null
-                                ? Image.asset(
-                                    rideCtrl.vehicleType[
-                                            rideCtrl.selectedIndex!]['image'] ??
-                                        rideCtrl.vehicleType[
-                                            rideCtrl.selectedIndex!]['image'],
-                                    height: Sizes.s25)
-                                : Image.asset(imageAssets.car,
-                                    height: Sizes.s25)
+                            SvgPicture.asset(svgAssets.myRideAuto,
+                                height: Sizes.s25)
                           ]),
                       Divider(
                               color: appColor(context).appTheme.stroke,
