@@ -4,9 +4,9 @@ class Endpoints {
   // For Android Emulator: use 10.0.2.2
   // For iOS Simulator: use localhost or 127.0.0.1
   // For Physical Device: use your computer's network IP (check with ipconfig/ifconfig)
-  // static const String baseUrl =
-  //     'https://ping-parent-backend-m8yc.onrender.com/api';
-  static const String baseUrl = 'http://192.168.1.4:3000/api';
+  static const String baseUrl =
+      'https://ping-parent-backend-m8yc.onrender.com/api';
+  // static const String baseUrl = 'http://192.168.1.4:3000/api';
   static const String getUser = '$baseUrl/user';
   static const String login = '$baseUrl/login';
 

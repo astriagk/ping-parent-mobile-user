@@ -1,5 +1,3 @@
-import 'package:taxify_user_ui/screens/open_free_maps/ofm_examples_menu.dart';
-
 import '../../../../config.dart';
 import '../../../maps/maps_examples_menu.dart';
 
@@ -43,22 +41,22 @@ class TopCategories extends StatelessWidget {
                             route.pushNamed(
                                 context, routeName.studentListScreen);
                           }
-                          if (e.key == 1) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MapsExamplesMenu()),
-                            );
-                          }
-                          if (e.key == 2) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OFMExamplesMenu()),
-                            );
-                          }
+                          // if (e.key == 1) {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const MapsExamplesMenu()),
+                          //   );
+                          // }
+                          // if (e.key == 2) {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const OFMExamplesMenu()),
+                          //   );
+                          // }
                         }))
                     .toList())
             .paddingOnly(top: Sizes.s15)
