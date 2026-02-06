@@ -1,4 +1,5 @@
 import '../../../config.dart';
+import 'tracking_map_widget.dart';
 
 class AcceptRideScreen extends StatelessWidget {
   const AcceptRideScreen({super.key});
@@ -16,17 +17,10 @@ class AcceptRideScreen extends StatelessWidget {
 
                 // Initialize trip tracking and subscribe to WebSocket events
                 tripTrackingCtrl.init();
-                print(
-                    '═══════════════════════════════════════════════════════');
-                print('🎯 [ACCEPT RIDE SCREEN] Initialized Trip Tracking');
-                print(
-                    '   Active Trips: ${tripTrackingCtrl.activeTrips.length}');
-                print(
-                    '═══════════════════════════════════════════════════════');
               }),
           child: Scaffold(
               body: Stack(children: [
-            AddLocationWidgets().mapLayout(),
+            const TrackingMapWidget(),
             Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

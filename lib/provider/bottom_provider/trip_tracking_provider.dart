@@ -1,25 +1,30 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:flutter/material.dart';
 import '../../api/models/trip_tracking_response.dart';
 import '../../api/services/trip_tracking_service.dart';
 import '../../api/services/trip_websocket_service.dart';
 
-class TripTrackingProvider extends ChangeNotifier {
+/// Provider for trip tracking with WebSocket support.
+/// Uses singleton WebSocket service to maintain persistent connection.
+class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
   final TripTrackingService _tripTrackingService;
+
+  // Use singleton instance
   final TripWebSocketService _webSocketService = TripWebSocketService();
 
   TripTrackingProvider(this._tripTrackingService);
 
+  // Trip data
   List<Trip> activeTrips = [];
   bool isLoading = false;
   String? error;
   Map<String, dynamic> currentPositionData = {};
-  Map<String, String> tripPositionMap = {}; // tripId -> current position
 
-  // WebSocket connection state
+  // Connection state
   bool isWebSocketConnected = false;
   String? currentSubscribedTripId;
+  bool _initialized = false;
 
-  // Trip status tracking
+  // Trip status
   bool isTripStarted = false;
   bool isDriverApproaching = false;
   int? driverEtaSeconds;
@@ -27,12 +32,104 @@ class TripTrackingProvider extends ChangeNotifier {
   String? lastDroppedStudentId;
   bool isTripCompleted = false;
 
+  /// Initialize the provider. Safe to call multiple times.
+  void init() {
+    if (_initialized) return;
+    _initialized = true;
+
+    // Register for lifecycle events
+    WidgetsBinding.instance.addObserver(this);
+
+    // Set up callbacks
+    _setupCallbacks();
+
+    // Fetch trips (this will also connect and subscribe)
+    fetchActiveTrips();
+  }
+
+  void _setupCallbacks() {
+    _webSocketService.onConnected = () {
+      isWebSocketConnected = true;
+      notifyListeners();
+    };
+
+    _webSocketService.onDisconnected = () {
+      isWebSocketConnected = false;
+      notifyListeners();
+    };
+
+    _webSocketService.onPositionUpdate = (data) {
+      currentPositionData = data;
+      notifyListeners();
+    };
+
+    _webSocketService.onTripStarted = (data) {
+      isTripStarted = true;
+      notifyListeners();
+    };
+
+    _webSocketService.onRouteCalculated = (data) {
+      notifyListeners();
+    };
+
+    _webSocketService.onApproaching = (data) {
+      isDriverApproaching = true;
+      driverEtaSeconds = data['eta'];
+      notifyListeners();
+    };
+
+    _webSocketService.onStudentPickedUp = (data) {
+      lastPickedStudentId = data['studentId'];
+      isDriverApproaching = false;
+      notifyListeners();
+    };
+
+    _webSocketService.onStudentDroppedOff = (data) {
+      lastDroppedStudentId = data['studentId'];
+      notifyListeners();
+    };
+
+    _webSocketService.onTripCompleted = (data) {
+      isTripCompleted = true;
+      isTripStarted = false;
+      currentSubscribedTripId = null;
+      // Refresh the trips list
+      fetchActiveTrips();
+    };
+
+    _webSocketService.onSocketError = (data) {
+      error = data['message'];
+      notifyListeners();
+    };
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        // App going to background - socket stays connected
+        _webSocketService.pause();
+        break;
+      case AppLifecycleState.resumed:
+        // App coming back - reconnect if needed
+        _webSocketService.resume();
+        break;
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        // Don't disconnect on hidden
+        break;
+    }
+  }
+
   @override
   void dispose() {
-    _webSocketService.disconnect();
+    WidgetsBinding.instance.removeObserver(this);
+    // Don't disconnect on dispose - singleton keeps running
     super.dispose();
   }
 
+  /// Fetch active trips and subscribe to the first one
   Future<void> fetchActiveTrips() async {
     isLoading = true;
     error = null;
@@ -43,14 +140,12 @@ class TripTrackingProvider extends ChangeNotifier {
       if (response.success) {
         activeTrips = response.data;
 
-        // Subscribe to WebSocket updates for each active trip
-        for (var trip in activeTrips) {
-          if (trip.tripId != null) {
-            _subscribeToTripUpdates(trip.tripId!);
-          }
+        // Subscribe to first active trip (if any)
+        if (activeTrips.isNotEmpty && activeTrips.first.tripId != null) {
+          await subscribeToTrip(activeTrips.first.tripId!);
         }
       } else {
-        error = response.error ?? 'Failed to fetch active trips';
+        error = response.error ?? 'Failed to fetch trips';
         activeTrips = [];
       }
     } catch (e) {
@@ -62,151 +157,31 @@ class TripTrackingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _subscribeToTripUpdates(String tripId) async {
-    currentSubscribedTripId = tripId;
-
-    // Connection callbacks
-    _webSocketService.onConnected = () {
-      print('═══════════════════════════════════════════════════════');
-      print('🔌 [WEBSOCKET] CONNECTED');
-      print('═══════════════════════════════════════════════════════');
-      isWebSocketConnected = true;
-      notifyListeners();
-    };
-
-    _webSocketService.onDisconnected = () {
-      print('═══════════════════════════════════════════════════════');
-      print('❌ [WEBSOCKET] DISCONNECTED');
-      print('═══════════════════════════════════════════════════════');
-      isWebSocketConnected = false;
-      notifyListeners();
-    };
-
-    // Position update callback
-    _webSocketService.onPositionUpdate = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('📍 [POSITION UPDATE]');
-      print('   Latitude: ${data['latitude']}');
-      print('   Longitude: ${data['longitude']}');
-      print('   Speed: ${data['speed'] ?? 'N/A'}');
-      print('   Heading: ${data['heading'] ?? 'N/A'}');
-      print('   Accuracy: ${data['accuracy'] ?? 'N/A'}');
-      print('═══════════════════════════════════════════════════════');
-      currentPositionData = data;
-      tripPositionMap[tripId] =
-          '${data['latitude']?.toStringAsFixed(4) ?? 'N/A'}, ${data['longitude']?.toStringAsFixed(4) ?? 'N/A'}';
-      notifyListeners();
-    };
-
-    // Trip started callback
-    _webSocketService.onTripStarted = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('🚗 [TRIP STARTED]');
-      print('   Trip ID: ${data['tripId'] ?? tripId}');
-      print('   Data: $data');
-      print('═══════════════════════════════════════════════════════');
-      isTripStarted = true;
-      notifyListeners();
-    };
-
-    // Route calculated callback
-    _webSocketService.onRouteCalculated = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('🗺️ [ROUTE CALCULATED]');
-      print('   Route Data: $data');
-      print('═══════════════════════════════════════════════════════');
-      notifyListeners();
-    };
-
-    // Driver approaching callback
-    _webSocketService.onApproaching = (data) {
-      final eta = data['eta'];
-      final etaMinutes = eta != null ? (eta / 60).round() : null;
-      print('═══════════════════════════════════════════════════════');
-      print('🚙 [DRIVER APPROACHING]');
-      print('   Student ID: ${data['studentId']}');
-      print('   ETA: $etaMinutes minutes ($eta seconds)');
-      print('═══════════════════════════════════════════════════════');
-      isDriverApproaching = true;
-      driverEtaSeconds = eta;
-      notifyListeners();
-    };
-
-    // Student picked up callback
-    _webSocketService.onStudentPickedUp = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('✅ [STUDENT PICKED UP]');
-      print('   Student ID: ${data['studentId']}');
-      print('   Trip ID: ${data['tripId'] ?? tripId}');
-      print('   Data: $data');
-      print('═══════════════════════════════════════════════════════');
-      lastPickedStudentId = data['studentId'];
-      isDriverApproaching = false;
-      notifyListeners();
-    };
-
-    // Student dropped off callback
-    _webSocketService.onStudentDroppedOff = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('🏠 [STUDENT DROPPED OFF]');
-      print('   Student ID: ${data['studentId']}');
-      print('   Trip ID: ${data['tripId'] ?? tripId}');
-      print('   Data: $data');
-      print('═══════════════════════════════════════════════════════');
-      lastDroppedStudentId = data['studentId'];
-      notifyListeners();
-    };
-
-    // Trip completed callback
-    _webSocketService.onTripCompleted = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('🏁 [TRIP COMPLETED]');
-      print('   Trip ID: ${data['tripId'] ?? tripId}');
-      print('   Data: $data');
-      print('═══════════════════════════════════════════════════════');
-      isTripCompleted = true;
-      isTripStarted = false;
-      // Refresh trips after completion
-      fetchActiveTrips();
-    };
-
-    // Socket error callback
-    _webSocketService.onSocketError = (data) {
-      print('═══════════════════════════════════════════════════════');
-      print('⚠️ [SOCKET ERROR]');
-      print('   Message: ${data['message']}');
-      print('   Data: $data');
-      print('═══════════════════════════════════════════════════════');
-      error = data['message'];
-      notifyListeners();
-    };
-
-    await _webSocketService.subscribeToTrip(tripId);
-  }
-
-  /// Subscribe to a specific trip for real-time updates
+  /// Subscribe to a specific trip
   Future<void> subscribeToTrip(String tripId) async {
-    print('═══════════════════════════════════════════════════════');
-    print('📡 [SUBSCRIBING TO TRIP]');
-    print('   Trip ID: $tripId');
-    print('═══════════════════════════════════════════════════════');
-    await _subscribeToTripUpdates(tripId);
-  }
+    // Already subscribed
+    if (currentSubscribedTripId == tripId && _webSocketService.isConnected)
+      return;
 
-  /// Unsubscribe from current trip
-  void unsubscribeFromCurrentTrip() {
-    if (currentSubscribedTripId != null) {
-      print('═══════════════════════════════════════════════════════');
-      print('📡 [UNSUBSCRIBING FROM TRIP]');
-      print('   Trip ID: $currentSubscribedTripId');
-      print('═══════════════════════════════════════════════════════');
-      _webSocketService.unsubscribeFromTrip(currentSubscribedTripId!);
-      currentSubscribedTripId = null;
-      _resetTripState();
+    currentSubscribedTripId = tripId;
+    _resetTripStatus();
+
+    final success = await _webSocketService.subscribeToTrip(tripId);
+    if (!success) {
+      error = 'Failed to subscribe to trip';
+      notifyListeners();
     }
   }
 
-  void _resetTripState() {
+  void unsubscribeFromCurrentTrip() {
+    if (currentSubscribedTripId != null) {
+      _webSocketService.unsubscribeFromTrip(currentSubscribedTripId!);
+      currentSubscribedTripId = null;
+      _resetTripStatus();
+    }
+  }
+
+  void _resetTripStatus() {
     isTripStarted = false;
     isDriverApproaching = false;
     driverEtaSeconds = null;
@@ -217,17 +192,6 @@ class TripTrackingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void init() {
-    print('═══════════════════════════════════════════════════════');
-    print('🚀 [TRIP TRACKING PROVIDER] INITIALIZING...');
-    print('═══════════════════════════════════════════════════════');
-    _webSocketService.initializeSocket();
-    fetchActiveTrips();
-  }
-
-  String? getTripPosition(String tripId) {
-    return tripPositionMap[tripId];
-  }
-
+  // Getters
   TripWebSocketService get webSocketService => _webSocketService;
 }

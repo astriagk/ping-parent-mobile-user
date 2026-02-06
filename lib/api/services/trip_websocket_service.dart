@@ -1,14 +1,24 @@
+import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../endpoints.dart';
 import 'storage_service.dart';
 
+/// Singleton WebSocket service for trip tracking.
+/// Maintains a single persistent connection throughout the app lifecycle.
 class TripWebSocketService {
-  IO.Socket? _socket;
-  Map<String, dynamic> _currentTripData = {};
-  final StorageService _storage = StorageService();
-  String? _currentTripId;
+  // Singleton instance
+  static final TripWebSocketService _instance =
+      TripWebSocketService._internal();
+  factory TripWebSocketService() => _instance;
+  TripWebSocketService._internal();
 
-  // Callbacks for all parent events as per WEBSOCKET.md
+  IO.Socket? _socket;
+  String? _currentTripId;
+  final StorageService _storage = StorageService();
+  bool _isConnecting = false;
+  Completer<bool>? _connectionCompleter;
+
+  // Callbacks
   Function(Map<String, dynamic>)? onPositionUpdate;
   Function(Map<String, dynamic>)? onTripStarted;
   Function(Map<String, dynamic>)? onRouteCalculated;
@@ -20,208 +30,245 @@ class TripWebSocketService {
   Function()? onConnected;
   Function()? onDisconnected;
 
-  Future<void> initializeSocket({String? userId}) async {
-    if (_socket != null && _socket!.connected) {
-      return;
+  bool get isConnected => _socket?.connected ?? false;
+  String? get currentTripId => _currentTripId;
+
+  /// Initialize socket connection. Safe to call multiple times.
+  Future<bool> connect() async {
+    // Already connected
+    if (_socket != null && _socket!.connected) return true;
+
+    // Connection in progress - wait for it
+    if (_isConnecting && _connectionCompleter != null) {
+      return _connectionCompleter!.future;
     }
 
-    // Disconnect existing socket if any
-    if (_socket != null) {
-      _socket!.disconnect();
-      _socket!.dispose();
-      _socket = null;
+    _isConnecting = true;
+    _connectionCompleter = Completer<bool>();
+
+    try {
+      // Clean up old socket
+      _disposeSocket();
+
+      final baseUrl = Endpoints.baseUrl.replaceAll('/api', '');
+      final token = await _storage.getAuthToken();
+      final userId = await _storage.getUserId();
+
+      if (token == null || userId == null) {
+        _completeConnection(false);
+        return false;
+      }
+
+      print('[WS] Connecting...');
+
+      _socket = IO.io(baseUrl, <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+        'forceNew': false, // Reuse existing connection
+        'reconnection': true,
+        'reconnectionAttempts': 10,
+        'reconnectionDelay': 1000,
+        'reconnectionDelayMax': 5000,
+        'timeout': 20000,
+        'auth': {
+          'token': token,
+          'userId': userId,
+          'role': 'parent',
+        },
+      });
+
+      _setupEventHandlers();
+      _socket!.connect();
+
+      // Wait for connection with timeout
+      final connected = await _waitForConnection(Duration(seconds: 15));
+      _completeConnection(connected);
+      return connected;
+    } catch (e) {
+      _completeConnection(false);
+      return false;
+    }
+  }
+
+  void _completeConnection(bool success) {
+    _isConnecting = false;
+    if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
+      _connectionCompleter!.complete(success);
+    }
+    _connectionCompleter = null;
+  }
+
+  Future<bool> _waitForConnection(Duration timeout) async {
+    if (_socket == null) return false;
+
+    final completer = Completer<bool>();
+    Timer? timer;
+
+    void onConnect(_) {
+      timer?.cancel();
+      if (!completer.isCompleted) completer.complete(true);
     }
 
-    // Extract base URL without /api path for WebSocket
-    final baseUrl = Endpoints.baseUrl.replaceAll('/api', '');
+    void onError(error) {
+      timer?.cancel();
+      if (!completer.isCompleted) completer.complete(false);
+    }
 
-    // Get authentication token
-    final token = await _storage.getAuthToken();
-    final storedUserId = userId ?? await _storage.getUserId();
+    _socket!.once('connect', onConnect);
+    _socket!.once('connect_error', onError);
 
-    print('═══════════════════════════════════════════════════════');
-    print('🔌 [WEBSOCKET] Initializing connection...');
-    print('   URL: $baseUrl');
-    print('   User ID: $storedUserId');
-    print('   Token: ${token != null ? '${token.substring(0, 20)}...' : 'None'}');
-    print('═══════════════════════════════════════════════════════');
+    timer = Timer(timeout, () {
+      _socket!.off('connect', onConnect);
+      _socket!.off('connect_error', onError);
+      if (!completer.isCompleted) completer.complete(false);
+    });
 
-    // Connect with proper auth as per WEBSOCKET.md
-    // Try polling first (more reliable), then upgrade to websocket
-    _socket = IO.io(
-        baseUrl,
-        IO.OptionBuilder()
-            .setTransports(['polling', 'websocket']) // Start with polling, upgrade to websocket
-            .enableAutoConnect()
-            .enableReconnection()
-            .setReconnectionAttempts(10)
-            .setReconnectionDelay(1000)
-            .setReconnectionDelayMax(5000)
-            .setTimeout(30000) // 30 second timeout
-            .setPath('/socket.io') // Explicit socket.io path
-            .setAuth({
-              'token': token ?? '',
-              'userId': storedUserId ?? '',
-              'role': 'parent',
-            })
-            .setExtraHeaders({
-              'Authorization': 'Bearer ${token ?? ''}',
-            })
-            .build());
+    // Already connected
+    if (_socket!.connected) {
+      timer.cancel();
+      return true;
+    }
+
+    return completer.future;
+  }
+
+  void _setupEventHandlers() {
+    if (_socket == null) return;
 
     _socket!.onConnect((_) {
-      print('═══════════════════════════════════════════════════════');
-      print('✓ [WEBSOCKET] Connected successfully to: $baseUrl');
-      print('   Socket ID: ${_socket!.id}');
-      print('═══════════════════════════════════════════════════════');
+      print('[WS] Connected');
       onConnected?.call();
+      if (_currentTripId != null) _emitSubscription(_currentTripId!);
     });
 
     _socket!.onDisconnect((reason) {
-      print('═══════════════════════════════════════════════════════');
-      print('✗ [WEBSOCKET] Disconnected - Reason: $reason');
-      print('═══════════════════════════════════════════════════════');
+      print('[WS] Disconnected: $reason');
       onDisconnected?.call();
     });
 
-    _socket!.on('error', (error) {
-      print('✗ [WEBSOCKET] Error: $error');
-    });
-
-    _socket!.onConnectError((error) {
-      print('═══════════════════════════════════════════════════════');
-      print('✗ [WEBSOCKET] Connection error: $error');
-      print('   URL: $baseUrl');
-      print('   Check: 1) Server running? 2) Firewall? 3) Socket.IO version?');
-      print('═══════════════════════════════════════════════════════');
-    });
+    _socket!.onConnectError((error) => print('[WS] Error: $error'));
 
     _socket!.onReconnect((_) {
-      print('🔄 [WEBSOCKET] Reconnected');
+      print('[WS] Reconnected');
+      if (_currentTripId != null) _emitSubscription(_currentTripId!);
     });
 
-    _socket!.onReconnectAttempt((attemptNumber) {
-      print('🔄 [WEBSOCKET] Reconnection attempt #$attemptNumber');
-    });
+    _socket!.onReconnectAttempt((attempt) => null);
 
-    _socket!.onReconnectError((error) {
-      print('✗ [WEBSOCKET] Reconnection error: $error');
-    });
-
-    _socket!.onReconnectFailed((_) {
-      print('✗ [WEBSOCKET] Reconnection failed after all attempts');
-    });
-
-    // Listen for socket errors (authorization errors, etc.)
     _socket!.on('socket:error', (data) {
-      print('✗ [WEBSOCKET] Socket error: ${data['message']}');
-      onSocketError?.call(
-          data is Map<String, dynamic> ? data : {'message': data.toString()});
-    });
-  }
-
-  Future<void> subscribeToTrip(String tripId) async {
-    if (_socket == null || !_socket!.connected) {
-      print('⚠️ Socket not connected, reconnecting...');
-      await initializeSocket();
-      // Wait a bit for connection to establish
-      await Future.delayed(Duration(milliseconds: 500));
-    }
-    _subscribeToTripEvents(tripId);
-  }
-
-  void _subscribeToTripEvents(String tripId) {
-    _currentTripId = tripId;
-    print('📍 Subscribing to trip: $tripId');
-
-    // Subscribe using parent:subscribe_trip as per WEBSOCKET.md
-    _socket!.emitWithAck('parent:subscribe_trip', {'tripId': tripId},
-        ack: (response) {
-      if (response == true) {
-        print('✓ Successfully subscribed to trip: $tripId');
-      } else {
-        print('✗ Failed to subscribe to trip: $tripId');
-        onSocketError?.call({'message': 'Failed to subscribe to trip'});
-      }
+      onSocketError
+          ?.call(data is Map<String, dynamic> ? data : {'message': '$data'});
     });
 
-    // Remove existing listeners to avoid duplicates
-    _socket!.off('trip:position_update');
-    _socket!.off('trip:started');
-    _socket!.off('trip:route_calculated');
-    _socket!.off('trip:approaching');
-    _socket!.off('trip:student_picked');
-    _socket!.off('trip:student_dropped');
-    _socket!.off('trip:completed');
+    // Set up trip event listeners (permanent, not per-subscription)
+    _setupTripListeners();
+  }
 
-    // Listen to position updates
+  void _setupTripListeners() {
+    if (_socket == null) return;
+
     _socket!.on('trip:position_update', (data) {
-      print('✓ Driver position: ${data['latitude']}, ${data['longitude']}');
-      _currentTripData = Map<String, dynamic>.from(data);
-      onPositionUpdate?.call(_currentTripData);
+      onPositionUpdate?.call(Map<String, dynamic>.from(data));
     });
 
-    // Listen to trip started event
     _socket!.on('trip:started', (data) {
-      print('✓ Trip started');
-      onTripStarted
-          ?.call(data is Map<String, dynamic> ? data : {'tripId': tripId});
+      onTripStarted?.call(data is Map<String, dynamic> ? data : {});
     });
 
-    // Listen to route calculated event
     _socket!.on('trip:route_calculated', (data) {
-      print('✓ Route calculated');
       onRouteCalculated?.call(Map<String, dynamic>.from(data));
     });
 
-    // Listen to driver approaching event
     _socket!.on('trip:approaching', (data) {
-      final eta = data['eta'];
-      print(
-          '✓ Driver approaching, ETA: ${eta != null ? (eta / 60).round() : 'unknown'} minutes');
       onApproaching?.call(Map<String, dynamic>.from(data));
     });
 
-    // Listen to student picked up event
     _socket!.on('trip:student_picked', (data) {
-      print('✓ Student ${data['studentId']} picked up');
       onStudentPickedUp?.call(Map<String, dynamic>.from(data));
     });
 
-    // Listen to student dropped off event
     _socket!.on('trip:student_dropped', (data) {
-      print('✓ Student ${data['studentId']} dropped off');
       onStudentDroppedOff?.call(Map<String, dynamic>.from(data));
     });
 
-    // Listen to trip completion
     _socket!.on('trip:completed', (data) {
-      print('✓ Trip completed');
-      onTripCompleted
-          ?.call(data is Map<String, dynamic> ? data : {'tripId': tripId});
+      _currentTripId = null;
+      onTripCompleted?.call(data is Map<String, dynamic> ? data : {});
     });
   }
 
+  /// Subscribe to a trip. Connects if not already connected.
+  Future<bool> subscribeToTrip(String tripId) async {
+    // Already subscribed to this trip
+    if (_currentTripId == tripId && isConnected) return true;
+
+    // Unsubscribe from previous trip
+    if (_currentTripId != null && _currentTripId != tripId) {
+      unsubscribeFromTrip(_currentTripId!);
+    }
+
+    // Ensure connected
+    if (!isConnected) {
+      final connected = await connect();
+      if (!connected) return false;
+    }
+
+    _currentTripId = tripId;
+    return _emitSubscription(tripId);
+  }
+
+  bool _emitSubscription(String tripId) {
+    if (_socket == null || !_socket!.connected) return false;
+
+    _socket!.emitWithAck('parent:subscribe_trip', tripId, ack: (response) {
+      if (response == true) {
+        print('[WS] Subscribed to: $tripId');
+      } else {
+        onSocketError?.call({'message': 'Failed to subscribe'});
+      }
+    });
+
+    return true;
+  }
+
   void unsubscribeFromTrip(String tripId) {
-    if (_socket != null) {
-      print('📍 Unsubscribing from trip: $tripId');
-      _socket!.emit('parent:unsubscribe_trip', {'tripId': tripId});
+    if (_socket != null && _socket!.connected) {
+      _socket!.emit('parent:unsubscribe_trip', tripId);
+    }
+    if (_currentTripId == tripId) {
       _currentTripId = null;
     }
   }
 
-  void disconnect() {
-    if (_currentTripId != null) {
-      unsubscribeFromTrip(_currentTripId!);
-    }
+  void _disposeSocket() {
     if (_socket != null) {
+      _socket!.clearListeners();
       _socket!.disconnect();
+      _socket!.dispose();
       _socket = null;
-      print('✗ WebSocket disconnected');
     }
   }
 
-  /// Clears all registered callbacks
+  /// Disconnect and cleanup. Call when done with tracking.
+  void disconnect() {
+    if (_currentTripId != null) unsubscribeFromTrip(_currentTripId!);
+    _disposeSocket();
+  }
+
+  /// Pause connection (e.g., when app goes to background).
+  void pause() {
+    // Socket stays connected in background
+  }
+
+  /// Resume connection (e.g., when app comes to foreground).
+  Future<void> resume() async {
+    if (!isConnected && _currentTripId != null) {
+      await connect();
+      if (isConnected && _currentTripId != null)
+        _emitSubscription(_currentTripId!);
+    }
+  }
+
   void clearCallbacks() {
     onPositionUpdate = null;
     onTripStarted = null;
@@ -234,11 +281,4 @@ class TripWebSocketService {
     onConnected = null;
     onDisconnected = null;
   }
-
-  Map<String, dynamic> getCurrentTripData() {
-    return _currentTripData;
-  }
-
-  String? get currentTripId => _currentTripId;
-  bool get isConnected => _socket != null && _socket!.connected;
 }
