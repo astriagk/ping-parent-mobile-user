@@ -59,6 +59,7 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     };
 
     _webSocketService.onPositionUpdate = (data) {
+      print("Received position update: $data");
       currentPositionData = data;
       notifyListeners();
     };
