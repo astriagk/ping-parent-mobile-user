@@ -63,6 +63,7 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
         final posData = tripCtrl.currentPositionData;
         final driverLat = posData['latitude'] as double?;
         final driverLng = posData['longitude'] as double?;
+        final driverHeading = (posData['heading'] as num?)?.toDouble() ?? 0.0;
 
         // Show loading while getting user location
         if (_loadingUserLocation) {
@@ -123,7 +124,8 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
         // Add driver location marker
         if (driverLatLng != null) {
           markersToShow.add(
-            MapMarkers.driverLocationMarker(driverLatLng, context),
+            MapMarkers.driverLocationMarker(driverLatLng, context,
+                heading: driverHeading),
           );
         }
 

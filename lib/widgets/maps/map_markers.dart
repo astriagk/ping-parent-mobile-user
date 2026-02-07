@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:taxify_user_ui/config.dart' hide Marker, Polyline, LatLng;
@@ -9,8 +10,8 @@ class MapMarkers {
     required LatLng point,
     required String svgAssetPath,
     required Color color,
-    double width = 56,
-    double height = 56,
+    double width = 20,
+    double height = 20,
     Border? border,
     VoidCallback? onTap,
   }) {
@@ -18,26 +19,17 @@ class MapMarkers {
       point: point,
       alignment: Alignment.center,
       child: SizedBox(
-        width: width,
-        height: height,
         child: GestureDetector(
           onTap: onTap,
           child: Container(
-            width: width,
-            height: height,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              shape: BoxShape.circle,
-              border: border ??
-                  Border.all(
-                    color: color.withOpacity(0.3),
-                    width: 2,
-                  ),
-            ),
+                color: color.withOpacity(0.2), shape: BoxShape.circle),
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: SvgPicture.asset(
                 svgAssetPath,
+                width: width,
+                height: height,
                 colorFilter: ColorFilter.mode(
                   color,
                   BlendMode.srcIn,
@@ -105,21 +97,23 @@ class MapMarkers {
     );
   }
 
-  /// Driver/Vehicle location marker (primary color)
+  /// Driver/Vehicle location marker (primary color) with pulsing animation
   static Marker driverLocationMarker(
     LatLng point,
     BuildContext context, {
+    double heading = 0.0,
     VoidCallback? onTap,
   }) {
-    return _buildMarker(
+    return Marker(
       point: point,
-      svgAssetPath: svgAssets.carDark,
-      color: appColor(context).appTheme.primary,
-      border: Border.all(
-        color: appColor(context).appTheme.white,
-        width: 2,
+      alignment: Alignment.center,
+      child: _PulsingDriverMarker(
+        svgAssetPath: svgAssets.carLight,
+        pulseColor: appColor(context).appTheme.lightText,
+        iconColor: appColor(context).appTheme.primary,
+        heading: heading,
+        onTap: onTap,
       ),
-      onTap: onTap,
     );
   }
 
@@ -138,6 +132,115 @@ class MapMarkers {
         width: 2,
       ),
       onTap: onTap,
+    );
+  }
+}
+
+/// Animated pulsing marker for driver location
+class _PulsingDriverMarker extends StatefulWidget {
+  final String svgAssetPath;
+  final Color pulseColor;
+  final Color iconColor;
+  final double heading;
+  final VoidCallback? onTap;
+
+  const _PulsingDriverMarker({
+    required this.svgAssetPath,
+    required this.pulseColor,
+    required this.iconColor,
+    this.heading = 0.0,
+    this.onTap,
+  });
+
+  @override
+  State<_PulsingDriverMarker> createState() => _PulsingDriverMarkerState();
+}
+
+class _PulsingDriverMarkerState extends State<_PulsingDriverMarker>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.8).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.6, end: 0.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: SizedBox(
+        width: 56,
+        height: 56,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Pulsing ring
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.pulseColor
+                          .withOpacity(_opacityAnimation.value),
+                    ),
+                  ),
+                );
+              },
+            ),
+            // Main icon container with rotation based on heading
+            Transform.rotate(
+              angle: widget.heading *
+                  (math.pi / 180), // Convert degrees to radians
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: widget.pulseColor.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SvgPicture.asset(
+                    widget.svgAssetPath,
+                    width: 20,
+                    height: 20,
+                    colorFilter: ColorFilter.mode(
+                      widget.iconColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

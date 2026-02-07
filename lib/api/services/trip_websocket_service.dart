@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../endpoints.dart';
+import '../enums/socket_events.dart';
 import 'storage_service.dart';
 
 /// Singleton WebSocket service for trip tracking.
@@ -155,7 +156,7 @@ class TripWebSocketService {
 
     _socket!.onReconnectAttempt((attempt) => null);
 
-    _socket!.on('socket:error', (data) {
+    _socket!.on(BroadcastSocketEvent.error.value, (data) {
       onSocketError
           ?.call(data is Map<String, dynamic> ? data : {'message': '$data'});
     });
@@ -167,31 +168,31 @@ class TripWebSocketService {
   void _setupTripListeners() {
     if (_socket == null) return;
 
-    _socket!.on('trip:position_update', (data) {
+    _socket!.on(BroadcastSocketEvent.positionUpdate.value, (data) {
       onPositionUpdate?.call(Map<String, dynamic>.from(data));
     });
 
-    _socket!.on('trip:started', (data) {
+    _socket!.on(BroadcastSocketEvent.tripStarted.value, (data) {
       onTripStarted?.call(data is Map<String, dynamic> ? data : {});
     });
 
-    _socket!.on('trip:route_calculated', (data) {
+    _socket!.on(BroadcastSocketEvent.routeCalculated.value, (data) {
       onRouteCalculated?.call(Map<String, dynamic>.from(data));
     });
 
-    _socket!.on('trip:approaching', (data) {
+    _socket!.on(BroadcastSocketEvent.approaching.value, (data) {
       onApproaching?.call(Map<String, dynamic>.from(data));
     });
 
-    _socket!.on('trip:student_picked', (data) {
+    _socket!.on(BroadcastSocketEvent.studentPicked.value, (data) {
       onStudentPickedUp?.call(Map<String, dynamic>.from(data));
     });
 
-    _socket!.on('trip:student_dropped', (data) {
+    _socket!.on(BroadcastSocketEvent.studentDropped.value, (data) {
       onStudentDroppedOff?.call(Map<String, dynamic>.from(data));
     });
 
-    _socket!.on('trip:completed', (data) {
+    _socket!.on(BroadcastSocketEvent.tripCompleted.value, (data) {
       _currentTripId = null;
       onTripCompleted?.call(data is Map<String, dynamic> ? data : {});
     });
@@ -220,7 +221,8 @@ class TripWebSocketService {
   bool _emitSubscription(String tripId) {
     if (_socket == null || !_socket!.connected) return false;
 
-    _socket!.emitWithAck('parent:subscribe_trip', tripId, ack: (response) {
+    _socket!.emitWithAck(ParentSocketEvent.subscribeTrip.value, tripId,
+        ack: (response) {
       if (response == true) {
         print('[WS] Subscribed to: $tripId');
       } else {
@@ -233,7 +235,7 @@ class TripWebSocketService {
 
   void unsubscribeFromTrip(String tripId) {
     if (_socket != null && _socket!.connected) {
-      _socket!.emit('parent:unsubscribe_trip', tripId);
+      _socket!.emit(ParentSocketEvent.unsubscribeTrip.value, tripId);
     }
     if (_currentTripId == tripId) {
       _currentTripId = null;
