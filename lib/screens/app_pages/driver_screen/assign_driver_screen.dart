@@ -276,7 +276,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
             : '',
         userRatingNumber: ' (${driver.totalTrips ?? 0})',
         carName:
-            '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
+            '${driver.vehicleType.toDisplayString()} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
                 .trim(),
         currentLocation: '123 Main Street, Downtown',
         addLocation: '',

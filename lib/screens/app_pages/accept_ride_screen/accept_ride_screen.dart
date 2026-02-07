@@ -6,21 +6,21 @@ class AcceptRideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<AcceptRideProvider, CancelRideProvider,
-            SelectRiderProvider, TripTrackingProvider>(
+    return Consumer5<AcceptRideProvider, CancelRideProvider,
+            SelectRiderProvider, TripTrackingProvider, HomeScreenProvider>(
         builder: (context1, acceptCtrl, cancelCtrl, rideCtrl, tripTrackingCtrl,
-            child) {
-      return StatefulWrapper(
-          onInit: () => Future.delayed(DurationClass.ms150).then((value) {
-                acceptCtrl.getArgument(context);
-                rideCtrl.onInit();
+            homeCtrl, child) {
+      // Get the active trip (always only one)
+      final activeTrip = homeCtrl.trackingData?.data.firstOrNull;
 
-                // Initialize trip tracking and subscribe to WebSocket events
-                tripTrackingCtrl.init();
-              }),
+      return StatefulWrapper(
+          onInit: () {
+            rideCtrl.onInit();
+            tripTrackingCtrl.init();
+          },
           child: Scaffold(
               body: Stack(children: [
-            const TrackingMapWidget(),
+            TrackingMapWidget(trip: activeTrip),
             Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -65,7 +65,9 @@ class AcceptRideScreen extends StatelessWidget {
                               color: appColor(context).appTheme.stroke,
                               height: 0)
                           .paddingDirectional(vertical: Sizes.s20),
-                      AcceptRideWidgets().driverDetailsAndOtp()
+                      AcceptRideWidgets().driverDetailsAndOtp(
+                          driver: activeTrip?.driver,
+                          waypoints: activeTrip?.optimizedRouteData?.waypoints)
                     ])
                         .paddingDirectional(
                             horizontal: Sizes.s20, bottom: Sizes.s20)

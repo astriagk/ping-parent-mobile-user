@@ -197,7 +197,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
             userRatingNumber:
                 driver.totalTrips != null ? ' (${driver.totalTrips})' : '',
             carName:
-                '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''}'
+                '${driver.vehicleType.toDisplayString()} ${driver.vehicleNumber ?? ''}'
                     .trim(),
           ),
           profileImageUrl: driver.photoUrl,

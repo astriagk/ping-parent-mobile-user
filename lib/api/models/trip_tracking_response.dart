@@ -1,5 +1,6 @@
 import '../enums/trip_status.dart';
 import '../enums/trip_type.dart';
+import 'driver_response.dart';
 
 class TripTrackingResponse {
   final bool success;
@@ -37,6 +38,7 @@ class Trip {
   final String? tripDate;
   final String? startTime;
   final String? driverId;
+  final Driver? driver;
   final double totalDistance;
   final List<Student> students;
   final OptimizedRouteData? optimizedRouteData;
@@ -51,6 +53,7 @@ class Trip {
     this.tripDate,
     this.startTime,
     this.driverId,
+    this.driver,
     required this.totalDistance,
     required this.students,
     this.optimizedRouteData,
@@ -67,6 +70,7 @@ class Trip {
       tripDate: json['trip_date'],
       startTime: json['start_time'],
       driverId: json['driver_id'],
+      driver: json['driver'] != null ? Driver.fromJson(json['driver']) : null,
       totalDistance: (json['total_distance'] ?? 0.0).toDouble(),
       students: json['students'] != null
           ? (json['students'] as List).map((e) => Student.fromJson(e)).toList()
@@ -141,7 +145,12 @@ class Waypoint {
   final List<String>? studentIds;
   final String? studentParentId;
   final List<String>? studentNames;
+  final String? studentPhotoUrl;
+  final String? studentGender;
+  final String? studentSection;
+  final String? studentClass;
   final String? parentName;
+  final String? parentEmail;
   final String? parentPhoneNumber;
   final String? estimatedArrivalTime;
   final double distanceFromPrevious;
@@ -154,7 +163,12 @@ class Waypoint {
     this.studentIds,
     this.studentParentId,
     this.studentNames,
+    this.studentPhotoUrl,
+    this.studentGender,
+    this.studentSection,
+    this.studentClass,
     this.parentName,
+    this.parentEmail,
     this.parentPhoneNumber,
     this.estimatedArrivalTime,
     required this.distanceFromPrevious,
@@ -173,7 +187,12 @@ class Waypoint {
       studentNames: json['student_names'] != null
           ? List<String>.from(json['student_names'])
           : null,
+      studentPhotoUrl: json['student_photo_url'],
+      studentGender: json['student_gender'],
+      studentSection: json['student_section'],
+      studentClass: json['student_class'],
       parentName: json['parent_name'],
+      parentEmail: json['parent_email'],
       parentPhoneNumber: json['parent_phone_number'],
       estimatedArrivalTime: json['estimated_arrival_time'],
       distanceFromPrevious: (json['distance_from_previous'] ?? 0.0).toDouble(),

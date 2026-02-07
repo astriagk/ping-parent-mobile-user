@@ -1,4 +1,3 @@
-import 'package:flutter_map/flutter_map.dart';
 import 'package:taxify_user_ui/config.dart';
 
 /// Reusable polyline builder for all map providers
@@ -7,7 +6,7 @@ class RoutePolylines {
     return Polyline(
       points: points,
       color: appColor(context).appTheme.primary,
-      strokeWidth: Insets.i4,
+      strokeWidth: Insets.i2,
       borderColor: appColor(context).appTheme.primary.withOpacity(0.8),
       borderStrokeWidth: Insets.i1,
     );
@@ -16,7 +15,7 @@ class RoutePolylines {
   static Polyline customRoute({
     required List<LatLng> points,
     required Color color,
-    double strokeWidth = 3.0,
+    double strokeWidth = 2.0,
     bool isDotted = false,
   }) {
     return Polyline(

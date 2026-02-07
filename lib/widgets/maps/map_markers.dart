@@ -77,7 +77,7 @@ class MapMarkers {
     return _buildMarker(
       point: point,
       svgAssetPath: svgAssets.location,
-      color: appColor(context).appTheme.online,
+      color: appColor(context).appTheme.primary,
       border: Border.all(
         color: appColor(context).appTheme.white,
         width: 2,
