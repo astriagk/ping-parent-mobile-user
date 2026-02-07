@@ -1,3 +1,6 @@
+import '../enums/vehicle_type.dart';
+import '../enums/trip_type.dart';
+
 class DriverListResponse {
   final bool success;
   final List<Driver> data;
@@ -23,6 +26,32 @@ class DriverListResponse {
   }
 }
 
+class DriverUser {
+  final String? id;
+  final String? userId;
+  final String? phoneNumber;
+  final String? userType;
+  final bool isActive;
+
+  DriverUser({
+    this.id,
+    this.userId,
+    this.phoneNumber,
+    this.userType,
+    this.isActive = true,
+  });
+
+  factory DriverUser.fromJson(Map<String, dynamic> json) {
+    return DriverUser(
+      id: json['_id'],
+      userId: json['user_id'],
+      phoneNumber: json['phone_number'],
+      userType: json['user_type'],
+      isActive: json['is_active'] ?? true,
+    );
+  }
+}
+
 class Driver {
   final String? id;
   final String? userId;
@@ -30,7 +59,7 @@ class Driver {
   final String? name;
   final String? email;
   final String? photoUrl;
-  final String? vehicleType;
+  final VehicleType vehicleType;
   final String? vehicleNumber;
   final int? vehicleCapacity;
   final int? currentStudentCount;
@@ -38,11 +67,13 @@ class Driver {
   final bool isAvailable;
   final double? rating;
   final int? totalTrips;
+  final TripType? tripType;
   final String? createdAt;
   final String? updatedAt;
   final String? approvedAt;
   final String? approvedBy;
   final String? rejectionReason;
+  final DriverUser? user;
 
   Driver({
     this.id,
@@ -51,7 +82,7 @@ class Driver {
     this.name,
     this.email,
     this.photoUrl,
-    this.vehicleType,
+    this.vehicleType = VehicleType.auto,
     this.vehicleNumber,
     this.vehicleCapacity,
     this.currentStudentCount,
@@ -59,11 +90,13 @@ class Driver {
     this.isAvailable = true,
     this.rating,
     this.totalTrips,
+    this.tripType = TripType.pickup,
     this.createdAt,
     this.updatedAt,
     this.approvedAt,
     this.approvedBy,
     this.rejectionReason,
+    this.user,
   });
 
   factory Driver.fromJson(Map<String, dynamic> json) {
@@ -74,7 +107,7 @@ class Driver {
       name: json['name'],
       email: json['email'],
       photoUrl: json['photo_url'],
-      vehicleType: json['vehicle_type'],
+      vehicleType: VehicleType.fromString(json['vehicle_type']),
       vehicleNumber: json['vehicle_number'],
       vehicleCapacity: json['vehicle_capacity'],
       currentStudentCount: json['current_student_count'],
@@ -82,11 +115,13 @@ class Driver {
       isAvailable: json['is_available'] ?? true,
       rating: json['rating']?.toDouble(),
       totalTrips: json['total_trips'],
+      tripType: TripType.fromString(json['trip_type']),
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       approvedAt: json['approved_at'],
       approvedBy: json['approved_by'],
       rejectionReason: json['rejection_reason'],
+      user: json['user'] != null ? DriverUser.fromJson(json['user']) : null,
     );
   }
 }

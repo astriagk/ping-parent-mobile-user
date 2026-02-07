@@ -5,22 +5,9 @@ import 'package:taxify_user_ui/config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AcceptRideProvider extends ChangeNotifier {
-  dynamic data;
-  dynamic index;
-  dynamic image;
-  dynamic carName;
-  dynamic driverProfile;
-  dynamic driverName;
-  dynamic rating;
-  dynamic userRatingNumber;
-  dynamic status;
-  dynamic date;
-  dynamic time;
-  dynamic code;
-  dynamic value;
   bool isDrag = false;
   List emergencyList = [];
-  bool isRetry = false;
+  bool isRetry = true;
 
   bool isPayment = false;
 
@@ -29,7 +16,7 @@ class AcceptRideProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  call(e, context) async {
+  call(e, context, {String? phoneNumber}) async {
     log("eeee $e");
     if (e['title'] == "Share my location") {
       String text = 'Share My Location!';
@@ -45,7 +32,7 @@ class AcceptRideProvider extends ChangeNotifier {
       PermissionStatus status = await Permission.phone.request();
 
       if (status.isGranted) {
-        final Uri phoneUri = Uri(scheme: 'tel', path: "987");
+        final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
 
         // Try to launch the dialer
         if (await canLaunchUrl(phoneUri)) {
@@ -60,25 +47,6 @@ class AcceptRideProvider extends ChangeNotifier {
         openAppSettings();
       }
     }
-  }
-
-  getArgument(context) {
-    data = ModalRoute.of(context)!.settings.arguments;
-    log("value::value:$data");
-    index = data["index"];
-    value = data["data"];
-    driverProfile = value['image'];
-    driverName = value['driverName'];
-    rating = value['rating'];
-    userRatingNumber = value['userRating'];
-    status = value['status'];
-    date = value['date'];
-    time = value['time'];
-    code = value['code'];
-    carName = value['fullCarName'];
-    log("message::$carName");
-
-    notifyListeners();
   }
 
   dragOnTap() {

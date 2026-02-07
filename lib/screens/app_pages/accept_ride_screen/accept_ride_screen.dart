@@ -1,21 +1,26 @@
 import '../../../config.dart';
+import 'tracking_map_widget.dart';
 
 class AcceptRideScreen extends StatelessWidget {
   const AcceptRideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<AcceptRideProvider, CancelRideProvider,
-            SelectRiderProvider>(
-        builder: (context1, acceptCtrl, cancelCtrl, rideCtrl, child) {
+    return Consumer5<AcceptRideProvider, CancelRideProvider,
+            SelectRiderProvider, TripTrackingProvider, HomeScreenProvider>(
+        builder: (context1, acceptCtrl, cancelCtrl, rideCtrl, tripTrackingCtrl,
+            homeCtrl, child) {
+      // Get the active trip (always only one)
+      final activeTrip = homeCtrl.trackingData?.data.firstOrNull;
+
       return StatefulWrapper(
-          onInit: () => Future.delayed(DurationClass.ms150).then((value) {
-                acceptCtrl.getArgument(context);
-                rideCtrl.onInit();
-              }),
+          onInit: () {
+            rideCtrl.onInit();
+            tripTrackingCtrl.init();
+          },
           child: Scaffold(
               body: Stack(children: [
-            AddLocationWidgets().mapLayout(),
+            TrackingMapWidget(trip: activeTrip),
             Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -50,24 +55,19 @@ class AcceptRideScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             TextWidgetCommon(
-                                text: "Your ride is confirmed",
+                                text: "Your ride",
                                 fontWeight: FontWeight.w600,
                                 fontSize: Sizes.s16),
-                            rideCtrl.selectedIndex != null
-                                ? Image.asset(
-                                    rideCtrl.vehicleType[
-                                            rideCtrl.selectedIndex!]['image'] ??
-                                        rideCtrl.vehicleType[
-                                            rideCtrl.selectedIndex!]['image'],
-                                    height: Sizes.s25)
-                                : Image.asset(imageAssets.car,
-                                    height: Sizes.s25)
+                            SvgPicture.asset(svgAssets.myRideAuto,
+                                height: Sizes.s25)
                           ]),
                       Divider(
                               color: appColor(context).appTheme.stroke,
                               height: 0)
                           .paddingDirectional(vertical: Sizes.s20),
-                      AcceptRideWidgets().driverDetailsAndOtp()
+                      AcceptRideWidgets().driverDetailsAndOtp(
+                          driver: activeTrip?.driver,
+                          waypoints: activeTrip?.optimizedRouteData?.waypoints)
                     ])
                         .paddingDirectional(
                             horizontal: Sizes.s20, bottom: Sizes.s20)

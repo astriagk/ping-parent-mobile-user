@@ -1,5 +1,6 @@
-// Export generic map widgets
-export '../map_common/index.dart';
-// Export any map-specific widgets if needed
-export 'custom_map_widget.dart';
-export 'osrm_service.dart';
+export 'layout/map_tile_layer.dart';
+export 'map_widget.dart';
+export 'map_markers.dart';
+export 'route_polylines.dart';
+export 'map_controls.dart';
+export 'map_utils.dart';

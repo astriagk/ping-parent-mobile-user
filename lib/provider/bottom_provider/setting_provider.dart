@@ -241,6 +241,11 @@ class SettingProvider extends ChangeNotifier {
     // Clear user data from provider
     userProvider.clearUserData();
 
+    // Get AddStudentProvider and reset it
+    final studentProvider =
+        Provider.of<AddStudentProvider>(context, listen: false);
+    studentProvider.resetProvider();
+
     // Clear authentication data
     await StorageService().logout();
 

@@ -56,4 +56,7 @@ class ImageAssets {
 
   final bookingSuccess = "assets/image/setting/booking_success.png";
   final noInternet = "assets/image/setting/no_internet.png";
+
+  // tracking screen
+  final trackingMap = "assets/image/tracking/trackingMap.jpg";
 }
