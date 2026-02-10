@@ -6,7 +6,7 @@ class Endpoints {
   // For Physical Device: use your computer's network IP (check with ipconfig/ifconfig)
   static const String baseUrl =
       'https://ping-parent-backend-m8yc.onrender.com/api';
-  // static const String baseUrl = 'http://192.168.1.4:3000/api';
+  // static const String baseUrl = 'http://192.168.0.126:3000/api';
   static const String getUser = '$baseUrl/user';
   static const String login = '$baseUrl/login';
 
@@ -46,6 +46,10 @@ class Endpoints {
 
   // Trip Tracking Endpoints
   static const String activeTrips = '$baseUrl/parent/trips/active';
+
+  // QR/OTP Endpoints
+  static String parentTripQrOtp(String tripId) =>
+      '$baseUrl/daily-qr-otp/parent/trip/$tripId';
 
   // Add more endpoints as needed
 }

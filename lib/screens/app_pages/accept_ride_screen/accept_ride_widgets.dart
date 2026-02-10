@@ -118,15 +118,32 @@ class AcceptRideWidgets {
                               fontSize: Sizes.s14)
                         ]),
                     Column(children: [
-                      Row(children: [
-                        commonOTPContainer(context, "2"),
-                        HSpace(Sizes.s4),
-                        commonOTPContainer(context, "9"),
-                        HSpace(Sizes.s4),
-                        commonOTPContainer(context, "6"),
-                        HSpace(Sizes.s4),
-                        commonOTPContainer(context, "8")
-                      ]),
+                      Builder(builder: (context) {
+                        final otpCode = acceptCtrl.qrOtpData?.otpCode;
+                        if (acceptCtrl.isLoadingQrOtp) {
+                          return const SizedBox(
+                            height: 18,
+                            width: 100,
+                            child: Center(
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2)),
+                          );
+                        }
+
+                        if (otpCode == null || otpCode.isEmpty) {
+                          return const TextWidgetCommon(text: "----");
+                        }
+
+                        return Row(children: [
+                          ...List.generate(
+                            otpCode.length,
+                            (index) => Row(children: [
+                              commonOTPContainer(context, otpCode[index]),
+                              if (index < otpCode.length - 1) HSpace(Sizes.s4),
+                            ]),
+                          ),
+                        ]);
+                      }),
                       VSpace(Sizes.s4),
                       const TextWidgetCommon(
                           text: "Start Ride PIN", fontWeight: FontWeight.w400)
