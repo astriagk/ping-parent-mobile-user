@@ -32,16 +32,22 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
   String? lastDroppedStudentId;
   bool isTripCompleted = false;
 
+  // Parent-specific notifications (only YOUR child)
+  Map<String, dynamic>? myStudentPickedData;
+  Map<String, dynamic>? myStudentDroppedData;
+  Map<String, dynamic>? myStudentApproachingData;
+
   /// Initialize the provider. Safe to call multiple times.
   void init() {
+    // Always set up callbacks (they may have been cleared)
+    _setupCallbacks();
+
     if (_initialized) return;
+
     _initialized = true;
 
     // Register for lifecycle events
     WidgetsBinding.instance.addObserver(this);
-
-    // Set up callbacks
-    _setupCallbacks();
 
     // Fetch trips (this will also connect and subscribe)
     fetchActiveTrips();
@@ -59,10 +65,14 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     };
 
     _webSocketService.onPositionUpdate = (data) {
-      print("Received position update: $data");
       currentPositionData = data;
       notifyListeners();
     };
+
+    // If already connected, update state immediately
+    if (_webSocketService.isConnected) {
+      isWebSocketConnected = true;
+    }
 
     _webSocketService.onTripStarted = (data) {
       isTripStarted = true;
@@ -100,6 +110,22 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
 
     _webSocketService.onSocketError = (data) {
       error = data['message'];
+      notifyListeners();
+    };
+
+    // Parent-specific notification callbacks (only YOUR child)
+    _webSocketService.onMyStudentPicked = (data) {
+      myStudentPickedData = data;
+      notifyListeners();
+    };
+
+    _webSocketService.onMyStudentDropped = (data) {
+      myStudentDroppedData = data;
+      notifyListeners();
+    };
+
+    _webSocketService.onMyStudentApproaching = (data) {
+      myStudentApproachingData = data;
       notifyListeners();
     };
   }
@@ -160,12 +186,7 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   /// Subscribe to a specific trip
   Future<void> subscribeToTrip(String tripId) async {
-    // Already subscribed
-    if (currentSubscribedTripId == tripId && _webSocketService.isConnected)
-      return;
-
     currentSubscribedTripId = tripId;
-    _resetTripStatus();
 
     final success = await _webSocketService.subscribeToTrip(tripId);
     if (!success) {

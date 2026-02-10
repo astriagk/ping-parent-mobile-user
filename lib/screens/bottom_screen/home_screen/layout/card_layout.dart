@@ -9,11 +9,33 @@ class CardLayout extends StatefulWidget {
   State<CardLayout> createState() => _CardLayoutState();
 }
 
-class _CardLayoutState extends State<CardLayout> {
+class _CardLayoutState extends State<CardLayout> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _loadTrackingData();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadTrackingData();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _loadTrackingData();
+        }
+      });
+    }
   }
 
   Future<void> _loadTrackingData() async {

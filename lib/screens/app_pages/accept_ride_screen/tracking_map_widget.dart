@@ -72,17 +72,21 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
 
         // Use user location or default if not available
         final mapCenter = _userLocation ?? ll.LatLng(20.0, 0.0);
-        final driverLatLng = driverLat != null && driverLng != null
-            ? ll.LatLng(driverLat, driverLng)
-            : null;
+
+        // Get driver position from websocket only
+        ll.LatLng? driverLatLng;
+        if (driverLat != null && driverLng != null) {
+          driverLatLng = ll.LatLng(driverLat, driverLng);
+        }
 
         // Center on driver when position is available
         if (!_initialCentered &&
             driverLatLng != null &&
             _mapController != null) {
           _initialCentered = true;
+          final centerPosition = driverLatLng;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _centerOnDriver(driverLatLng);
+            _centerOnDriver(centerPosition);
           });
         }
 

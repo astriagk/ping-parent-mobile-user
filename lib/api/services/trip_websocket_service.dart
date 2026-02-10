@@ -31,13 +31,20 @@ class TripWebSocketService {
   Function()? onConnected;
   Function()? onDisconnected;
 
+  // Parent-specific notification callbacks (only for YOUR child)
+  Function(Map<String, dynamic>)? onMyStudentPicked;
+  Function(Map<String, dynamic>)? onMyStudentDropped;
+  Function(Map<String, dynamic>)? onMyStudentApproaching;
+
   bool get isConnected => _socket?.connected ?? false;
   String? get currentTripId => _currentTripId;
 
   /// Initialize socket connection. Safe to call multiple times.
   Future<bool> connect() async {
     // Already connected
-    if (_socket != null && _socket!.connected) return true;
+    if (_socket != null && _socket!.connected) {
+      return true;
+    }
 
     // Connection in progress - wait for it
     if (_isConnecting && _connectionCompleter != null) {
@@ -59,8 +66,6 @@ class TripWebSocketService {
         _completeConnection(false);
         return false;
       }
-
-      print('[WS] Connecting...');
 
       _socket = IO.io(baseUrl, <String, dynamic>{
         'transports': ['websocket'],
@@ -137,20 +142,17 @@ class TripWebSocketService {
     if (_socket == null) return;
 
     _socket!.onConnect((_) {
-      print('[WS] Connected');
       onConnected?.call();
       if (_currentTripId != null) _emitSubscription(_currentTripId!);
     });
 
     _socket!.onDisconnect((reason) {
-      print('[WS] Disconnected: $reason');
       onDisconnected?.call();
     });
 
-    _socket!.onConnectError((error) => print('[WS] Error: $error'));
+    _socket!.onConnectError((error) {});
 
     _socket!.onReconnect((_) {
-      print('[WS] Reconnected');
       if (_currentTripId != null) _emitSubscription(_currentTripId!);
     });
 
@@ -196,14 +198,24 @@ class TripWebSocketService {
       _currentTripId = null;
       onTripCompleted?.call(data is Map<String, dynamic> ? data : {});
     });
+
+    // Parent-specific notification events (only YOUR child - auto-triggered by REST API)
+    _socket!.on(ParentNotificationEvent.myStudentPicked.value, (data) {
+      onMyStudentPicked?.call(Map<String, dynamic>.from(data));
+    });
+
+    _socket!.on(ParentNotificationEvent.myStudentDropped.value, (data) {
+      onMyStudentDropped?.call(Map<String, dynamic>.from(data));
+    });
+
+    _socket!.on(ParentNotificationEvent.myStudentApproaching.value, (data) {
+      onMyStudentApproaching?.call(Map<String, dynamic>.from(data));
+    });
   }
 
   /// Subscribe to a trip. Connects if not already connected.
   Future<bool> subscribeToTrip(String tripId) async {
-    // Already subscribed to this trip
-    if (_currentTripId == tripId && isConnected) return true;
-
-    // Unsubscribe from previous trip
+    // Unsubscribe from previous trip if different
     if (_currentTripId != null && _currentTripId != tripId) {
       unsubscribeFromTrip(_currentTripId!);
     }
@@ -215,6 +227,8 @@ class TripWebSocketService {
     }
 
     _currentTripId = tripId;
+
+    // Always emit subscription (re-join room if needed)
     return _emitSubscription(tripId);
   }
 
@@ -223,9 +237,7 @@ class TripWebSocketService {
 
     _socket!.emitWithAck(ParentSocketEvent.subscribeTrip.value, tripId,
         ack: (response) {
-      if (response == true) {
-        print('[WS] Subscribed to: $tripId');
-      } else {
+      if (response != true) {
         onSocketError?.call({'message': 'Failed to subscribe'});
       }
     });
@@ -282,5 +294,9 @@ class TripWebSocketService {
     onSocketError = null;
     onConnected = null;
     onDisconnected = null;
+    // Parent-specific notification callbacks
+    onMyStudentPicked = null;
+    onMyStudentDropped = null;
+    onMyStudentApproaching = null;
   }
 }

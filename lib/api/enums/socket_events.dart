@@ -12,6 +12,23 @@ enum ParentSocketEvent {
   const ParentSocketEvent(this.value);
 }
 
+/// Parent-specific notification events (Server → Specific Parent)
+/// These are sent only to the specific parent of a student via their personal room.
+/// Auto-triggered when driver records pickup/drop via REST API.
+enum ParentNotificationEvent {
+  /// Notifies parent their child was picked up from home
+  myStudentPicked('parent:my_student_picked'),
+
+  /// Notifies parent their child was dropped off at home
+  myStudentDropped('parent:my_student_dropped'),
+
+  /// Notifies parent driver is approaching their child's location
+  myStudentApproaching('parent:my_student_approaching');
+
+  final String value;
+  const ParentNotificationEvent(this.value);
+}
+
 /// Broadcast events the parent app listens for from the server
 enum BroadcastSocketEvent {
   /// Real-time driver position updates - USED
