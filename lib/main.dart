@@ -7,6 +7,10 @@ import 'package:taxify_user_ui/api/services/trip_tracking_service.dart';
 import 'package:taxify_user_ui/api/api_client.dart';
 import 'config.dart';
 
+/// Global key for showing snackbars from anywhere (providers, services)
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
@@ -79,6 +83,7 @@ class MyApp extends StatelessWidget {
                         builder: (context, currency, child) {
                       return ScreenUtilInit(
                           child: MaterialApp(
+                              scaffoldMessengerKey: scaffoldMessengerKey,
                               title: appFonts.taxify,
                               debugShowCheckedModeBanner: false,
                               theme:

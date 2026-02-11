@@ -1,41 +1,30 @@
-/// Socket events used by the parent app
-///
-/// Events the parent app emits to the server
 enum ParentSocketEvent {
-  /// Subscribe to receive updates for a trip - USED
   subscribeTrip('parent:subscribe_trip'),
-
-  /// Unsubscribe from trip updates - USED
   unsubscribeTrip('parent:unsubscribe_trip');
 
   final String value;
   const ParentSocketEvent(this.value);
 }
 
-/// Broadcast events the parent app listens for from the server
+enum ParentNotificationEvent {
+  myStudentPicked('parent:my_student_picked'),
+  myStudentDropped('parent:my_student_dropped'),
+  myStudentApproaching('parent:my_student_approaching'),
+  myStudentAbsent('parent:my_student_absent');
+
+  final String value;
+  const ParentNotificationEvent(this.value);
+}
+
 enum BroadcastSocketEvent {
-  /// Real-time driver position updates - USED
   positionUpdate('trip:position_update'),
-
-  /// Trip has started - USED
   tripStarted('trip:started'),
-
-  /// Trip has been completed - USED
   tripCompleted('trip:completed'),
-
-  /// Route has been calculated/recalculated - USED
+  tripStatusUpdate('trip:status_update'),
   routeCalculated('trip:route_calculated'),
-
-  /// Driver is approaching a waypoint - USED
   approaching('trip:approaching'),
-
-  /// Student has been picked up - USED
   studentPicked('trip:student_picked'),
-
-  /// Student has been dropped off - USED
   studentDropped('trip:student_dropped'),
-
-  /// Socket error (authorization/validation) - USED
   error('socket:error');
 
   final String value;
