@@ -5,6 +5,7 @@ export 'package:taxify_user_ui/provider/auth_providers/sign_in_provider.dart';
 export 'package:taxify_user_ui/provider/auth_providers/otp_provider.dart';
 export 'package:taxify_user_ui/provider/bottom_provider/dash_board_provider.dart';
 export 'package:taxify_user_ui/provider/bottom_provider/home_provider.dart';
+export 'package:taxify_user_ui/provider/bottom_provider/trip_tracking_provider.dart';
 export 'package:taxify_user_ui/provider/app_pages_providers/notification_provider.dart';
 export 'package:taxify_user_ui/provider/auth_providers/new_location_provider.dart';
 export 'package:taxify_user_ui/provider/auth_providers/add_location_provider.dart';

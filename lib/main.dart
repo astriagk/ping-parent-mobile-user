@@ -3,7 +3,13 @@ import 'package:taxify_user_ui/provider/app_pages_providers/driver_provider.dart
 import 'package:taxify_user_ui/provider/app_pages_providers/my_wallet_provider.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
 import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
+import 'package:taxify_user_ui/api/services/trip_tracking_service.dart';
+import 'package:taxify_user_ui/api/api_client.dart';
 import 'config.dart';
+
+/// Global key for showing snackbars from anywhere (providers, services)
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +41,9 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => OtpProvider()),
                   ChangeNotifierProvider(create: (_) => DashBoardProvider()),
                   ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
+                  ChangeNotifierProvider(
+                      create: (_) => TripTrackingProvider(
+                          TripTrackingService(ApiClient()))),
                   ChangeNotifierProvider(create: (_) => NotificationProvider()),
                   ChangeNotifierProvider(create: (_) => NewLocationProvider()),
                   ChangeNotifierProvider(create: (_) => AddLocationProvider()),
@@ -74,6 +83,7 @@ class MyApp extends StatelessWidget {
                         builder: (context, currency, child) {
                       return ScreenUtilInit(
                           child: MaterialApp(
+                              scaffoldMessengerKey: scaffoldMessengerKey,
                               title: appFonts.taxify,
                               debugShowCheckedModeBanner: false,
                               theme:

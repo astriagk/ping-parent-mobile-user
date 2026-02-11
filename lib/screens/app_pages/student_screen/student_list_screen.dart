@@ -16,58 +16,69 @@ import '../../../widgets/skeletons/student_card_skeleton.dart';
 import '../../../api/models/student_response.dart';
 import '../driver_screen/assign_driver_screen.dart';
 
-class StudentListScreen extends StatelessWidget {
+class StudentListScreen extends StatefulWidget {
   const StudentListScreen({super.key});
+
+  @override
+  State<StudentListScreen> createState() => _StudentListScreenState();
+}
+
+class _StudentListScreenState extends State<StudentListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final studentCtrl =
+          Provider.of<AddStudentProvider>(context, listen: false);
+      studentCtrl.onInit();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AddStudentProvider>(builder: (context, studentCtrl, child) {
-      return StatefulWrapper(
-          onInit: () => Future.delayed(DurationClass.ms150)
-              .then((value) => studentCtrl.onInit()),
-          child: Scaffold(
-              backgroundColor: appColor(context).appTheme.white,
-              appBar: CommonAppBarLayout1(
-                  title: language(context, appFonts.studentList),
-                  titleWidth: MediaQuery.of(context).size.width * 0.01,
-                  icon: true,
-                  onTap: () {
-                    studentCtrl.clearForm();
-                    route.pushNamed(context, routeName.addStudentScreen);
-                  }),
-              body: studentCtrl.isLoading
-                  ? const StudentListSkeleton()
-                  : studentCtrl.errorMessage != null
-                      ? CommonErrorState(
-                          title: appFonts.somethingWentWrong,
-                          description: studentCtrl.errorMessage!,
-                          buttonText: appFonts.refresh,
-                          onButtonTap: () => studentCtrl.fetchStudents())
-                      : studentCtrl.studentList.isEmpty
-                          ? CommonEmptyState(
-                              mainText: appFonts.noStudentsAdded,
-                              descriptionText: appFonts.addYourFirstStudent,
-                              buttonText:
-                                  language(context, appFonts.addStudent),
-                              onButtonTap: () {
-                                studentCtrl.clearForm();
-                                route.pushNamed(
-                                    context, routeName.addStudentScreen);
+      return Scaffold(
+          backgroundColor: appColor(context).appTheme.white,
+          appBar: CommonAppBarLayout1(
+              title: language(context, appFonts.studentList),
+              titleWidth: MediaQuery.of(context).size.width * 0.01,
+              icon: true,
+              onTap: () {
+                studentCtrl.clearForm();
+                route.pushNamed(context, routeName.addStudentScreen);
+              }),
+          body: studentCtrl.isLoading
+              ? const StudentListSkeleton()
+              : studentCtrl.errorMessage != null
+                  ? CommonErrorState(
+                      title: appFonts.somethingWentWrong,
+                      description: studentCtrl.errorMessage!,
+                      buttonText: appFonts.refresh,
+                      onButtonTap: () => studentCtrl.fetchStudents())
+                  : studentCtrl.studentList.isEmpty
+                      ? CommonEmptyState(
+                          mainText: appFonts.noStudentsAdded,
+                          descriptionText: appFonts.addYourFirstStudent,
+                          buttonText: language(context, appFonts.addStudent),
+                          onButtonTap: () {
+                            studentCtrl.clearForm();
+                            route.pushNamed(
+                                context, routeName.addStudentScreen);
+                          })
+                      : ListView(
+                          padding: EdgeInsets.only(
+                              top: Sizes.s20, bottom: Sizes.s20),
+                          children: [
+                              ...studentCtrl.studentList
+                                  .asMap()
+                                  .entries
+                                  .map((entries) {
+                                Student student = entries.value;
+                                int index = entries.key;
+                                return _buildStudentCard(
+                                    context, studentCtrl, student, index);
                               })
-                          : ListView(
-                              padding: EdgeInsets.only(
-                                  top: Sizes.s20, bottom: Sizes.s20),
-                              children: [
-                                  ...studentCtrl.studentList
-                                      .asMap()
-                                      .entries
-                                      .map((entries) {
-                                    Student student = entries.value;
-                                    int index = entries.key;
-                                    return _buildStudentCard(
-                                        context, studentCtrl, student, index);
-                                  })
-                                ])));
+                            ]));
     });
   }
 
@@ -186,7 +197,7 @@ class StudentListScreen extends StatelessWidget {
             userRatingNumber:
                 driver.totalTrips != null ? ' (${driver.totalTrips})' : '',
             carName:
-                '${driver.vehicleType?.toUpperCase() ?? ''} ${driver.vehicleNumber ?? ''}'
+                '${driver.vehicleType.toDisplayString()} ${driver.vehicleNumber ?? ''}'
                     .trim(),
           ),
           profileImageUrl: driver.photoUrl,

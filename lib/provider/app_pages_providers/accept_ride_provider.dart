@@ -3,33 +3,122 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:taxify_user_ui/config.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../api/api_client.dart';
+import '../../api/services/accept_ride_service.dart';
+import '../../api/services/storage_service.dart';
+import '../../api/models/qr_otp_response.dart';
+import '../../api/models/trip_tracking_response.dart';
 
 class AcceptRideProvider extends ChangeNotifier {
-  dynamic data;
-  dynamic index;
-  dynamic image;
-  dynamic carName;
-  dynamic driverProfile;
-  dynamic driverName;
-  dynamic rating;
-  dynamic userRatingNumber;
-  dynamic status;
-  dynamic date;
-  dynamic time;
-  dynamic code;
-  dynamic value;
   bool isDrag = false;
   List emergencyList = [];
-  bool isRetry = false;
+  bool isRetry = true;
 
   bool isPayment = false;
+
+  // QR/OTP related state
+  final AcceptRideService _acceptRideService = AcceptRideService(ApiClient());
+  final StorageService _storageService = StorageService();
+  QrOtpData? qrOtpData;
+  bool isLoadingQrOtp = false;
+  String? qrOtpError;
+
+  // Current user ID from storage
+  String? currentUserId;
+
+  // Current matching trip and parent waypoint
+  Trip? currentTrip;
+  Waypoint? currentParentWaypoint;
+
+  AcceptRideProvider();
 
   onInit() {
     emergencyList = appArray.emergencyList;
     notifyListeners();
   }
 
-  call(e, context) async {
+  /// Load the current user ID from storage
+  Future<void> loadCurrentUserId() async {
+    if (currentUserId != null) return;
+    currentUserId = await _storageService.getUserId();
+    notifyListeners();
+  }
+
+  /// Get the trip that matches the current user's ID from waypoints
+  Trip? getMatchingTrip(List<Trip> trips) {
+    if (currentUserId == null || trips.isEmpty) return null;
+
+    try {
+      return trips.firstWhere(
+        (trip) =>
+            trip.optimizedRouteData?.waypoints.any(
+              (waypoint) =>
+                  waypoint.parentUserId == currentUserId &&
+                  waypoint.parentName != null,
+            ) ??
+            false,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Get parent waypoint details from the matching trip
+  Waypoint? getParentWaypoint(Trip? trip) {
+    if (trip == null || currentUserId == null) return null;
+
+    try {
+      return trip.optimizedRouteData?.waypoints.firstWhere(
+        (waypoint) =>
+            waypoint.parentUserId == currentUserId &&
+            waypoint.parentName != null,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Set current trip and parent waypoint from trips list
+  void setCurrentTripFromList(List<Trip> trips) {
+    currentTrip = getMatchingTrip(trips);
+    currentParentWaypoint = getParentWaypoint(currentTrip);
+    notifyListeners();
+  }
+
+  /// Fetches QR code and OTP for a parent's trip
+  Future<void> fetchTripQrOtp(String tripId) async {
+    isLoadingQrOtp = true;
+    qrOtpError = null;
+    notifyListeners();
+
+    try {
+      final response = await _acceptRideService.getParentTripQrOtp(tripId);
+
+      if (response.success && response.data != null) {
+        qrOtpData = response.data;
+        qrOtpError = null;
+      } else {
+        qrOtpError = response.error ?? 'Failed to fetch QR/OTP';
+        qrOtpData = null;
+      }
+    } catch (e) {
+      qrOtpError = 'An error occurred while fetching QR/OTP';
+      qrOtpData = null;
+    } finally {
+      isLoadingQrOtp = false;
+      notifyListeners();
+    }
+  }
+
+  /// Clears QR/OTP data
+  void clearQrOtpData() {
+    qrOtpData = null;
+    qrOtpError = null;
+    isLoadingQrOtp = false;
+    notifyListeners();
+  }
+
+  call(e, context, {String? phoneNumber}) async {
     log("eeee $e");
     if (e['title'] == "Share my location") {
       String text = 'Share My Location!';
@@ -45,7 +134,7 @@ class AcceptRideProvider extends ChangeNotifier {
       PermissionStatus status = await Permission.phone.request();
 
       if (status.isGranted) {
-        final Uri phoneUri = Uri(scheme: 'tel', path: "987");
+        final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
 
         // Try to launch the dialer
         if (await canLaunchUrl(phoneUri)) {
@@ -60,25 +149,6 @@ class AcceptRideProvider extends ChangeNotifier {
         openAppSettings();
       }
     }
-  }
-
-  getArgument(context) {
-    data = ModalRoute.of(context)!.settings.arguments;
-    log("value::value:$data");
-    index = data["index"];
-    value = data["data"];
-    driverProfile = value['image'];
-    driverName = value['driverName'];
-    rating = value['rating'];
-    userRatingNumber = value['userRating'];
-    status = value['status'];
-    date = value['date'];
-    time = value['time'];
-    code = value['code'];
-    carName = value['fullCarName'];
-    log("message::$carName");
-
-    notifyListeners();
   }
 
   dragOnTap() {

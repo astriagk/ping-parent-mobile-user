@@ -1,5 +1,4 @@
-import 'package:taxify_user_ui/widgets/map_common/markers.dart';
-import 'package:taxify_user_ui/widgets/maps/layout/osm_tile_layer.dart';
+import 'package:taxify_user_ui/widgets/maps/index.dart';
 
 import '../../../../../config.dart';
 
@@ -25,7 +24,7 @@ class AddLocationWidgets {
             },
           ),
           children: [
-            OSMTileLayer(),
+            const MapTileLayer(),
             MarkerLayer(
               markers: [
                 MapMarkers.currentLocationMarker(currentLatLng, context),

@@ -137,7 +137,6 @@ class AppArray {
     },
   ];
 
-  var carCards = [imageAssets.card1, imageAssets.card2];
   var categories = [
     {
       'image': imageAssets.addStudent,

@@ -53,9 +53,31 @@ class AddStudentProvider extends ChangeNotifier {
   Future<void> onInit() async {
     if (_isInitialized) return;
     _isInitialized = true;
+
+    // Fetch all required data on first initialization
     await fetchSchools();
     await fetchParentAddress();
     await fetchStudents();
+  }
+
+  // Reset provider data and initialization flag (for logout)
+  void resetProvider() {
+    _isInitialized = false;
+    studentList = [];
+    schoolList = [];
+    parentAddress = null;
+    isLoading = true;
+    isSaving = false;
+    errorMessage = null;
+    isEditMode = false;
+    editIndex = null;
+    currentStudent = null;
+    selectedSchoolId = null;
+    selectedPickupAddressId = null;
+    selectedGender = null;
+    selectedClass = null;
+    clearForm();
+    notifyListeners();
   }
 
   Future<void> fetchSchools() async {

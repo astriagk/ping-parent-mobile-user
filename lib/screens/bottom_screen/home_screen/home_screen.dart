@@ -1,18 +1,18 @@
 import 'package:taxify_user_ui/config.dart';
 
-import 'layout/maps_explorer_layout.dart';
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ChooseRiderProvider, HomeScreenProvider>(
-        builder: (context, chooseCtrl, homeCtrl, child) {
+    return Consumer3<ChooseRiderProvider, HomeScreenProvider,
+            TripTrackingProvider>(
+        builder: (context, chooseCtrl, homeCtrl, tripCtrl, child) {
       return StatefulWrapper(
           onInit: () => Future.delayed(DurationClass.ms150).then((value) {
                 homeCtrl.init();
                 chooseCtrl.onInit();
+                tripCtrl.init();
               }),
           child: Scaffold(
               body: ListView(padding: EdgeInsets.zero, children: [
@@ -21,8 +21,6 @@ class HomeScreen extends StatelessWidget {
               CardLayout(),
               // top categories layout
               TopCategories(),
-              // maps explorer layout
-              MapsExplorerLayout(),
               //today's offer layout
               TodayOfferLayout()
             ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
