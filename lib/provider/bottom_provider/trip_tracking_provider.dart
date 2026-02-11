@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../api/models/trip_tracking_response.dart';
 import '../../api/services/trip_tracking_service.dart';
 import '../../api/services/trip_websocket_service.dart';
+import '../../main.dart' show scaffoldMessengerKey;
 
 /// Provider for trip tracking with WebSocket support.
 /// Uses singleton WebSocket service to maintain persistent connection.
@@ -92,11 +93,23 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     _webSocketService.onStudentPickedUp = (data) {
       lastPickedStudentId = data['studentId'];
       isDriverApproaching = false;
+      // Only show snackbar if parent is subscribed to this trip
+      final tripId = data['tripId'];
+      if (currentSubscribedTripId != null &&
+          currentSubscribedTripId == tripId) {
+        _showSnackbar('A student has been picked up', isMyStudent: false);
+      }
       notifyListeners();
     };
 
     _webSocketService.onStudentDroppedOff = (data) {
       lastDroppedStudentId = data['studentId'];
+      // Only show snackbar if parent is subscribed to this trip
+      final tripId = data['tripId'];
+      if (currentSubscribedTripId != null &&
+          currentSubscribedTripId == tripId) {
+        _showSnackbar('A student has been dropped off', isMyStudent: false);
+      }
       notifyListeners();
     };
 
@@ -116,16 +129,37 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     // Parent-specific notification callbacks (only YOUR child)
     _webSocketService.onMyStudentPicked = (data) {
       myStudentPickedData = data;
+      final studentName = data['studentName'] ?? 'Your child';
+      _showSnackbar('$studentName has been picked up!', isMyStudent: true);
       notifyListeners();
     };
 
     _webSocketService.onMyStudentDropped = (data) {
       myStudentDroppedData = data;
+      final studentName = data['studentName'] ?? 'Your child';
+      _showSnackbar('$studentName has been dropped off!', isMyStudent: true);
       notifyListeners();
     };
 
     _webSocketService.onMyStudentApproaching = (data) {
       myStudentApproachingData = data;
+      final studentName = data['studentName'] ?? 'Your child';
+      final eta = data['eta'];
+      final etaText = eta != null ? ' in ${(eta / 60).round()} min' : '';
+      _showSnackbar('Driver approaching $studentName$etaText',
+          isMyStudent: true);
+      notifyListeners();
+    };
+
+    _webSocketService.onMyStudentAbsent = (data) {
+      final studentName = data['studentName'] ?? 'Your child';
+      _showSnackbar('$studentName marked as absent', isMyStudent: true);
+      notifyListeners();
+    };
+
+    _webSocketService.onTripStatusUpdate = (data) {
+      final status = data['status'] ?? 'updated';
+      _showSnackbar('Trip status: $status', isMyStudent: false);
       notifyListeners();
     };
   }
@@ -212,6 +246,21 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     isTripCompleted = false;
     currentPositionData = {};
     notifyListeners();
+  }
+
+  /// Show a snackbar notification for pickup events
+  void _showSnackbar(String message, {required bool isMyStudent}) {
+    final messenger = scaffoldMessengerKey.currentState;
+    if (messenger == null) return;
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isMyStudent ? Colors.green : Colors.blue,
+        duration: Duration(seconds: isMyStudent ? 5 : 3),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   // Getters

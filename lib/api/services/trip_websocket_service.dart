@@ -22,6 +22,7 @@ class TripWebSocketService {
   // Callbacks
   Function(Map<String, dynamic>)? onPositionUpdate;
   Function(Map<String, dynamic>)? onTripStarted;
+  Function(Map<String, dynamic>)? onTripStatusUpdate;
   Function(Map<String, dynamic>)? onRouteCalculated;
   Function(Map<String, dynamic>)? onApproaching;
   Function(Map<String, dynamic>)? onStudentPickedUp;
@@ -35,6 +36,7 @@ class TripWebSocketService {
   Function(Map<String, dynamic>)? onMyStudentPicked;
   Function(Map<String, dynamic>)? onMyStudentDropped;
   Function(Map<String, dynamic>)? onMyStudentApproaching;
+  Function(Map<String, dynamic>)? onMyStudentAbsent;
 
   bool get isConnected => _socket?.connected ?? false;
   String? get currentTripId => _currentTripId;
@@ -72,10 +74,10 @@ class TripWebSocketService {
         'autoConnect': false,
         'forceNew': false, // Reuse existing connection
         'reconnection': true,
-        'reconnectionAttempts': 10,
-        'reconnectionDelay': 1000,
-        'reconnectionDelayMax': 5000,
-        'timeout': 20000,
+        'reconnectionAttempts': 999, // Keep trying to reconnect
+        'reconnectionDelay': 500, // Start with 500ms delay
+        'reconnectionDelayMax': 3000, // Max 3 seconds between attempts
+        'timeout': 10000, // Faster timeout for quicker retry
         'auth': {
           'token': token,
           'userId': userId,
@@ -142,17 +144,22 @@ class TripWebSocketService {
     if (_socket == null) return;
 
     _socket!.onConnect((_) {
+      print('[P] Connected');
       onConnected?.call();
       if (_currentTripId != null) _emitSubscription(_currentTripId!);
     });
 
     _socket!.onDisconnect((reason) {
+      print('[P] Disconnected: $reason');
       onDisconnected?.call();
     });
 
-    _socket!.onConnectError((error) {});
+    _socket!.onConnectError((error) {
+      print('[P] Error: $error');
+    });
 
     _socket!.onReconnect((_) {
+      print('[P] Reconnected');
       if (_currentTripId != null) _emitSubscription(_currentTripId!);
     });
 
@@ -178,6 +185,10 @@ class TripWebSocketService {
       onTripStarted?.call(data is Map<String, dynamic> ? data : {});
     });
 
+    _socket!.on(BroadcastSocketEvent.tripStatusUpdate.value, (data) {
+      onTripStatusUpdate?.call(Map<String, dynamic>.from(data));
+    });
+
     _socket!.on(BroadcastSocketEvent.routeCalculated.value, (data) {
       onRouteCalculated?.call(Map<String, dynamic>.from(data));
     });
@@ -190,7 +201,17 @@ class TripWebSocketService {
       onStudentPickedUp?.call(Map<String, dynamic>.from(data));
     });
 
+    // Also listen for driver's direct event (server may forward it)
+    _socket!.on('driver:student_picked', (data) {
+      onStudentPickedUp?.call(Map<String, dynamic>.from(data));
+    });
+
     _socket!.on(BroadcastSocketEvent.studentDropped.value, (data) {
+      onStudentDroppedOff?.call(Map<String, dynamic>.from(data));
+    });
+
+    // Also listen for driver's direct drop event
+    _socket!.on('driver:student_dropped', (data) {
       onStudentDroppedOff?.call(Map<String, dynamic>.from(data));
     });
 
@@ -210,6 +231,10 @@ class TripWebSocketService {
 
     _socket!.on(ParentNotificationEvent.myStudentApproaching.value, (data) {
       onMyStudentApproaching?.call(Map<String, dynamic>.from(data));
+    });
+
+    _socket!.on(ParentNotificationEvent.myStudentAbsent.value, (data) {
+      onMyStudentAbsent?.call(Map<String, dynamic>.from(data));
     });
   }
 
@@ -237,7 +262,9 @@ class TripWebSocketService {
 
     _socket!.emitWithAck(ParentSocketEvent.subscribeTrip.value, tripId,
         ack: (response) {
-      if (response != true) {
+      if (response == true) {
+        print('[P] Subscribed to trip:$tripId');
+      } else {
         onSocketError?.call({'message': 'Failed to subscribe'});
       }
     });
@@ -271,21 +298,33 @@ class TripWebSocketService {
 
   /// Pause connection (e.g., when app goes to background).
   void pause() {
-    // Socket stays connected in background
+    // Socket.IO will handle reconnection automatically
   }
 
   /// Resume connection (e.g., when app comes to foreground).
   Future<void> resume() async {
-    if (!isConnected && _currentTripId != null) {
-      await connect();
-      if (isConnected && _currentTripId != null)
-        _emitSubscription(_currentTripId!);
+    final tripId = _currentTripId;
+
+    if (isConnected) {
+      // Re-subscribe to ensure we're in the room
+      if (tripId != null) _emitSubscription(tripId);
+      return;
+    }
+
+    // Force a fresh connection
+    _disposeSocket();
+
+    final connected = await connect();
+    if (connected && tripId != null) {
+      _currentTripId = tripId;
+      _emitSubscription(tripId);
     }
   }
 
   void clearCallbacks() {
     onPositionUpdate = null;
     onTripStarted = null;
+    onTripStatusUpdate = null;
     onRouteCalculated = null;
     onApproaching = null;
     onStudentPickedUp = null;
@@ -298,5 +337,6 @@ class TripWebSocketService {
     onMyStudentPicked = null;
     onMyStudentDropped = null;
     onMyStudentApproaching = null;
+    onMyStudentAbsent = null;
   }
 }
