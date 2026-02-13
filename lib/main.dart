@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => UserProvider()),
                   ChangeNotifierProvider(create: (_) => SplashProvider()),
                   ChangeNotifierProvider(create: (_) => SignInProvider()),
+                  ChangeNotifierProvider(create: (_) => SignUpProvider()),
                   ChangeNotifierProvider(create: (_) => OtpProvider()),
                   ChangeNotifierProvider(create: (_) => DashBoardProvider()),
                   ChangeNotifierProvider(create: (_) => HomeScreenProvider()),

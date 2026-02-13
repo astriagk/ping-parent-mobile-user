@@ -16,3 +16,4 @@ export 'package:taxify_user_ui/widgets/country_picker_custom/country_code_custom
 export 'package:taxify_user_ui/widgets/country_picker_custom/country_picker_custom.dart';
 export 'package:taxify_user_ui/widgets/country_picker_custom/layouts/country_theme.dart';
 export 'package:taxify_user_ui/widgets/auth_check_widget.dart';
+export 'package:taxify_user_ui/widgets/error/index.dart';

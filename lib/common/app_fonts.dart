@@ -34,7 +34,7 @@ class AppFonts {
   final enterReferralID = "Enter Referral Id";
   final alreadyHaveAnAccount = "Already Have An Account ?";
   final otpVerification = "OTP Verification";
-  final enterOTPSent = "Enter OTP Sent To +91 77777 88888";
+  final enterOTPSent = "Enter OTP Sent To";
   final otp = "OTP";
   final verify = "Verify";
   final notReceivedYet = "Not Received Yet ?";

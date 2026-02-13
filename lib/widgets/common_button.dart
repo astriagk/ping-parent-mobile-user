@@ -1,4 +1,5 @@
-import '../config.dart';
+import 'package:taxify_user_ui/config.dart';
+import 'loading/loading_wave_animation.dart';
 
 class CommonButton extends StatelessWidget {
   final double? height;
@@ -15,6 +16,7 @@ class CommonButton extends StatelessWidget {
   final Gradient? gradient;
   final GestureTapCallback? onTap;
   final TextStyle? style;
+  final bool isLoading;
 
   const CommonButton(
       {super.key,
@@ -31,7 +33,8 @@ class CommonButton extends StatelessWidget {
       this.bottom,
       this.onTap,
       this.bgColor,
-      this.style});
+      this.style,
+      this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +52,21 @@ class CommonButton extends StatelessWidget {
                           borderRadius: SmoothBorderRadius(
                               cornerRadius: Sizes.s9, cornerSmoothing: 1)),
                       color: bgColor ?? appColor(context).appTheme.primary),
-                  child: TextWidgetCommon(
-                          text: text,
-                          style: style ??
-                              AppCss.lexendSemiBold15.textColor(textColor ??
-                                  appColor(context).appTheme.white))
-                      .center())
-              .inkWell(onTap: onTap))
+                  child: isLoading
+                      ? LoadingWaveAnimation(
+                          color: textColor ?? appColor(context).appTheme.white,
+                          barCount: 4,
+                          barWidth: 4,
+                          maxHeight: 18,
+                          minHeight: 6,
+                        )
+                      : TextWidgetCommon(
+                              text: text,
+                              style: style ??
+                                  AppCss.lexendSemiBold15.textColor(textColor ??
+                                      appColor(context).appTheme.white))
+                          .center())
+              .inkWell(onTap: isLoading ? null : onTap))
     ]);
   }
 }

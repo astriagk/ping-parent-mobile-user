@@ -1,10 +1,11 @@
-import '../../../config.dart';
-import '../../../helper/distance_helper.dart';
-import '../../../widgets/common_app_bar_layout1.dart';
-import '../../../widgets/searchable_dropdown.dart';
-import '../../../widgets/location/route_location_display.dart';
-import '../../../widgets/location/route_distance_display.dart';
-import '../../../api/models/school_response.dart';
+import 'package:taxify_user_ui/api/models/school_response.dart';
+import 'package:taxify_user_ui/config.dart';
+import 'package:taxify_user_ui/helper/distance_helper.dart';
+import 'package:taxify_user_ui/widgets/common_app_bar_layout1.dart';
+import 'package:taxify_user_ui/widgets/location/route_distance_display.dart';
+import 'package:taxify_user_ui/widgets/location/route_location_display.dart';
+import 'package:taxify_user_ui/widgets/searchable_dropdown.dart';
+
 import 'student_widgets.dart';
 
 class AddStudentScreen extends StatefulWidget {
@@ -15,8 +16,6 @@ class AddStudentScreen extends StatefulWidget {
 }
 
 class _AddStudentScreenState extends State<AddStudentScreen> {
-  bool _isSaving = false;
-
   @override
   void initState() {
     super.initState();
@@ -33,17 +32,11 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   }
 
   Future<void> _saveStudent() async {
-    if (_isSaving) return;
-
-    setState(() => _isSaving = true);
-
     final studentCtrl = context.read<AddStudentProvider>();
 
     final success = await studentCtrl.createStudent();
 
     if (mounted) {
-      setState(() => _isSaving = false);
-
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -352,10 +345,10 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
                 // Location Preview - shows when both school and pickup address are selected
                 if (studentCtrl.selectedSchoolId != null &&
-                    studentCtrl.selectedPickupAddressId != null)
+                    studentCtrl.selectedPickupAddressId != null) ...[
                   _buildLocationPreview(context, studentCtrl),
-
-                VSpace(Sizes.s16),
+                  VSpace(Sizes.s16),
+                ],
 
                 // ========== OPTIONAL FIELDS ==========
 
@@ -450,14 +443,11 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
           bottomNavigationBar: Padding(
               padding: EdgeInsets.all(Sizes.s20),
               child: CommonButton(
-                  text: _isSaving
-                      ? (studentCtrl.isEditMode
-                          ? 'Updating Student...'
-                          : 'Saving Student...')
-                      : (studentCtrl.isEditMode
-                          ? appFonts.updateStudent
-                          : appFonts.saveStudent),
-                  onTap: _isSaving ? null : _saveStudent)),
+                  text: studentCtrl.isEditMode
+                      ? appFonts.updateStudent
+                      : appFonts.saveStudent,
+                  isLoading: studentCtrl.isLoading,
+                  onTap: _saveStudent)),
         ),
       );
     });
