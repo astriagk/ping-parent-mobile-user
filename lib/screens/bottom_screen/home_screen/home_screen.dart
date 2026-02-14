@@ -1,4 +1,5 @@
 import 'package:taxify_user_ui/config.dart';
+import 'layout/tracking_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,7 +19,9 @@ class HomeScreen extends StatelessWidget {
               body: ListView(padding: EdgeInsets.zero, children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               //card layout
-              CardLayout(),
+              // CardLayout(),
+              // tracking card
+              TrackingCard(),
               // top categories layout
               TopCategories(),
               //today's offer layout

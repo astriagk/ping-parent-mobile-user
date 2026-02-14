@@ -8,12 +8,14 @@ import 'subscription_badge_label.dart';
 class SubscriptionCard extends StatelessWidget {
   final Map<String, dynamic> subscriptionData;
   final VoidCallback? onTap;
+  final VoidCallback? onSubscribe;
   final int kidCount;
 
   const SubscriptionCard({
     super.key,
     required this.subscriptionData,
     this.onTap,
+    this.onSubscribe,
     this.kidCount = 1,
   });
 
@@ -36,33 +38,47 @@ class SubscriptionCard extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color:
-                      appColor(context).appTheme.primary.withValues(alpha: 0.04),
-                  blurRadius: 12,
-                  spreadRadius: 4,
+                      appColor(context).appTheme.primary.withValues(alpha: 0.08),
+                  blurRadius: 16,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 4),
                 )
               ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SubscriptionHeaderSection(subscriptionData: subscriptionData),
-                SubscriptionPriceSection(
-                  subscriptionData: subscriptionData,
-                  kidCount: kidCount,
-                ).padding(vertical: Sizes.s8),
-                DottedLine(
-                  alignment: WrapAlignment.center,
-                  dashLength: 5.0,
-                  dashGapLength: 2.0,
-                  lineThickness: 1,
-                  dashColor: appColor(context).appTheme.stroke,
-                  direction: Axis.horizontal,
-                ).padding(vertical: Sizes.s8),
-                SubscriptionKidsInfo(subscriptionData: subscriptionData),
-                SubscriptionFeaturesSection(subscriptionData: subscriptionData)
-                    .padding(top: Sizes.s8),
-              ],
-            ).padding(all: Sizes.s12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(Sizes.s12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SubscriptionHeaderSection(subscriptionData: subscriptionData),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SubscriptionPriceSection(
+                        subscriptionData: subscriptionData,
+                        kidCount: kidCount,
+                      ).padding(vertical: Sizes.s8),
+                      DottedLine(
+                        alignment: WrapAlignment.center,
+                        dashLength: 5.0,
+                        dashGapLength: 2.0,
+                        lineThickness: 1,
+                        dashColor: appColor(context).appTheme.stroke,
+                        direction: Axis.horizontal,
+                      ).padding(vertical: Sizes.s8),
+                      SubscriptionKidsInfo(subscriptionData: subscriptionData),
+                      SubscriptionFeaturesSection(
+                              subscriptionData: subscriptionData)
+                          .padding(top: Sizes.s8),
+                      CommonButton(
+                        text: 'Subscribe Now',
+                        onTap: onSubscribe,
+                      ).padding(top: Sizes.s12),
+                    ],
+                  ).padding(all: Sizes.s12),
+                ],
+              ),
+            ),
           ),
           // Badge positioned at top center
           if (hasBadge)

@@ -22,12 +22,25 @@ class SubscriptionFeaturesSection extends StatelessWidget {
 
         return Row(
           children: [
-            Icon(
-              isEnabled ? Icons.check_circle : Icons.cancel,
-              size: Sizes.s16,
-              color: isEnabled
-                  ? appColor(context).appTheme.primary
-                  : appColor(context).appTheme.lightText,
+            Container(
+              width: Sizes.s20,
+              height: Sizes.s20,
+              decoration: BoxDecoration(
+                color: isEnabled
+                    ? appColor(context)
+                        .appTheme
+                        .primary
+                        .withValues(alpha: 0.12)
+                    : appColor(context).appTheme.stroke.withValues(alpha: 0.6),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                isEnabled ? Icons.check : Icons.close,
+                size: Sizes.s12,
+                color: isEnabled
+                    ? appColor(context).appTheme.primary
+                    : appColor(context).appTheme.lightText,
+              ),
             ),
             HSpace(Sizes.s8),
             Expanded(

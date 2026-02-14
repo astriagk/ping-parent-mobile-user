@@ -3,13 +3,13 @@ import '../config.dart';
 class CustomConfirmationDialog extends StatelessWidget {
   final String message;
   final VoidCallback onConfirm;
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
 
   const CustomConfirmationDialog(
       {super.key,
       required this.message,
       required this.onConfirm,
-      required this.onCancel});
+      this.onCancel});
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,15 @@ class CustomConfirmationDialog extends StatelessWidget {
                             AppCss.lexendMedium14.textColor(appTheme.primary),
                         text: appFonts.yes,
                         color: appTheme.stroke)),
-                SizedBox(width: Insets.i15),
-                Expanded(
-                    child: CommonButton(
-                        onTap: onCancel,
-                        style: AppCss.lexendMedium14.textColor(appTheme.white),
-                        text: appFonts.no))
+                if (onCancel != null) ...[
+                  SizedBox(width: Insets.i15),
+                  Expanded(
+                      child: CommonButton(
+                          onTap: onCancel,
+                          style:
+                              AppCss.lexendMedium14.textColor(appTheme.white),
+                          text: appFonts.no))
+                ]
               ])
             ])));
   }
