@@ -1,4 +1,4 @@
-import '../../../../../config.dart';
+import 'package:taxify_user_ui/config.dart';
 
 class TextFieldLayout extends StatelessWidget {
   const TextFieldLayout({super.key});
@@ -34,7 +34,8 @@ class TextFieldLayout extends StatelessWidget {
                             itemsList: locationCtrl.countryDialogDropDownItems
                                 .map((item) => DropdownMenuItem<dynamic>(
                                     value: item['value'],
-                                    child: TextWidgetCommon(text: item['label'])))
+                                    child:
+                                        TextWidgetCommon(text: item['label'])))
                                 .toList())
                         .padding(top: Sizes.s8, bottom: Sizes.s20))),
             //common title (read-only, auto-filled from map)
@@ -52,7 +53,8 @@ class TextFieldLayout extends StatelessWidget {
                             itemsList: locationCtrl.dialogDropDownItems
                                 .map((item) => DropdownMenuItem<dynamic>(
                                     value: item['value'],
-                                    child: TextWidgetCommon(text: item['label'])))
+                                    child:
+                                        TextWidgetCommon(text: item['label'])))
                                 .toList())
                         .padding(top: Sizes.s8, bottom: Sizes.s20))),
             //common title and text-field layout
@@ -62,21 +64,30 @@ class TextFieldLayout extends StatelessWidget {
                 hintText: appFonts.area,
                 icon: svgAssets.location),
             //common title and text-field layout (read-only, auto-filled from map)
-            LocationWidgets().commonTextFields(context,
-                title: appFonts.city,
-                controller: locationCtrl.cityCtrl,
-                hintText: appFonts.city,
-                icon: svgAssets.location,
-                readOnly: true),
+            IgnorePointer(
+                child: Opacity(
+                    opacity: 0.6,
+                    child: LocationWidgets()
+                        .commonTextFields(context,
+                            title: appFonts.city,
+                            controller: locationCtrl.cityCtrl,
+                            hintText: appFonts.city,
+                            icon: svgAssets.location,
+                            readOnly: true)
+                        .padding(top: Sizes.s8, bottom: Sizes.s20))),
             //common title and text-field layout (read-only, auto-filled from map)
-            LocationWidgets()
-                .commonTextFields(context,
-                    title: appFonts.zip,
-                    controller: locationCtrl.zipCtrl,
-                    hintText: appFonts.zip,
-                    icon: svgAssets.gps,
-                    readOnly: true)
-                .padding(bottom: Insets.i40)
+
+            IgnorePointer(
+                child: Opacity(
+                    opacity: 0.6,
+                    child: LocationWidgets()
+                        .commonTextFields(context,
+                            title: appFonts.zip,
+                            controller: locationCtrl.zipCtrl,
+                            hintText: appFonts.zip,
+                            icon: svgAssets.gps,
+                            readOnly: true)
+                        .padding(top: Sizes.s8, bottom: Insets.i40)))
           ])
               .paddingOnly(bottom: Sizes.s30)
               .width(MediaQuery.of(context).size.width)

@@ -43,6 +43,11 @@ class Endpoints {
 
   // Subscription Endpoints
   static const String subscriptionPlans = '$baseUrl/subscription-plans';
+  static const String subscriptionRecommendations =
+      '$baseUrl/parent-subscriptions/recommendations';
+  static const String parentSubscriptions = '$baseUrl/parent-subscriptions';
+  static const String parentSubscriptionsUpgrade =
+      '$baseUrl/parent-subscriptions/upgrade';
 
   // Trip Tracking Endpoints
   static const String activeTrips = '$baseUrl/parent/trips/active';
@@ -50,6 +55,14 @@ class Endpoints {
   // QR/OTP Endpoints
   static String parentTripQrOtp(String tripId) =>
       '$baseUrl/daily-qr-otp/parent/trip/$tripId';
+
+  // Payment Endpoints
+  static const String payments = '$baseUrl/payments';
+
+  // Razorpay Endpoints
+  static const String razorpayConfig = '$baseUrl/razorpay/config';
+  static const String razorpayOrders = '$baseUrl/razorpay/orders';
+  static const String razorpayVerify = '$baseUrl/razorpay/verify';
 
   // Add more endpoints as needed
 }

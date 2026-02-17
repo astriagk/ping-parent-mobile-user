@@ -1,25 +1,27 @@
 import 'package:flutter/foundation.dart';
-import '../../api/api_client.dart';
-import '../../api/services/user_service.dart';
-import '../../api/models/profile_response.dart';
+import 'package:taxify_user_ui/api/api_client.dart';
+import 'package:taxify_user_ui/api/models/profile_response.dart';
+import 'package:taxify_user_ui/api/services/user_service.dart';
 
 class UserProvider extends ChangeNotifier {
   final UserService _userService = UserService(ApiClient());
 
   ProfileData? _userData;
-  bool _isLoading = false;
+  bool _isFetching = false; // For initial data fetch from API
+  bool _isUpdating = false; // For update operations
   String? _errorMessage;
 
   // Getters
   ProfileData? get userData => _userData;
-  bool get isLoading => _isLoading;
+  bool get isFetching => _isFetching;
+  bool get isUpdating => _isUpdating;
   String? get errorMessage => _errorMessage;
   bool get hasUserData => _userData != null;
 
   // Fetch user profile from API
   Future<void> fetchUserProfile() async {
     try {
-      _isLoading = true;
+      _isFetching = true;
       _errorMessage = null;
       notifyListeners();
 
@@ -34,7 +36,7 @@ class UserProvider extends ChangeNotifier {
     } catch (e) {
       _errorMessage = 'Error: $e';
     } finally {
-      _isLoading = false;
+      _isFetching = false;
       notifyListeners();
     }
   }
@@ -45,7 +47,7 @@ class UserProvider extends ChangeNotifier {
     required String email,
   }) async {
     try {
-      _isLoading = true;
+      _isUpdating = true;
       _errorMessage = null;
       notifyListeners();
 
@@ -55,20 +57,38 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (response.success && response.data != null) {
-        // Refresh user data after successful update
-        await fetchUserProfile();
+        // Refresh user data after successful update (silently without showing spinner)
+        await _fetchUserProfileSilently();
+        _isUpdating = false;
+        notifyListeners();
         return true;
       } else {
         _errorMessage = 'Failed to update profile';
-        _isLoading = false;
+        _isUpdating = false;
         notifyListeners();
         return false;
       }
     } catch (e) {
       _errorMessage = 'Error: $e';
-      _isLoading = false;
+      _isUpdating = false;
       notifyListeners();
       return false;
+    }
+  }
+
+  // Internal method to fetch profile without showing skeleton
+  Future<void> _fetchUserProfileSilently() async {
+    try {
+      final response = await _userService.getParentProfile();
+
+      if (response.success && response.data != null) {
+        _userData = response.data;
+        _errorMessage = null;
+      } else {
+        _errorMessage = 'Failed to load profile';
+      }
+    } catch (e) {
+      _errorMessage = 'Error: $e';
     }
   }
 
@@ -83,7 +103,8 @@ class UserProvider extends ChangeNotifier {
   void clearUserData() {
     _userData = null;
     _errorMessage = null;
-    _isLoading = false;
+    _isFetching = false;
+    _isUpdating = false;
     notifyListeners();
   }
 }

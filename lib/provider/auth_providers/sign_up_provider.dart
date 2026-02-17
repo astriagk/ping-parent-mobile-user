@@ -1,8 +1,6 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:flutter/foundation.dart';
 
-class SignInProvider extends ChangeNotifier {
-  String countryCode = "";
-  TextEditingController signInController = TextEditingController();
+class SignUpProvider extends ChangeNotifier {
   bool _isSending = false;
   String? _errorMessage;
 
@@ -16,12 +14,6 @@ class SignInProvider extends ChangeNotifier {
 
   void setErrorMessage(String? message) {
     _errorMessage = message;
-    notifyListeners();
-  }
-
-  //change country code
-  onCountryCode(String? dialCode) {
-    debugPrint("dial code==>$dialCode");
     notifyListeners();
   }
 }

@@ -2,6 +2,7 @@ export 'package:taxify_user_ui/provider/common_providers/currency_provider.dart'
 export 'package:taxify_user_ui/provider/common_providers/loading_provider.dart';
 export 'package:taxify_user_ui/provider/auth_providers/splash_provider.dart';
 export 'package:taxify_user_ui/provider/auth_providers/sign_in_provider.dart';
+export 'package:taxify_user_ui/provider/auth_providers/sign_up_provider.dart';
 export 'package:taxify_user_ui/provider/auth_providers/otp_provider.dart';
 export 'package:taxify_user_ui/provider/bottom_provider/dash_board_provider.dart';
 export 'package:taxify_user_ui/provider/bottom_provider/home_provider.dart';
@@ -29,3 +30,4 @@ export 'package:taxify_user_ui/provider/app_pages_providers/rental_provider.dart
 export 'package:taxify_user_ui/provider/bottom_provider/my_ride_provider.dart';
 export 'package:taxify_user_ui/provider/app_pages_providers/completed_ride_provider.dart';
 export 'package:taxify_user_ui/provider/app_pages_providers/add_student_provider.dart';
+export 'package:taxify_user_ui/provider/app_pages_providers/razorpay_provider.dart';

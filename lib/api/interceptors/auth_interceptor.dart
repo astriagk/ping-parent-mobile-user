@@ -1,7 +1,8 @@
 import 'dart:convert';
-import '../api_client.dart';
-import '../services/storage_service.dart';
-import '../endpoints.dart';
+
+import 'package:taxify_user_ui/api/api_client.dart';
+import 'package:taxify_user_ui/api/endpoints.dart';
+import 'package:taxify_user_ui/api/services/storage_service.dart';
 
 /// Interceptor to handle authentication and token verification
 class AuthInterceptor {

@@ -34,7 +34,7 @@ class AppFonts {
   final enterReferralID = "Enter Referral Id";
   final alreadyHaveAnAccount = "Already Have An Account ?";
   final otpVerification = "OTP Verification";
-  final enterOTPSent = "Enter OTP Sent To +91 77777 88888";
+  final enterOTPSent = "Enter OTP Sent To";
   final otp = "OTP";
   final verify = "Verify";
   final notReceivedYet = "Not Received Yet ?";
@@ -141,6 +141,7 @@ class AppFonts {
   final pleaseSelectStudentFirst =
       "Please select a student first from the student list";
   final driverIdNotAvailable = 'Driver ID not available';
+  final noDriverAssigned = 'No driver assigned';
   final confirmAssignDriver =
       "Are you sure you want to assign this driver to this student?";
   final driverAssignedSuccessfully = 'Driver assigned successfully';
@@ -154,6 +155,10 @@ class AppFonts {
   final noSubscriptionPlansAvailable = "No subscription plans available";
   final noSubscriptionPlansDescription =
       "There are no subscription plans at the moment. Please check back later.";
+  final currentPlan = "Current Plan";
+  final upgradeFor = "Upgrade for";
+  final remainingDays = "days remaining";
+  final yourCurrentPlan = "Your Current Plan";
 
   //setting screen
   final general = "General";
