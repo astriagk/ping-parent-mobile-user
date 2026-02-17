@@ -1,8 +1,7 @@
+import 'package:taxify_user_ui/api/api_client.dart';
+import 'package:taxify_user_ui/api/models/send_otp_response.dart';
+import 'package:taxify_user_ui/api/services/auth_service.dart';
 import 'package:taxify_user_ui/config.dart';
-
-import '../../../api/services/auth_service.dart';
-import '../../../api/api_client.dart';
-import '../../../api/models/send_otp_response.dart';
 import 'dart:async';
 
 class SignInScreen extends StatefulWidget {
@@ -15,30 +14,40 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController phoneController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // Clear error message when user arrives at this screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SignInProvider>().setErrorMessage(null);
+    });
+  }
+
   Future<void> _sendOtp(String phone) async {
+    final signInProvider = context.read<SignInProvider>();
     final authService = AuthService(ApiClient());
     try {
+      signInProvider.setIsSending(true);
+      signInProvider.setErrorMessage(null);
       final SendOtpResponse response = await authService.sendOtp(phone: phone);
 
       if (!mounted) return;
 
+      signInProvider.setIsSending(false);
+
       if (response.success) {
+        signInProvider.setErrorMessage(null);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: TextWidgetCommon(text: response.message)),
         );
         route.pushNamed(context, routeName.otpScreen, arg: phone);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: TextWidgetCommon(text: response.error)),
-        );
+        signInProvider.setErrorMessage(response.error);
       }
     } catch (e, _) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                TextWidgetCommon(text: 'An error occurred. Please try again.')),
-      );
+      signInProvider.setIsSending(false);
+      signInProvider.setErrorMessage('An error occurred. Please try again.');
     }
   }
 
@@ -65,8 +74,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           .textColor(appColor(context).appTheme.darkText)),
                   //country picker layout
                   CountryPickerLayout(controller: phoneController),
+                  // Error message display
+                  if (value.errorMessage != null)
+                    ErrorMessageWidget(errorMessage: value.errorMessage!),
                   CommonButton(
                       text: appFonts.getOTP,
+                      isLoading: value.isSending,
                       onTap: () async {
                         String phone = phoneController.text.trim();
                         if (phone.isEmpty) {

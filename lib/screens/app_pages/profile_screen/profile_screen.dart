@@ -1,5 +1,6 @@
-import '../../../config.dart';
-import '../../../provider/app_pages_providers/user_provider.dart';
+import 'package:taxify_user_ui/config.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
+import 'package:taxify_user_ui/widgets/skeletons/profile_screen_skeleton.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,8 +16,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _phoneFocusNode = FocusNode();
-
-  bool _isUpdating = false;
 
   @override
   void initState() {
@@ -54,11 +53,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    if (_isUpdating) return;
-
-    setState(() => _isUpdating = true);
-
     final userProvider = context.read<UserProvider>();
+
+    if (userProvider.isUpdating) return;
 
     final success = await userProvider.updateUserProfile(
       name: _nameController.text.trim(),
@@ -66,8 +63,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (mounted) {
-      setState(() => _isUpdating = false);
-
       if (success) {
         // Update controllers with new data
         _updateControllers(userProvider.userData!);
@@ -93,6 +88,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
         final profileData = userProvider.userData;
+
+        // Show skeleton while fetching initial data from API
+        if (userProvider.isFetching) {
+          return const ProfileScreenSkeleton();
+        }
 
         return Scaffold(
             resizeToAvoidBottomInset: false,
@@ -134,10 +134,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             controller: _emailController)
                       ]).padding(horizontal: Sizes.s20).authExtension(context),
                   CommonButton(
-                          text: _isUpdating
-                              ? appFonts.updatingProfile
-                              : appFonts.updateProfile,
-                          onTap: _isUpdating ? null : _updateProfile)
+                          text: appFonts.updateProfile,
+                          isLoading: userProvider.isUpdating,
+                          onTap: _updateProfile)
                       .padding(horizontal: Sizes.s20, bottom: Sizes.s20)
                 ]));
       },

@@ -6,7 +6,6 @@ import '../../../widgets/location/route_location_display.dart';
 import '../../../widgets/location/route_distance_display.dart';
 import '../../../widgets/ride_card/layout/ride_header_section.dart';
 import '../../../widgets/ride_card/layout/ride_driver_info_section.dart';
-import '../../../widgets/ride_card/layout/action_button_section.dart';
 import '../../../widgets/ride_card/layout/ride_data_model.dart';
 import '../../../widgets/status_badge.dart';
 import '../../../helper/distance_helper.dart';
@@ -114,6 +113,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
           else
             _buildAssignDriverButton(context, student),
 
+          DottedLine(dashColor: appColor(context).appTheme.stroke)
+              .padding(bottom: Sizes.s15),
+
           // Location preview card
           if (student.pickupAddress != null &&
               student.school != null &&
@@ -155,26 +157,54 @@ class _StudentListScreenState extends State<StudentListScreen> {
   }
 
   Widget _buildAssignDriverButton(BuildContext context, Student student) {
-    return ActionButtonSection(
-      label: language(context, appFonts.assignDriver),
-      onTap: () {
-        if (student.studentId != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AssignDriverScreen(
-                studentId: student.studentId!,
-              ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextWidgetCommon(
+              text: language(context, appFonts.assignDriver),
+              fontSize: Sizes.s12,
+              fontWeight: FontWeight.w500,
+              color: appColor(context).appTheme.darkText,
             ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: TextWidgetCommon(text: appFonts.driverIdNotAvailable),
+            VSpace(Sizes.s4),
+            TextWidgetCommon(
+              text: language(context, appFonts.noDriverAssigned),
+              fontSize: Sizes.s11,
+              color: appColor(context).appTheme.lightText,
             ),
-          );
-        }
-      },
+          ],
+        ),
+        CommonIconButton(
+          icon: svgAssets.add,
+          bgColor: appColor(context).appTheme.primary,
+          iconColor: ColorFilter.mode(
+            appColor(context).appTheme.white,
+            BlendMode.srcIn,
+          ),
+          onTap: () {
+            if (student.studentId != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AssignDriverScreen(
+                    studentId: student.studentId!,
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:
+                      TextWidgetCommon(text: appFonts.driverIdNotAvailable),
+                ),
+              );
+            }
+          },
+        ),
+      ],
     ).paddingOnly(bottom: Sizes.s15);
   }
 

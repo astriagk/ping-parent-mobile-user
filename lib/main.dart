@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => UserProvider()),
                   ChangeNotifierProvider(create: (_) => SplashProvider()),
                   ChangeNotifierProvider(create: (_) => SignInProvider()),
+                  ChangeNotifierProvider(create: (_) => SignUpProvider()),
                   ChangeNotifierProvider(create: (_) => OtpProvider()),
                   ChangeNotifierProvider(create: (_) => DashBoardProvider()),
                   ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
@@ -74,7 +75,8 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
                   ChangeNotifierProvider(create: (_) => AddStudentProvider()),
                   ChangeNotifierProvider(create: (_) => DriverProvider()),
-                  ChangeNotifierProvider(create: (_) => SubscriptionsProvider())
+                  ChangeNotifierProvider(create: (_) => SubscriptionsProvider()),
+                  ChangeNotifierProvider(create: (_) => RazorpayProvider())
                 ],
                 child: Consumer<ThemeService>(builder: (context, theme, child) {
                   return Consumer<LanguageProvider>(

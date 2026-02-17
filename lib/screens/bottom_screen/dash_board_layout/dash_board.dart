@@ -1,5 +1,5 @@
-import '../../../config.dart';
-import '../../../provider/app_pages_providers/user_provider.dart';
+import 'package:taxify_user_ui/config.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
@@ -15,7 +15,7 @@ class _DashBoardState extends State<DashBoard> {
     // Fetch user data if not already loaded (handles app restart with existing session)
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final userProvider = context.read<UserProvider>();
-      if (!userProvider.hasUserData && !userProvider.isLoading) {
+      if (!userProvider.hasUserData && !userProvider.isFetching) {
         await userProvider.fetchUserProfile();
       }
     });

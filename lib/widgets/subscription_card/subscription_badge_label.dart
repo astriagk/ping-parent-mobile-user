@@ -1,20 +1,17 @@
 import '../../config.dart';
 
 class SubscriptionBadgeLabel extends StatelessWidget {
-  final Map<String, dynamic>? badge;
+  final String text;
+  final String type;
 
   const SubscriptionBadgeLabel({
     super.key,
-    required this.badge,
+    required this.text,
+    required this.type,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (badge == null) return const SizedBox.shrink();
-
-    final text = badge!['text'] ?? '';
-    final type = badge!['type'] ?? '';
-
     if (text.isEmpty) return const SizedBox.shrink();
 
     return Container(
@@ -42,6 +39,10 @@ class SubscriptionBadgeLabel extends StatelessWidget {
         return appColor(context).appTheme.alertZone;
       case 'recommended':
         return appColor(context).appTheme.success;
+      case 'current':
+        return appColor(context).appTheme.success;
+      case 'upgrade':
+        return appColor(context).appTheme.yellowIcon;
       default:
         return appColor(context).appTheme.primary;
     }

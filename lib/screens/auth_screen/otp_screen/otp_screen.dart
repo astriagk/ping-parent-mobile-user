@@ -1,8 +1,8 @@
-import '../../../config.dart';
-import '../../../api/services/auth_service.dart';
-import '../../../api/api_client.dart';
-import '../../../api/models/verify_otp_response.dart';
-import '../../../provider/app_pages_providers/user_provider.dart';
+import 'package:taxify_user_ui/api/api_client.dart';
+import 'package:taxify_user_ui/api/models/verify_otp_response.dart';
+import 'package:taxify_user_ui/api/services/auth_service.dart';
+import 'package:taxify_user_ui/config.dart';
+import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -18,6 +18,10 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Clear error message when user arrives at this screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<OtpProvider>().setErrorMessage(null);
+    });
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is String) {
       phone = args;
@@ -31,11 +35,15 @@ class _OtpScreenState extends State<OtpScreen> {
     final authService = AuthService(ApiClient());
     final otpCtrl = context.read<OtpProvider>();
     try {
+      otpCtrl.setIsVerifying(true);
+      otpCtrl.setErrorMessage(null);
       final VerifyOtpResponse response = isSignUp
           ? await authService.registerVerifyOtp(phone: phone, otp: otp)
           : await authService.verifyOtp(phone: phone, otp: otp);
 
       if (!mounted) return;
+
+      otpCtrl.setIsVerifying(false);
 
       if (response.success) {
         // Authentication data is already saved by AuthService._saveUserSession()
@@ -47,6 +55,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
         // Clear OTP input
         otpCtrl.pinController.text = "";
+        otpCtrl.setErrorMessage(null);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: TextWidgetCommon(text: response.message)),
@@ -58,16 +67,12 @@ class _OtpScreenState extends State<OtpScreen> {
           route.pushNamed(context, routeName.dashBoardLayout);
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: TextWidgetCommon(text: response.error)));
+        otpCtrl.setErrorMessage(response.error);
       }
     } catch (e, _) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: TextWidgetCommon(
-                text: 'An error occurred while verifying OTP.')),
-      );
+      otpCtrl.setIsVerifying(false);
+      otpCtrl.setErrorMessage('An error occurred while verifying OTP.');
     }
   }
 
@@ -95,30 +100,46 @@ class _OtpScreenState extends State<OtpScreen> {
                             route.pop(context);
                           }),
                           //gif title and subtitle layout
-                          AuthCommonWidgets().gifTitleText(context,
-                              appFonts.otpVerification, appFonts.enterOTPSent),
+                          AuthCommonWidgets().gifTitleText(
+                              context,
+                              appFonts.otpVerification,
+                              '${appFonts.enterOTPSent} $phone'),
                           TextWidgetCommon(text: appFonts.otp)
                               .padding(bottom: Sizes.s9),
                           // PinPut layout
-                          OTPScreenWidgets().pinPutLayout(),
+                          OTPScreenWidgets().pinPutLayout().padding(
+                                bottom: Sizes.s60,
+                              ),
+                          // Error message display
+                          if (otpCtrl.errorMessage != null)
+                            ErrorMessageWidget(
+                                errorMessage: otpCtrl.errorMessage!),
                           // Common button
                           CommonButton(
-                              text: appFonts.verify,
-                              onTap: () async {
-                                final otp = otpCtrl.pinController.text.trim();
-                                final phoneNumber = phone?.trim() ?? '';
-                                if (phoneNumber.isEmpty || otp.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: TextWidgetCommon(
-                                          text:
-                                              'Please enter both phone and OTP.'),
-                                    ),
-                                  );
-                                  return;
-                                }
-                                await _verifyOtp(phoneNumber, otp);
-                              }).padding(top: Sizes.s60, bottom: Sizes.s15),
+                                  text: appFonts.verify,
+                                  isLoading: otpCtrl.isVerifying,
+                                  onTap: () async {
+                                    final otp =
+                                        otpCtrl.pinController.text.trim();
+                                    final phoneNumber = phone?.trim() ?? '';
+                                    if (phoneNumber.isEmpty || otp.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: TextWidgetCommon(
+                                              text:
+                                                  'Please enter both phone and OTP.'),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    await _verifyOtp(phoneNumber, otp);
+                                  })
+                              .padding(
+                                  top: otpCtrl.errorMessage != null
+                                      ? Sizes.s4
+                                      : Sizes.s60,
+                                  bottom: Sizes.s15),
                           // Common Rich Text layout
                           AuthCommonWidgets()
                               .commonRichText(context, appFonts.notReceivedYet,

@@ -1,4 +1,4 @@
-import '../../../../config.dart';
+import 'package:taxify_user_ui/config.dart';
 
 class AddNewLocationScreen extends StatefulWidget {
   const AddNewLocationScreen({super.key});
@@ -8,19 +8,11 @@ class AddNewLocationScreen extends StatefulWidget {
 }
 
 class _AddNewLocationScreenState extends State<AddNewLocationScreen> {
-  bool _isSaving = false;
-
   Future<void> _saveLocation() async {
-    if (_isSaving) return;
-
-    setState(() => _isSaving = true);
-
     final locationCtrl = context.read<AddLocationProvider>();
     final success = await locationCtrl.saveAddress();
 
     if (mounted) {
-      setState(() => _isSaving = false);
-
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -95,11 +87,10 @@ class _AddNewLocationScreenState extends State<AddNewLocationScreen> {
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: CommonButton(
-                        onTap: _isSaving ? null : _saveLocation,
+                        onTap: _saveLocation,
+                        isLoading: locationCtrl.isSaving,
                         margin: EdgeInsets.all(Sizes.s20),
-                        text: _isSaving
-                            ? 'Saving...'
-                            : appFonts.addLocation))
+                        text: appFonts.addLocation))
               ])));
     });
   }
