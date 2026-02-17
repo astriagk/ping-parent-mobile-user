@@ -1,22 +1,18 @@
 import '../../config.dart';
+import '../../api/models/subscription_recommendations_response.dart';
 
 class SubscriptionKidsInfo extends StatelessWidget {
-  final Map<String, dynamic> subscriptionData;
+  final RecommendedPlan plan;
 
   const SubscriptionKidsInfo({
     super.key,
-    required this.subscriptionData,
+    required this.plan,
   });
 
   @override
   Widget build(BuildContext context) {
-    final kids = subscriptionData['kids'] as Map<String, dynamic>?;
-    final minKids = kids?['min'] ?? 0;
-    final maxKids = kids?['max'] ?? 0;
-
-    final kidText = minKids == maxKids
-        ? '$minKids Kid${minKids > 1 ? 's' : ''}'
-        : '$minKids-$maxKids Kids';
+    final kidText =
+        '${plan.kidsCovered} Kid${plan.kidsCovered > 1 ? 's' : ''} Covered';
 
     return Container(
       padding: EdgeInsets.symmetric(

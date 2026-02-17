@@ -36,6 +36,7 @@ class SubscriptionPlan {
   final KidsInfo kids;
   final List<Feature> features;
   final bool isActive;
+  final bool isRecommended;
   final String planId;
   final String? createdAt;
   final String? updatedAt;
@@ -51,6 +52,7 @@ class SubscriptionPlan {
     required this.kids,
     required this.features,
     required this.isActive,
+    required this.isRecommended,
     required this.planId,
     this.createdAt,
     this.updatedAt,
@@ -70,6 +72,7 @@ class SubscriptionPlan {
           ? (json['features'] as List).map((e) => Feature.fromJson(e)).toList()
           : [],
       isActive: json['is_active'] ?? true,
+      isRecommended: json['is_recommended'] ?? false,
       planId: json['plan_id'] ?? '',
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
@@ -95,6 +98,7 @@ class SubscriptionPlan {
               })
           .toList(),
       'is_active': isActive,
+      'is_recommended': isRecommended,
       'plan_id': planId,
       'created_at': createdAt,
       'updated_at': updatedAt,

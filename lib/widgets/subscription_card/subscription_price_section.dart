@@ -1,54 +1,107 @@
 import '../../config.dart';
+import '../../api/models/subscription_recommendations_response.dart';
 
 class SubscriptionPriceSection extends StatelessWidget {
-  final Map<String, dynamic> subscriptionData;
-  final int kidCount;
+  final RecommendedPlan plan;
 
   const SubscriptionPriceSection({
     super.key,
-    required this.subscriptionData,
-    this.kidCount = 1,
+    required this.plan,
   });
 
   @override
   Widget build(BuildContext context) {
-    final currency = subscriptionData['currency'] ?? 'INR';
-    final basePrice = subscriptionData['price'] ?? 0;
-    final kids = subscriptionData['kids'] as Map<String, dynamic>?;
-    final maxKids = kids?['max'] ?? 1;
+    final hasDiscount =
+        plan.discount != null && plan.calculatedPrice < plan.originalPrice;
+    final priceColor = plan.isCurrentPlan
+        ? appColor(context).appTheme.lightText
+        : appColor(context).appTheme.primary;
 
-    // Calculate total price: if plan supports only 1 kid and parent has multiple kids
-    final int multiplier = maxKids == 1 && kidCount > 1 ? kidCount : 1;
-    final totalPrice = basePrice * multiplier;
-    final showMultiplier = multiplier > 1;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextWidgetCommon(
-          text: currency == 'INR' ? '₹' : currency,
-          style: AppCss.lexendSemiBold24
-              .textColor(appColor(context).appTheme.primary),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            TextWidgetCommon(
+              text: '₹',
+              style: AppCss.lexendSemiBold24.textColor(priceColor),
+            ),
+            HSpace(Sizes.s4),
+            TextWidgetCommon(
+              text: plan.calculatedPrice.toString(),
+              style: AppCss.lexendSemiBold24.textColor(priceColor),
+            ),
+            HSpace(Sizes.s6),
+            TextWidgetCommon(
+              text: '/${plan.planType}',
+              style: AppCss.lexendRegular12
+                  .textColor(appColor(context).appTheme.lightText),
+            ).paddingOnly(bottom: Sizes.s4),
+            if (hasDiscount) ...[
+              HSpace(Sizes.s8),
+              TextWidgetCommon(
+                text: '₹${plan.originalPrice}',
+                style: AppCss.lexendRegular12
+                    .textColor(appColor(context).appTheme.lightText)
+                    .copyWith(decoration: TextDecoration.lineThrough),
+              ).paddingOnly(bottom: Sizes.s4),
+            ],
+          ],
         ),
-        HSpace(Sizes.s4),
-        TextWidgetCommon(
-          text: totalPrice.toString(),
-          style: AppCss.lexendSemiBold24
-              .textColor(appColor(context).appTheme.primary),
-        ),
-        HSpace(Sizes.s6),
-        TextWidgetCommon(
-          text: '/${subscriptionData['plan_type'] ?? 'month'}',
-          style: AppCss.lexendRegular12
-              .textColor(appColor(context).appTheme.lightText),
-        ).paddingOnly(bottom: Sizes.s4),
-        if (showMultiplier) ...[
-          HSpace(Sizes.s8),
+        if (hasDiscount) ...[
+          VSpace(Sizes.s6),
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Sizes.s8,
+              vertical: Sizes.s4,
+            ),
+            decoration: BoxDecoration(
+              color:
+                  appColor(context).appTheme.success.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(Sizes.s4),
+            ),
+            child: TextWidgetCommon(
+              text:
+                  '${plan.discount!.label}: save ₹${plan.discount!.amount}',
+              style: AppCss.lexendMedium10
+                  .textColor(appColor(context).appTheme.success),
+            ),
+          ),
+        ],
+        if (plan.isUpgrade && plan.proration != null) ...[
+          VSpace(Sizes.s6),
           TextWidgetCommon(
-            text: '(₹$basePrice × $kidCount kids)',
+            text:
+                'Prorated from ₹${plan.proration!.currentRemainingValue} credit',
             style: AppCss.lexendRegular11
                 .textColor(appColor(context).appTheme.lightText),
-          ).paddingOnly(bottom: Sizes.s4),
+          ),
+          VSpace(Sizes.s4),
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Sizes.s8,
+              vertical: Sizes.s4,
+            ),
+            decoration: BoxDecoration(
+              color:
+                  appColor(context).appTheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(Sizes.s4),
+            ),
+            child: TextWidgetCommon(
+              text: 'You pay ₹${plan.upgradePrice ?? plan.proration!.proratedUpgradePrice}',
+              style: AppCss.lexendMedium10
+                  .textColor(appColor(context).appTheme.primary),
+            ),
+          ),
+        ],
+        if (plan.reason.isNotEmpty) ...[
+          VSpace(Sizes.s4),
+          TextWidgetCommon(
+            text: plan.reason,
+            style: AppCss.lexendRegular11
+                .textColor(appColor(context).appTheme.lightText),
+          ),
         ],
       ],
     );
