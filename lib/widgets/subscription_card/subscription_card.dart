@@ -31,6 +31,15 @@ class SubscriptionCard extends StatelessWidget {
             ? 'upgrade'
             : 'recommended';
 
+    final Color accentColor;
+    if (plan.isCurrentPlan) {
+      accentColor = appColor(context).appTheme.success;
+    } else if (plan.isUpgrade) {
+      accentColor = appColor(context).appTheme.yellowIcon;
+    } else {
+      accentColor = appColor(context).appTheme.activeColor;
+    }
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -43,10 +52,7 @@ class SubscriptionCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(Sizes.s12),
             boxShadow: [
               BoxShadow(
-                color: appColor(context)
-                    .appTheme
-                    .primary
-                    .withValues(alpha: 0.12),
+                color: accentColor.withValues(alpha: 0.12),
                 blurRadius: 20,
                 spreadRadius: 0,
                 offset: const Offset(0, 4),
@@ -82,6 +88,9 @@ class SubscriptionCard extends StatelessWidget {
                         text: plan.isUpgrade
                             ? '${appFonts.upgradeFor} ₹${plan.upgradePrice ?? plan.calculatedPrice}'
                             : 'Subscribe Now',
+                        bgColor: plan.isUpgrade
+                            ? appColor(context).appTheme.yellowIcon
+                            : appColor(context).appTheme.activeColor,
                         onTap: onSubscribe,
                       ).padding(top: Sizes.s12),
                   ],

@@ -38,7 +38,7 @@ class SubscriptionBadgeLabel extends StatelessWidget {
       case 'popular':
         return appColor(context).appTheme.alertZone;
       case 'recommended':
-        return appColor(context).appTheme.success;
+        return appColor(context).appTheme.activeColor;
       case 'current':
         return appColor(context).appTheme.success;
       case 'upgrade':

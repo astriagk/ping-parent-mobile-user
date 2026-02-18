@@ -118,6 +118,18 @@ class SubscriptionsProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> checkHasActiveSubscription() async {
+    try {
+      final subscriptionsService = SubscriptionsService(ApiClient());
+      final response = await subscriptionsService.getActiveSubscription();
+      return response.success &&
+          response.data != null &&
+          response.data!.isActive;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // Get active subscription plans only
   List<SubscriptionPlan> get activePlans {
     return subscriptionPlans.where((plan) => plan.isActive).toList();
