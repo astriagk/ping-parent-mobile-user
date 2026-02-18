@@ -85,6 +85,13 @@ class AcceptRideProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Directly set the current trip (used when user explicitly selects a trip)
+  void setCurrentTrip(Trip trip) {
+    currentTrip = trip;
+    currentParentWaypoint = getParentWaypoint(trip);
+    notifyListeners();
+  }
+
   /// Fetches QR code and OTP for a parent's trip
   Future<void> fetchTripQrOtp(String tripId) async {
     isLoadingQrOtp = true;

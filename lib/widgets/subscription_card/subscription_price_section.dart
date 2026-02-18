@@ -13,9 +13,17 @@ class SubscriptionPriceSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasDiscount =
         plan.discount != null && plan.calculatedPrice < plan.originalPrice;
+    final Color accentColor;
+    if (plan.isCurrentPlan) {
+      accentColor = appColor(context).appTheme.success;
+    } else if (plan.isUpgrade) {
+      accentColor = appColor(context).appTheme.yellowIcon;
+    } else {
+      accentColor = appColor(context).appTheme.activeColor;
+    }
     final priceColor = plan.isCurrentPlan
         ? appColor(context).appTheme.lightText
-        : appColor(context).appTheme.primary;
+        : accentColor;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,14 +92,12 @@ class SubscriptionPriceSection extends StatelessWidget {
               vertical: Sizes.s4,
             ),
             decoration: BoxDecoration(
-              color:
-                  appColor(context).appTheme.primary.withValues(alpha: 0.1),
+              color: accentColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(Sizes.s4),
             ),
             child: TextWidgetCommon(
               text: 'You pay ₹${plan.upgradePrice ?? plan.proration!.proratedUpgradePrice}',
-              style: AppCss.lexendMedium10
-                  .textColor(appColor(context).appTheme.primary),
+              style: AppCss.lexendMedium10.textColor(accentColor),
             ),
           ),
         ],

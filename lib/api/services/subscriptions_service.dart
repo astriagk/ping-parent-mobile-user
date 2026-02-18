@@ -1,6 +1,7 @@
 import '../api_client.dart';
 import '../endpoints.dart';
 import '../interfaces/subscriptions_service_interface.dart';
+import '../models/active_subscription_response.dart';
 import '../models/subscription_plans_response.dart';
 import '../models/subscription_recommendations_response.dart';
 import 'dart:convert';
@@ -22,6 +23,12 @@ class SubscriptionsService implements SubscriptionsServiceInterface {
         await _apiClient.get(Endpoints.subscriptionRecommendations);
     return SubscriptionRecommendationsResponse.fromJson(
         jsonDecode(response.body));
+  }
+
+  @override
+  Future<ActiveSubscriptionResponse> getActiveSubscription() async {
+    final response = await _apiClient.get(Endpoints.myActiveSubscription);
+    return ActiveSubscriptionResponse.fromJson(jsonDecode(response.body));
   }
 
   @override

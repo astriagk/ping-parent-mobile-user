@@ -16,13 +16,18 @@ class AcceptRideScreen extends StatelessWidget {
     // Ensure user ID is loaded before proceeding
     await acceptCtrl.loadCurrentUserId();
 
-    // Set current trip and parent waypoint
-    final trips = homeCtrl.trackingData?.data ?? [];
-    acceptCtrl.setCurrentTripFromList(trips);
+    // Set current trip and parent waypoint only if not already set
+    // (user may have pre-selected a specific trip from the trip selection sheet)
+    if (acceptCtrl.currentTrip == null) {
+      final trips = homeCtrl.trackingData?.data ?? [];
+      acceptCtrl.setCurrentTripFromList(trips);
+    }
 
     // Subscribe to the current trip's websocket for real-time position updates
     final activeTrip = acceptCtrl.currentTrip;
     if (activeTrip?.tripId != null) {
+      // Unsubscribe from any prior trip before subscribing to the selected one
+      tripTrackingCtrl.unsubscribeFromCurrentTrip();
       // Subscribe to websocket for real-time driver position
       await tripTrackingCtrl.subscribeToTrip(activeTrip!.tripId!);
       // Fetch QR/OTP for the trip
@@ -43,6 +48,11 @@ class AcceptRideScreen extends StatelessWidget {
                 tripTrackingCtrl,
                 homeCtrl,
               ),
+          onDispose: () {
+            tripTrackingCtrl.unsubscribeFromCurrentTrip();
+            acceptCtrl.currentTrip = null;
+            acceptCtrl.currentParentWaypoint = null;
+          },
           child: Scaffold(body: Consumer<AcceptRideProvider>(
             builder: (context, acceptCtrlWatch, _) {
               final activeTrip = acceptCtrlWatch.currentTrip;
