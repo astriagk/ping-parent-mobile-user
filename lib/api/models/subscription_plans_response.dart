@@ -37,7 +37,6 @@ class SubscriptionPlan {
   final List<Feature> features;
   final bool isActive;
   final bool isRecommended;
-  final String planId;
   final String? createdAt;
   final String? updatedAt;
 
@@ -53,7 +52,6 @@ class SubscriptionPlan {
     required this.features,
     required this.isActive,
     required this.isRecommended,
-    required this.planId,
     this.createdAt,
     this.updatedAt,
   });
@@ -73,7 +71,6 @@ class SubscriptionPlan {
           : [],
       isActive: json['is_active'] ?? true,
       isRecommended: json['is_recommended'] ?? false,
-      planId: json['plan_id'] ?? '',
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
@@ -82,7 +79,7 @@ class SubscriptionPlan {
   // Convert to Map for widget usage
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
+      'id': id,
       'plan_name': planName,
       'plan_type': planType,
       'price': price,
@@ -99,7 +96,6 @@ class SubscriptionPlan {
           .toList(),
       'is_active': isActive,
       'is_recommended': isRecommended,
-      'plan_id': planId,
       'created_at': createdAt,
       'updated_at': updatedAt,
     };

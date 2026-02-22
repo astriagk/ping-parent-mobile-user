@@ -22,7 +22,6 @@ class SchoolListResponse {
 
 class School {
   final String id;
-  final String schoolId;
   final String schoolName;
   final String address;
   final String state;
@@ -36,7 +35,6 @@ class School {
 
   School({
     required this.id,
-    required this.schoolId,
     required this.schoolName,
     required this.address,
     required this.state,
@@ -52,7 +50,6 @@ class School {
   factory School.fromJson(Map<String, dynamic> json) {
     return School(
       id: json['_id'] ?? '',
-      schoolId: json['school_id'] ?? '',
       schoolName: json['school_name'] ?? '',
       address: json['address'] ?? '',
       state: json['state'] ?? '',

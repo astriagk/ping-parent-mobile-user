@@ -64,7 +64,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       BuildContext context, AddStudentProvider studentCtrl) {
     // Get selected school
     final selectedSchool = studentCtrl.schoolList.firstWhere(
-      (school) => school.schoolId == studentCtrl.selectedSchoolId,
+      (school) => school.id == studentCtrl.selectedSchoolId,
       orElse: () => studentCtrl.schoolList.first,
     );
 
@@ -226,7 +226,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                             studentCtrl.selectedSchoolId != null
                         ? studentCtrl.schoolList.firstWhere(
                             (school) =>
-                                school.schoolId == studentCtrl.selectedSchoolId,
+                                school.id == studentCtrl.selectedSchoolId,
                             orElse: () => studentCtrl.schoolList.first,
                           )
                         : null,
@@ -336,7 +336,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     },
                     onChanged: (school) {
                       setState(() {
-                        studentCtrl.selectedSchoolId = school?.schoolId;
+                        studentCtrl.selectedSchoolId = school?.id;
                       });
                     },
                   ),

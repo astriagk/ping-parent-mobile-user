@@ -25,13 +25,13 @@ class AcceptRideScreen extends StatelessWidget {
 
     // Subscribe to the current trip's websocket for real-time position updates
     final activeTrip = acceptCtrl.currentTrip;
-    if (activeTrip?.tripId != null) {
+    if (activeTrip?.id != null) {
       // Unsubscribe from any prior trip before subscribing to the selected one
       tripTrackingCtrl.unsubscribeFromCurrentTrip();
       // Subscribe to websocket for real-time driver position
-      await tripTrackingCtrl.subscribeToTrip(activeTrip!.tripId!);
+      await tripTrackingCtrl.subscribeToTrip(activeTrip!.id!);
       // Fetch QR/OTP for the trip
-      await acceptCtrl.fetchTripQrOtp(activeTrip.tripId!);
+      await acceptCtrl.fetchTripQrOtp(activeTrip.id!);
     }
   }
 

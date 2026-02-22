@@ -32,7 +32,6 @@ class TripTrackingResponse {
 
 class Trip {
   final String? id;
-  final String? tripId;
   final TripType tripType;
   final TripStatus tripStatus;
   final String? tripDate;
@@ -47,7 +46,6 @@ class Trip {
 
   Trip({
     this.id,
-    this.tripId,
     required this.tripType,
     required this.tripStatus,
     this.tripDate,
@@ -64,7 +62,6 @@ class Trip {
   factory Trip.fromJson(Map<String, dynamic> json) {
     return Trip(
       id: json['_id'],
-      tripId: json['trip_id'],
       tripType: TripType.fromString(json['trip_type']),
       tripStatus: TripStatus.fromString(json['trip_status']),
       tripDate: json['trip_date'],
@@ -99,7 +96,7 @@ class Student {
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
-      studentId: json['student_id'],
+      studentId: json['_id'],
       studentName: json['student_name'],
       class_: json['class'],
       section: json['section'],
