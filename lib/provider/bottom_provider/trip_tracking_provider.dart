@@ -190,7 +190,7 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     super.dispose();
   }
 
-  /// Fetch active trips and subscribe to the first one
+  /// Fetch active trips (subscription is handled explicitly by the caller)
   Future<void> fetchActiveTrips() async {
     isLoading = true;
     error = null;
@@ -200,11 +200,6 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
       final response = await _tripTrackingService.getActiveTrips();
       if (response.success) {
         activeTrips = response.data;
-
-        // Subscribe to first active trip (if any)
-        if (activeTrips.isNotEmpty && activeTrips.first.tripId != null) {
-          await subscribeToTrip(activeTrips.first.tripId!);
-        }
       } else {
         error = response.error ?? 'Failed to fetch trips';
         activeTrips = [];

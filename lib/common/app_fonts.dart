@@ -159,6 +159,12 @@ class AppFonts {
   final upgradeFor = "Upgrade for";
   final remainingDays = "days remaining";
   final yourCurrentPlan = "Your Current Plan";
+  final schoolSponsoredPlan = "School Sponsored Plan";
+  final coveredBySchoolTitle = "Covered by Your School";
+  final coveredBySchoolDescription =
+      "Your school has provided you with a subscription. No payment required.";
+  final validUntil = "Valid until";
+  final free = "Free";
 
   //setting screen
   final general = "General";

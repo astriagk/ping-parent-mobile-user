@@ -31,10 +31,10 @@ class SubscriptionHeaderSection extends StatelessWidget {
       iconData = Icons.star_rounded;
     } else {
       gradientColors = [
-        appColor(context).appTheme.primary.withValues(alpha: 0.22),
-        appColor(context).appTheme.primary.withValues(alpha: 0.08),
+        appColor(context).appTheme.activeColor.withValues(alpha: 0.15),
+        appColor(context).appTheme.activeColor.withValues(alpha: 0.05),
       ];
-      accentColor = appColor(context).appTheme.primary;
+      accentColor = appColor(context).appTheme.activeColor;
       iconData = Icons.star_rounded;
     }
 

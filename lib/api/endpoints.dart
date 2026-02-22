@@ -8,7 +8,6 @@ class Endpoints {
       'https://ping-parent-backend-m8yc.onrender.com/api';
   // static const String baseUrl = 'http://192.168.0.126:3000/api';
   static const String getUser = '$baseUrl/user';
-  static const String login = '$baseUrl/login';
 
   // Verify Token Endpoint
 
@@ -48,6 +47,8 @@ class Endpoints {
   static const String parentSubscriptions = '$baseUrl/parent-subscriptions';
   static const String parentSubscriptionsUpgrade =
       '$baseUrl/parent-subscriptions/upgrade';
+  static const String myActiveSubscription =
+      '$baseUrl/parent-subscriptions/my-active-subscription';
 
   // Trip Tracking Endpoints
   static const String activeTrips = '$baseUrl/parent/trips/active';

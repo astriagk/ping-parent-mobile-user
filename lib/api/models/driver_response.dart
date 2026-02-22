@@ -153,7 +153,6 @@ class DriverStudentAssignmentResponse {
 
 class DriverStudentAssignment {
   final String? id;
-  final String? assignmentId;
   final String? driverId;
   final String? studentId;
   final String? driverUniqueId;
@@ -164,7 +163,6 @@ class DriverStudentAssignment {
 
   DriverStudentAssignment({
     this.id,
-    this.assignmentId,
     this.driverId,
     this.studentId,
     this.driverUniqueId,
@@ -177,7 +175,6 @@ class DriverStudentAssignment {
   factory DriverStudentAssignment.fromJson(Map<String, dynamic> json) {
     return DriverStudentAssignment(
       id: json['_id'],
-      assignmentId: json['assignment_id'],
       driverId: json['driver_id'],
       studentId: json['student_id'],
       driverUniqueId: json['driver_unique_id'],

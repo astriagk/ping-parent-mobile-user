@@ -184,7 +184,7 @@ class AddStudentProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-
+    print('Selected School ID: $selectedSchoolId');
     if (selectedSchoolId == null || selectedSchoolId!.isEmpty) {
       errorMessage = 'Please select a school';
       notifyListeners();

@@ -25,7 +25,6 @@ class QrOtpResponse {
 
 class QrOtpData {
   final String? id;
-  final String? qrOtpId;
   final String? parentId;
   final List<String>? studentIds;
   final String? tripId;
@@ -39,7 +38,6 @@ class QrOtpData {
 
   QrOtpData({
     this.id,
-    this.qrOtpId,
     this.parentId,
     this.studentIds,
     this.tripId,
@@ -55,7 +53,6 @@ class QrOtpData {
   factory QrOtpData.fromJson(Map<String, dynamic> json) {
     return QrOtpData(
       id: json['_id'],
-      qrOtpId: json['qr_otp_id'],
       parentId: json['parent_id'],
       studentIds: json['student_ids'] != null
           ? List<String>.from(json['student_ids'])

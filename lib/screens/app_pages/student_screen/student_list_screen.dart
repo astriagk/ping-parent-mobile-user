@@ -185,12 +185,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
             BlendMode.srcIn,
           ),
           onTap: () {
-            if (student.studentId != null) {
+            if (student.id != null) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AssignDriverScreen(
-                    studentId: student.studentId!,
+                    studentId: student.id!,
                   ),
                 ),
               );
