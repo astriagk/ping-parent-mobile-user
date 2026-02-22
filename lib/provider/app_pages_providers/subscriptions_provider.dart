@@ -9,6 +9,7 @@ class SubscriptionsProvider extends ChangeNotifier {
   List<RecommendedPlan> recommendedPlans = [];
   ParentSummary? parentSummary;
   CurrentSubscription? currentSubscription;
+  bool coveredBySchool = false;
   bool isLoading = true; // Start with loading true to prevent empty state flash
   bool isRefreshing = false;
   String? errorMessage;
@@ -37,6 +38,7 @@ class SubscriptionsProvider extends ChangeNotifier {
         recommendedPlans = response.data!.recommendedPlans;
         parentSummary = response.data!.parentSummary;
         currentSubscription = response.data!.currentSubscription;
+        coveredBySchool = response.data!.coveredBySchool;
         errorMessage = null;
       } else {
         errorMessage = response.error ??
@@ -156,6 +158,7 @@ class SubscriptionsProvider extends ChangeNotifier {
     recommendedPlans = [];
     parentSummary = null;
     currentSubscription = null;
+    coveredBySchool = false;
     isLoading = false;
     isRefreshing = false;
     errorMessage = null;

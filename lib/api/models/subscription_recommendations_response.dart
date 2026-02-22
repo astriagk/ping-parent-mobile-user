@@ -28,12 +28,14 @@ class SubscriptionRecommendationsResponse {
 
 class RecommendationsData {
   final ParentSummary parentSummary;
+  final bool coveredBySchool;
   final List<RecommendedPlan> recommendedPlans;
   final List<ExcludedPlan> excludedPlans;
   final CurrentSubscription? currentSubscription;
 
   RecommendationsData({
     required this.parentSummary,
+    required this.coveredBySchool,
     required this.recommendedPlans,
     required this.excludedPlans,
     this.currentSubscription,
@@ -42,6 +44,7 @@ class RecommendationsData {
   factory RecommendationsData.fromJson(Map<String, dynamic> json) {
     return RecommendationsData(
       parentSummary: ParentSummary.fromJson(json['parent_summary'] ?? {}),
+      coveredBySchool: json['covered_by_school'] ?? false,
       recommendedPlans: json['recommended_plans'] != null
           ? (json['recommended_plans'] as List)
               .map((e) => RecommendedPlan.fromJson(e))
@@ -302,6 +305,7 @@ class ExcludedPlan {
 class CurrentSubscription {
   final String id;
   final String planId;
+  final String? subscriptionSource;
   final int calculatedPrice;
   final String startDate;
   final String endDate;
@@ -311,6 +315,7 @@ class CurrentSubscription {
   CurrentSubscription({
     required this.id,
     required this.planId,
+    this.subscriptionSource,
     required this.calculatedPrice,
     required this.startDate,
     required this.endDate,
@@ -320,8 +325,9 @@ class CurrentSubscription {
 
   factory CurrentSubscription.fromJson(Map<String, dynamic> json) {
     return CurrentSubscription(
-      id: json['_id'] ?? '',
+      id: json['subscription_id'] ?? json['_id'] ?? '',
       planId: json['plan_id'] ?? '',
+      subscriptionSource: json['subscription_source'],
       calculatedPrice: json['calculated_price'] ?? 0,
       startDate: json['start_date'] ?? '',
       endDate: json['end_date'] ?? '',
