@@ -145,7 +145,7 @@ class SubscriptionsProvider extends ChangeNotifier {
   // Get plan by ID
   SubscriptionPlan? getPlanById(String planId) {
     try {
-      return subscriptionPlans.firstWhere((plan) => plan.planId == planId);
+      return subscriptionPlans.firstWhere((plan) => plan.id == planId);
     } catch (e) {
       return null;
     }

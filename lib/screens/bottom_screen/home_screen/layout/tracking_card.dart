@@ -12,8 +12,8 @@ class TrackingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeScreenProvider>(
-      builder: (context, homeCtrl, child) {
+    return Consumer2<HomeScreenProvider, DashBoardProvider>(
+      builder: (context, homeCtrl, bottomCtrl, child) {
         return Container(
           decoration: BoxDecoration(
             color: appColor(context).appTheme.white,
@@ -136,12 +136,13 @@ class TrackingCard extends StatelessWidget {
               ),
             ],
           ),
-        ).inkWell(onTap: () => _onTap(context, homeCtrl));
+        ).inkWell(onTap: () => _onTap(context, homeCtrl, bottomCtrl));
       },
     );
   }
 
-  Future<void> _onTap(BuildContext context, HomeScreenProvider homeCtrl) async {
+  Future<void> _onTap(
+      BuildContext context, HomeScreenProvider homeCtrl, bottomCtrl) async {
     try {
       final subscriptionsCtrl = context.read<SubscriptionsProvider>();
       final hasSubscription =
@@ -149,7 +150,7 @@ class TrackingCard extends StatelessWidget {
 
       if (!hasSubscription) {
         if (context.mounted) {
-          route.pushNamed(context, routeName.subscriptionManagementScreen);
+          bottomCtrl.tabChange(2);
         }
         return;
       }

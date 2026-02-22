@@ -41,8 +41,7 @@ class RecommendationsData {
 
   factory RecommendationsData.fromJson(Map<String, dynamic> json) {
     return RecommendationsData(
-      parentSummary:
-          ParentSummary.fromJson(json['parent_summary'] ?? {}),
+      parentSummary: ParentSummary.fromJson(json['parent_summary'] ?? {}),
       recommendedPlans: json['recommended_plans'] != null
           ? (json['recommended_plans'] as List)
               .map((e) => RecommendedPlan.fromJson(e))
@@ -75,9 +74,7 @@ class ParentSummary {
     return ParentSummary(
       totalKids: json['total_kids'] ?? 0,
       kids: json['kids'] != null
-          ? (json['kids'] as List)
-              .map((e) => KidSummary.fromJson(e))
-              .toList()
+          ? (json['kids'] as List).map((e) => KidSummary.fromJson(e)).toList()
           : [],
       sameTripGroups: json['same_trip_groups'] != null
           ? (json['same_trip_groups'] as List)
@@ -199,9 +196,7 @@ class RecommendedPlan {
       coversAllKids: json['covers_all_kids'] ?? false,
       kidsCovered: json['kids_covered'] ?? 0,
       features: json['features'] != null
-          ? (json['features'] as List)
-              .map((e) => Feature.fromJson(e))
-              .toList()
+          ? (json['features'] as List).map((e) => Feature.fromJson(e)).toList()
           : [],
       isRecommended: json['is_recommended'] ?? false,
       reason: json['reason'] ?? '',
@@ -248,7 +243,8 @@ class RecommendedPlan {
       'proration': proration != null
           ? {
               'current_plan_total_days': proration!.currentPlanTotalDays,
-              'current_plan_remaining_days': proration!.currentPlanRemainingDays,
+              'current_plan_remaining_days':
+                  proration!.currentPlanRemainingDays,
               'current_daily_rate': proration!.currentDailyRate,
               'current_remaining_value': proration!.currentRemainingValue,
               'new_plan_full_price': proration!.newPlanFullPrice,
@@ -304,7 +300,7 @@ class ExcludedPlan {
 }
 
 class CurrentSubscription {
-  final String subscriptionId;
+  final String id;
   final String planId;
   final int calculatedPrice;
   final String startDate;
@@ -313,7 +309,7 @@ class CurrentSubscription {
   final int remainingValue;
 
   CurrentSubscription({
-    required this.subscriptionId,
+    required this.id,
     required this.planId,
     required this.calculatedPrice,
     required this.startDate,
@@ -324,7 +320,7 @@ class CurrentSubscription {
 
   factory CurrentSubscription.fromJson(Map<String, dynamic> json) {
     return CurrentSubscription(
-      subscriptionId: json['subscription_id'] ?? '',
+      id: json['_id'] ?? '',
       planId: json['plan_id'] ?? '',
       calculatedPrice: json['calculated_price'] ?? 0,
       startDate: json['start_date'] ?? '',

@@ -27,7 +27,6 @@ class StudentListResponse {
 
 class Student {
   final String? id;
-  final String? studentId;
   final String? parentId;
   final String? schoolId;
   final String? studentName;
@@ -50,7 +49,6 @@ class Student {
 
   Student({
     this.id,
-    this.studentId,
     this.parentId,
     this.schoolId,
     this.studentName,
@@ -75,7 +73,6 @@ class Student {
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       id: json['_id'],
-      studentId: json['student_id'],
       parentId: json['parent_id'],
       schoolId: json['school_id'],
       studentName: json['student_name'],
@@ -113,7 +110,6 @@ enum AssignmentStatus {
 
 class DriverAssignment {
   final String? id;
-  final String? assignmentId;
   final String? driverId;
   final String? studentId;
   final String? driverUniqueId;
@@ -124,7 +120,6 @@ class DriverAssignment {
 
   DriverAssignment({
     this.id,
-    this.assignmentId,
     this.driverId,
     this.studentId,
     this.driverUniqueId,
@@ -137,7 +132,6 @@ class DriverAssignment {
   factory DriverAssignment.fromJson(Map<String, dynamic> json) {
     return DriverAssignment(
       id: json['_id'],
-      assignmentId: json['assignment_id'],
       driverId: json['driver_id'],
       studentId: json['student_id'],
       driverUniqueId: json['driver_unique_id'],
@@ -185,7 +179,6 @@ class DriverAssignment {
 
 class School {
   final String? id;
-  final String? schoolId;
   final String? schoolName;
   final String? address;
   final String? state;
@@ -199,7 +192,6 @@ class School {
 
   School({
     this.id,
-    this.schoolId,
     this.schoolName,
     this.address,
     this.state,
@@ -215,7 +207,6 @@ class School {
   factory School.fromJson(Map<String, dynamic> json) {
     return School(
       id: json['_id'],
-      schoolId: json['school_id'],
       schoolName: json['school_name'],
       address: json['address'],
       state: json['state'],

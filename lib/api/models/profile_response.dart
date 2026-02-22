@@ -23,7 +23,7 @@ class ProfileResponse {
 }
 
 class ProfileData {
-  final String userId;
+  final String id;
   final String name;
   final String email;
   final String? photoUrl;
@@ -32,7 +32,7 @@ class ProfileData {
   final UserInfo user;
 
   ProfileData({
-    required this.userId,
+    required this.id,
     required this.name,
     required this.email,
     this.photoUrl,
@@ -43,7 +43,7 @@ class ProfileData {
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
     return ProfileData(
-      userId: json['user_id'] ?? '',
+      id: json['_id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       photoUrl: json['photo_url'],
@@ -55,7 +55,7 @@ class ProfileData {
 
   Map<String, dynamic> toJson() {
     return {
-      'user_id': userId,
+      'id': id,
       'name': name,
       'email': email,
       'photo_url': photoUrl,
