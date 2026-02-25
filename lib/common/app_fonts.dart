@@ -82,7 +82,7 @@ class AppFonts {
   final validTill = "Valid Till";
   final topCategories = "Get Started";
   final addNewLocation = "Add New Location";
-  final searchDestinations = "Search Destinations";
+  final search = "Search";
   final dateTimeSchedule = "Date Time Schedule";
   final whatTimeWouldYou = "What time would you want to be picked up?";
   final enterDestination = "Enter Destination";
@@ -272,4 +272,14 @@ class AppFonts {
   final euro = "euro";
   final inr = "inr";
   final pound = "pound";
+
+  // my wallet screen
+  final payments = "Payments";
+  final totalBalance = "Total Balance";
+  final topUpWallet = "TopUp Wallet";
+  final completed = "Completed";
+  final pending = "Pending";
+  final noPayments = "No payments yet";
+  final noPaymentsDescription =
+      "Your payment history will appear here once you subscribe to a plan.";
 }

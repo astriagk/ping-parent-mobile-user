@@ -7,63 +7,60 @@ class Endpoints {
   static const String baseUrl =
       'https://ping-parent-backend-m8yc.onrender.com/api';
   // static const String baseUrl = 'http://192.168.0.126:3000/api';
-  static const String getUser = '$baseUrl/user';
+
+  // static const String getUser = '$baseUrl/user';
 
   // Verify Token Endpoint
-
   static const String verifyToken = '$baseUrl/auth/verify-token';
 
-  // Auth Endpoints
-
+// Auth Endpoints
   static const String sendOtp = '$baseUrl/auth/login/send-otp';
   static const String verifyOtp = '$baseUrl/auth/login/verify-otp';
   static const String registerSendOtp = '$baseUrl/auth/register/send-otp';
   static const String registerVerifyOtp = '$baseUrl/auth/register/verify-otp';
 
-  // Profile Endpoints
+// Profile Endpoints
   static const String parentProfile = '$baseUrl/parent/profile';
 
-  // Student Endpoints
-  static const String myStudents = '$baseUrl/students/my-students';
-  static const String students = '$baseUrl/students';
-  static String updateStudent(String id) => '$baseUrl/students/$id';
+// Student Endpoints
+  static const String myStudents = '$baseUrl/parent/students';
+  static const String students = '$baseUrl/parent/students';
+  static String updateStudent(String id) => '$baseUrl/parent/students/$id';
 
-  // School Endpoints
-  static const String schools = '$baseUrl/schools';
+// School Endpoints
+  static const String schools = '$baseUrl/shared/schools';
 
-  // Parent Address Endpoints
+// Parent Address Endpoints
   static const String parentAddress = '$baseUrl/parent/address';
 
-  // Driver Endpoints
-  static const String allDrivers =
-      '$baseUrl/driver-student-assignments/all-drivers';
-  static const String driverStudentAssignments =
-      '$baseUrl/driver-student-assignments';
+// Assignment Endpoints
+  static const String allDrivers = '$baseUrl/parent/assignments/all-drivers';
+  static const String driverStudentAssignments = '$baseUrl/parent/assignments';
 
-  // Subscription Endpoints
-  static const String subscriptionPlans = '$baseUrl/subscription-plans';
+// Subscription Endpoints
+  static const String subscriptionPlans = '$baseUrl/public/subscription-plans';
   static const String subscriptionRecommendations =
-      '$baseUrl/parent-subscriptions/recommendations';
-  static const String parentSubscriptions = '$baseUrl/parent-subscriptions';
+      '$baseUrl/parent/subscriptions/recommendations';
+  static const String parentSubscriptions = '$baseUrl/parent/subscriptions';
   static const String parentSubscriptionsUpgrade =
-      '$baseUrl/parent-subscriptions/upgrade';
+      '$baseUrl/parent/subscriptions/upgrade';
   static const String myActiveSubscription =
-      '$baseUrl/parent-subscriptions/my-active-subscription';
+      '$baseUrl/parent/subscriptions/active';
 
-  // Trip Tracking Endpoints
+// Trip Tracking Endpoints
   static const String activeTrips = '$baseUrl/parent/trips/active';
 
-  // QR/OTP Endpoints
+// QR/OTP Endpoints
   static String parentTripQrOtp(String tripId) =>
-      '$baseUrl/daily-qr-otp/parent/trip/$tripId';
+      '$baseUrl/parent/qr-otp/trip/$tripId';
 
-  // Payment Endpoints
-  static const String payments = '$baseUrl/payments';
+// Payment Endpoints
+  static const String payments = '$baseUrl/parent/payments';
 
-  // Razorpay Endpoints
-  static const String razorpayConfig = '$baseUrl/razorpay/config';
-  static const String razorpayOrders = '$baseUrl/razorpay/orders';
-  static const String razorpayVerify = '$baseUrl/razorpay/verify';
+// Razorpay Endpoints
+  static const String razorpayConfig = '$baseUrl/public/razorpay/config';
+  static const String razorpayOrders = '$baseUrl/public/razorpay/orders';
+  static const String razorpayVerify = '$baseUrl/public/razorpay/verify';
 
   // Add more endpoints as needed
 }
