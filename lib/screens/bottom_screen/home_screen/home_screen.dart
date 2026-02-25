@@ -1,5 +1,6 @@
 import 'package:taxify_user_ui/config.dart';
 import 'layout/tracking_card.dart';
+import 'layout/welcome_header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -61,6 +62,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         return Scaffold(
           body: ListView(padding: EdgeInsets.zero, children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // welcome header
+              WelcomeHeader(),
               //card layout
               // CardLayout(),
               // tracking card
@@ -68,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               // top categories layout
               TopCategories(),
               //today's offer layout
-              TodayOfferLayout()
+              // TodayOfferLayout()
             ]).padding(horizontal: Sizes.s20, bottom: Sizes.s100)
           ]),
         );

@@ -83,11 +83,12 @@ class MyApp extends StatelessWidget {
                       builder: (context, lang, child) {
                     return Consumer<CurrencyProvider>(
                         builder: (context, currency, child) {
-                      return ScreenUtilInit(
+                        return ScreenUtilInit(
                           child: MaterialApp(
                               scaffoldMessengerKey: scaffoldMessengerKey,
                               title: appFonts.taxify,
                               debugShowCheckedModeBanner: false,
+                            navigatorObservers: [routeObserver],
                               theme:
                                   AppTheme.fromType(ThemeType.light).themeData,
                               darkTheme:

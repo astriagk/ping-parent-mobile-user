@@ -5,8 +5,8 @@ class CommonEmptyState extends StatelessWidget {
   final String? image;
   final String mainText;
   final String descriptionText;
-  final String buttonText;
-  final VoidCallback onButtonTap;
+  final String? buttonText;
+  final VoidCallback? onButtonTap;
   final bool showBackButton;
   final VoidCallback? onBackTap;
 
@@ -16,8 +16,8 @@ class CommonEmptyState extends StatelessWidget {
     this.image,
     required this.mainText,
     required this.descriptionText,
-    required this.buttonText,
-    required this.onButtonTap,
+    this.buttonText,
+    this.onButtonTap,
     this.showBackButton = false,
     this.onBackTap,
   });
