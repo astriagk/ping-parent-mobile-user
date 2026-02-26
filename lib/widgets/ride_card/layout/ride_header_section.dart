@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import 'ride_data_model.dart';
 
 class RideHeaderSection extends StatelessWidget {

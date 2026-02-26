@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 class SwitchCommon extends StatelessWidget {
   final bool value;

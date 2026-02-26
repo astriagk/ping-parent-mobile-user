@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:taxify_user_ui/api/api_client.dart';
-import 'package:taxify_user_ui/api/models/profile_response.dart';
-import 'package:taxify_user_ui/api/services/user_service.dart';
+import 'package:skolo/api/api_client.dart';
+import 'package:skolo/api/models/profile_response.dart';
+import 'package:skolo/api/services/user_service.dart';
 
 class UserProvider extends ChangeNotifier {
   final UserService _userService = UserService(ApiClient());

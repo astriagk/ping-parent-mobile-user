@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/screens/auth_screen/splash_screen/layout/custom_painter.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/screens/auth_screen/splash_screen/layout/custom_painter.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

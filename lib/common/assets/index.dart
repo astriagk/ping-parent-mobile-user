@@ -1,6 +1,6 @@
-import 'package:taxify_user_ui/common/assets/gif_assets.dart';
-import 'package:taxify_user_ui/common/assets/image_assets.dart';
-import 'package:taxify_user_ui/common/assets/svg_assets.dart';
+import 'package:skolo/common/assets/gif_assets.dart';
+import 'package:skolo/common/assets/image_assets.dart';
+import 'package:skolo/common/assets/svg_assets.dart';
 
 ImageAssets imageAssets = ImageAssets();
 SvgAssets svgAssets = SvgAssets();

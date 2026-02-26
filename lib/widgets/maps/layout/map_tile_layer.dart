@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
-import 'package:taxify_user_ui/common/maps/map_config.dart';
+import 'package:skolo/common/maps/map_config.dart';
 
 /// Map TileLayer widget for reusability
 class MapTileLayer extends StatelessWidget {

@@ -1,8 +1,8 @@
-import 'package:taxify_user_ui/api/enums/trip_status.dart';
-import 'package:taxify_user_ui/api/enums/trip_type.dart';
-import 'package:taxify_user_ui/api/models/trip_tracking_response.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
-import 'package:taxify_user_ui/widgets/common_confirmation_dialog.dart';
+import 'package:skolo/api/enums/trip_status.dart';
+import 'package:skolo/api/enums/trip_type.dart';
+import 'package:skolo/api/models/trip_tracking_response.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:skolo/widgets/common_confirmation_dialog.dart';
 
 import '../../../../config.dart';
 import '../../../../helper/date_formatter_helper.dart';

@@ -1,9 +1,9 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/widgets/common_empty_state.dart';
-import 'package:taxify_user_ui/widgets/common_error_state.dart';
-import 'package:taxify_user_ui/widgets/skeletons/student_card_skeleton.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
-import 'package:taxify_user_ui/widgets/loading/payment_loading_overlay.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/widgets/common_empty_state.dart';
+import 'package:skolo/widgets/common_error_state.dart';
+import 'package:skolo/widgets/skeletons/student_card_skeleton.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:skolo/widgets/loading/payment_loading_overlay.dart';
 import 'layouts/school_coverage_card.dart';
 import 'layouts/subscription_plans_list.dart';
 

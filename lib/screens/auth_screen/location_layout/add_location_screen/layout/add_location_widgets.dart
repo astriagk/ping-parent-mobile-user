@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/widgets/maps/index.dart';
+import 'package:skolo/widgets/maps/index.dart';
 
 import '../../../../../config.dart';
 

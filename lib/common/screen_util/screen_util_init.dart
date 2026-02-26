@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
-import 'package:taxify_user_ui/common/screen_util/screen_util.dart';
+import 'package:skolo/common/screen_util/screen_util.dart';
 
 import 'flutter_widget.dart';
 import 'screen_util_mixin.dart';

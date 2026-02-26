@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:share_plus/share_plus.dart';
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';
 import '../../api/services/storage_service.dart';
 import '../app_pages_providers/user_provider.dart';

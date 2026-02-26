@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/widgets/skeletons/my_wallet_skeleton.dart';
+import 'package:skolo/widgets/skeletons/my_wallet_skeleton.dart';
 
 import 'package:provider/provider.dart';
 

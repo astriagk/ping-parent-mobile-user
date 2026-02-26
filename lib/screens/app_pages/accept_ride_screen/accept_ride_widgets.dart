@@ -1,8 +1,8 @@
-import 'package:taxify_user_ui/api/models/trip_tracking_response.dart';
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/api/models/driver_response.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
-import 'package:taxify_user_ui/helper/date_formatter_helper.dart';
+import 'package:skolo/api/models/trip_tracking_response.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/api/models/driver_response.dart';
+import 'package:skolo/provider/app_pages_providers/user_provider.dart';
+import 'package:skolo/helper/date_formatter_helper.dart';
 
 class AcceptRideWidgets {
   driverDetailsAndOtp({Driver? driver, List<Waypoint>? waypoints}) =>

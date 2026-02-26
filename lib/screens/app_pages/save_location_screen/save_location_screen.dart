@@ -1,6 +1,6 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/screens/app_pages/save_location_screen/save_location_widgets.dart';
-import 'package:taxify_user_ui/widgets/skeletons/save_location_skeleton.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/screens/app_pages/save_location_screen/save_location_widgets.dart';
+import 'package:skolo/widgets/skeletons/save_location_skeleton.dart';
 
 class SaveLocationScreen extends StatelessWidget {
   const SaveLocationScreen({super.key});

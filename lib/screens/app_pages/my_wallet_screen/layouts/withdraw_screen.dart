@@ -1,5 +1,5 @@
-import 'package:taxify_user_ui/screens/app_pages/my_wallet_screen/layouts/home_screen_widget.dart';
-import 'package:taxify_user_ui/widgets/common_app_bar_layout1.dart';
+import 'package:skolo/screens/app_pages/my_wallet_screen/layouts/home_screen_widget.dart';
+import 'package:skolo/widgets/common_app_bar_layout1.dart';
 
 import '../../../../config.dart';
 import '../../../../widgets/common_bg_layout.dart';

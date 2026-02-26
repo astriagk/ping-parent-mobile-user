@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 /// Map controls widget for zoom and layer controls
 class MapControls extends StatelessWidget {

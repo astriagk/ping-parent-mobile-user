@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 typedef GestureOnTapChangeCallback = void Function(bool tapState);
 

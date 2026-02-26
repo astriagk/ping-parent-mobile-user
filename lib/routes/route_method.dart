@@ -1,5 +1,5 @@
-import 'package:taxify_user_ui/screens/app_pages/completed_ride_screen/completed_ride_screen.dart';
-import 'package:taxify_user_ui/screens/app_pages/subscription_management/subscription_management_screen.dart';
+import 'package:skolo/screens/app_pages/completed_ride_screen/completed_ride_screen.dart';
+import 'package:skolo/screens/app_pages/subscription_management/subscription_management_screen.dart';
 
 import '../config.dart';
 import '../screens/app_pages/my_wallet_screen/layouts/top_up_wallet_screen.dart';

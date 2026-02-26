@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 class PromoScreen extends StatelessWidget {
   const PromoScreen({super.key});

@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import '../../api/api_client.dart';
 import '../../api/services/student_service.dart';
 import '../../api/models/student_response.dart';

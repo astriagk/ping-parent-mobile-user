@@ -1,4 +1,4 @@
-# taxify_user_ui
+# skolo
 
 A new Flutter project.
 

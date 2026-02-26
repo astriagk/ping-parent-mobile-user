@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/driver_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/my_wallet_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
-import 'package:taxify_user_ui/api/services/trip_tracking_service.dart';
-import 'package:taxify_user_ui/api/api_client.dart';
+import 'package:skolo/provider/app_pages_providers/driver_provider.dart';
+import 'package:skolo/provider/app_pages_providers/my_wallet_provider.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:skolo/provider/app_pages_providers/user_provider.dart';
+import 'package:skolo/api/services/trip_tracking_service.dart';
+import 'package:skolo/api/api_client.dart';
 import 'config.dart';
 
 /// Global key for showing snackbars from anywhere (providers, services)

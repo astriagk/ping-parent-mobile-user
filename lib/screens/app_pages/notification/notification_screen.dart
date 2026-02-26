@@ -1,5 +1,5 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/screens/app_pages/notification/notification_widgets.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/screens/app_pages/notification/notification_widgets.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});

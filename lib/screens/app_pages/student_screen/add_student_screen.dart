@@ -1,10 +1,10 @@
-import 'package:taxify_user_ui/api/models/school_response.dart';
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/helper/distance_helper.dart';
-import 'package:taxify_user_ui/widgets/common_app_bar_layout1.dart';
-import 'package:taxify_user_ui/widgets/location/route_distance_display.dart';
-import 'package:taxify_user_ui/widgets/location/route_location_display.dart';
-import 'package:taxify_user_ui/widgets/searchable_dropdown.dart';
+import 'package:skolo/api/models/school_response.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/helper/distance_helper.dart';
+import 'package:skolo/widgets/common_app_bar_layout1.dart';
+import 'package:skolo/widgets/location/route_distance_display.dart';
+import 'package:skolo/widgets/location/route_location_display.dart';
+import 'package:skolo/widgets/searchable_dropdown.dart';
 
 import 'student_widgets.dart';
 

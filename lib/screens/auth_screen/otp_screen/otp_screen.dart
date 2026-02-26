@@ -1,8 +1,8 @@
-import 'package:taxify_user_ui/api/api_client.dart';
-import 'package:taxify_user_ui/api/models/verify_otp_response.dart';
-import 'package:taxify_user_ui/api/services/auth_service.dart';
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
+import 'package:skolo/api/api_client.dart';
+import 'package:skolo/api/models/verify_otp_response.dart';
+import 'package:skolo/api/services/auth_service.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/provider/app_pages_providers/user_provider.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -94,7 +94,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                          // back button and taxify_user_ui logo layout
+                          // back button and skolo logo layout
                           AuthCommonWidgets().backAndLogo(context, onTap: () {
                             otpCtrl.pinController.text = "";
                             route.pop(context);

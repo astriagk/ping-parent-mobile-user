@@ -1,5 +1,5 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/provider/app_pages_providers/user_provider.dart';
 
 class WelcomeHeader extends StatelessWidget {
   const WelcomeHeader({super.key});
