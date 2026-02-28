@@ -57,6 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Consumer<SignUpProvider>(builder: (context, signUpProvider, child) {
       return Scaffold(
+          backgroundColor: appColor(context).appTheme.bgBox,
           resizeToAvoidBottomInset: false,
           body: Stack(children: [
             Column(

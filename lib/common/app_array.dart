@@ -862,19 +862,19 @@ class AppArray {
 
   final List<Map<String, String>> onboardingData = [
     {
-      "title": "Ride with Ease",
+      "title": "Track Your Kids",
       "description":
-          "Discover seamless rides at your fingertips. Book your taxi anytime, anywhere, and travel stress-free."
+          "Keep your children safe with Skolo. Track their school commute in real-time and know exactly when they arrive."
     },
     {
       "title": "Safety First",
       "description":
-          "Your safety is our priority. Enjoy real-time tracking, verified drivers, and 24/7 support on every journey."
+          "Your child's safety is our priority. Get live updates, verified drivers, and instant alerts throughout every school trip."
     },
     {
-      "title": "Affordable Rides for All",
+      "title": "Stay Connected with School",
       "description":
-          "Choose from a variety of ride options to fit your budget. Affordable and reliable rides are just a tap away."
+          "Never miss a moment. Check school events, activities, and announcements — all in one affordable app."
     },
   ];
 }

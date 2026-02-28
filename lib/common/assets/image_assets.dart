@@ -48,11 +48,7 @@ class ImageAssets {
   final billSummary = "assets/image/my_ride/billSummary.png";
 
   //splash screen
-  final splashBike = "assets/image/splash/splashBike.png";
-  final splashCar = "assets/image/splash/splashCar.png";
-  final splashDotLine = "assets/image/splash/splashDotLine.png";
-  final splashRoad = "assets/image/splash/splashRoad.png";
-  final splashRound = "assets/image/splash/splashRound.png";
+  final mainLogo = "assets/image/splash/main-logo.png";
 
   final bookingSuccess = "assets/image/setting/booking_success.png";
   final noInternet = "assets/image/setting/no_internet.png";

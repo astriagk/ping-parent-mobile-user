@@ -46,7 +46,7 @@ class _AddNewLocationScreenState extends State<AddNewLocationScreen> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        VSpace(Sizes.s53),
+                        VSpace(Sizes.s15),
                         //title and back button layout
                         LocationWidgets().selectAppBarLayout(context),
                         // home,work, other radio category layout

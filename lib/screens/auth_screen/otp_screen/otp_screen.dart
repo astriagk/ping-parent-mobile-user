@@ -80,6 +80,7 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     return Consumer<OtpProvider>(builder: (context, otpCtrl, child) {
       return Scaffold(
+          backgroundColor: appColor(context).appTheme.bgBox,
           resizeToAvoidBottomInset: false,
           body: PopScope(
               canPop: false,
@@ -88,74 +89,62 @@ class _OtpScreenState extends State<OtpScreen> {
                 otpCtrl.pinController.text = "";
                 route.pop(context);
               },
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                          // back button and skolo logo layout
-                          AuthCommonWidgets().backAndLogo(context, onTap: () {
-                            otpCtrl.pinController.text = "";
-                            route.pop(context);
+              child: Stack(children: [
+                Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // back button and skolo logo layout
+                      AuthCommonWidgets().backAndLogo(context, onTap: () {
+                        otpCtrl.pinController.text = "";
+                        route.pop(context);
+                      }),
+                      //gif title and subtitle layout
+                      AuthCommonWidgets().gifTitleText(
+                          context,
+                          appFonts.otpVerification,
+                          '${appFonts.enterOTPSent} $phone'),
+                      TextWidgetCommon(text: appFonts.otp)
+                          .padding(bottom: Sizes.s9),
+                      // PinPut layout
+                      OTPScreenWidgets()
+                          .pinPutLayout()
+                          .padding(bottom: Sizes.s60),
+                      // Error message display
+                      if (otpCtrl.errorMessage != null)
+                        ErrorMessageWidget(errorMessage: otpCtrl.errorMessage!),
+                      // Common button
+                      CommonButton(
+                          text: appFonts.verify,
+                          isLoading: otpCtrl.isVerifying,
+                          onTap: () async {
+                            final otp = otpCtrl.pinController.text.trim();
+                            final phoneNumber = phone?.trim() ?? '';
+                            if (phoneNumber.isEmpty || otp.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: TextWidgetCommon(
+                                      text: 'Please enter both phone and OTP.'),
+                                ),
+                              );
+                              return;
+                            }
+                            await _verifyOtp(phoneNumber, otp);
                           }),
-                          //gif title and subtitle layout
-                          AuthCommonWidgets().gifTitleText(
-                              context,
-                              appFonts.otpVerification,
-                              '${appFonts.enterOTPSent} $phone'),
-                          TextWidgetCommon(text: appFonts.otp)
-                              .padding(bottom: Sizes.s9),
-                          // PinPut layout
-                          OTPScreenWidgets().pinPutLayout().padding(
-                                bottom: Sizes.s60,
-                              ),
-                          // Error message display
-                          if (otpCtrl.errorMessage != null)
-                            ErrorMessageWidget(
-                                errorMessage: otpCtrl.errorMessage!),
-                          // Common button
-                          CommonButton(
-                                  text: appFonts.verify,
-                                  isLoading: otpCtrl.isVerifying,
-                                  onTap: () async {
-                                    final otp =
-                                        otpCtrl.pinController.text.trim();
-                                    final phoneNumber = phone?.trim() ?? '';
-                                    if (phoneNumber.isEmpty || otp.isEmpty) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: TextWidgetCommon(
-                                              text:
-                                                  'Please enter both phone and OTP.'),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    await _verifyOtp(phoneNumber, otp);
-                                  })
-                              .padding(
-                                  top: otpCtrl.errorMessage != null
-                                      ? Sizes.s4
-                                      : Sizes.s60,
-                                  bottom: Sizes.s15),
-                          // Common Rich Text layout
-                          AuthCommonWidgets()
-                              .commonRichText(context, appFonts.notReceivedYet,
-                                  appFonts.resendIt)
-                              .inkWell(
-                                  onTap: () => route.pushNamed(
-                                      context, routeName.addLocationScreen))
-                        ])
-                        .padding(horizontal: Sizes.s20, bottom: Sizes.s20)
-                        .decorated(
-                            color: appColor(context).appTheme.bgBox,
-                            bLRadius: Sizes.s20,
-                            bRRadius: Sizes.s20),
-                    //common car image layout
-                    AuthCommonWidgets().commonImage()
-                  ])));
+                      // Common Rich Text layout
+                      AuthCommonWidgets()
+                          .commonRichText(context, appFonts.notReceivedYet,
+                              appFonts.resendIt)
+                          .inkWell(
+                              onTap: () => route.pushNamed(
+                                  context, routeName.addLocationScreen))
+                          .padding(bottom: Sizes.s25, top: Sizes.s15),
+                    ]).padding(horizontal: Sizes.s20),
+                //common car image layout
+                AuthCommonWidgets().commonImage()
+              ])
+              // .height(MediaQuery.of(context).size.height)
+              ));
     });
   }
 }
