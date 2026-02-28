@@ -36,6 +36,12 @@
 @import flutter_localization;
 #endif
 
+#if __has_include(<flutter_native_splash/FlutterNativeSplashPlugin.h>)
+#import <flutter_native_splash/FlutterNativeSplashPlugin.h>
+#else
+@import flutter_native_splash;
+#endif
+
 #if __has_include(<flutter_secure_storage/FlutterSecureStoragePlugin.h>)
 #import <flutter_secure_storage/FlutterSecureStoragePlugin.h>
 #else
@@ -128,6 +134,7 @@
   [EmojiPickerFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"EmojiPickerFlutterPlugin"]];
   [FlutterContactsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterContactsPlugin"]];
   [FlutterLocalizationPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLocalizationPlugin"]];
+  [FlutterNativeSplashPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterNativeSplashPlugin"]];
   [FlutterSecureStoragePlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterSecureStoragePlugin"]];
   [GeocodingPlugin registerWithRegistrar:[registry registrarForPlugin:@"GeocodingPlugin"]];
   [GeolocatorPlugin registerWithRegistrar:[registry registrarForPlugin:@"GeolocatorPlugin"]];

@@ -120,6 +120,18 @@ Examples:
 - Click device selector in bottom-right status bar
 - Or Command Palette (`Ctrl+Shift+P`) → "Flutter: Select Device"
 
+### Update App Icons & Splash Screen
+
+After replacing images in `assets/icon/` (`logo.png` and `logo_dark.png`), regenerate platform assets:
+
+```bash
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
+
+- `flutter_launcher_icons` generates all Android mipmap and iOS AppIcon sizes
+- `flutter_native_splash` generates splash screens with light/dark mode support
+
 ### Clean & Reinstall Dependencies
 
 If you encounter dependency issues:
