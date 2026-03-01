@@ -1,9 +1,8 @@
 import 'package:skolo/widgets/skeletons/my_wallet_skeleton.dart';
 
-import 'package:provider/provider.dart';
-
 import '../../../config.dart';
 import '../../../provider/app_pages_providers/my_wallet_provider.dart';
+import '../../../widgets/auto_refresh_mixin.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/common_bg_layout.dart';
 import '../../../widgets/common_empty_state.dart';
@@ -15,40 +14,12 @@ class MyWalletScreen extends StatefulWidget {
   State<MyWalletScreen> createState() => _MyWalletScreenState();
 }
 
-class _MyWalletScreenState extends State<MyWalletScreen> with RouteAware {
+class _MyWalletScreenState extends State<MyWalletScreen> with AutoRefreshMixin {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final modal = ModalRoute.of(context);
-    if (modal != null) {
-      routeObserver.subscribe(this, modal);
-    }
-  }
-
-  @override
-  void dispose() {
-    routeObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  void didPush() {
-    // Screen was pushed onto navigator — fetch fresh data
+  void refreshData() {
     final p = Provider.of<MyWalletProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      p.setShowEarnings(true);
-      p.fetchPayments();
-    });
-  }
-
-  @override
-  void didPopNext() {
-    // Returned to this screen (another screen was popped) — refresh data
-    final p = Provider.of<MyWalletProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      p.setShowEarnings(true);
-      p.fetchPayments();
-    });
+    p.setShowEarnings(true);
+    p.fetchPayments();
   }
 
   @override
@@ -161,7 +132,8 @@ class _MyWalletScreenState extends State<MyWalletScreen> with RouteAware {
                                   myWalletPvr.fetchPayments();
                                 } else {
                                   Navigator.of(context).pop();
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
                                     bottomCtrl.tabChange(2);
                                   });
                                 }

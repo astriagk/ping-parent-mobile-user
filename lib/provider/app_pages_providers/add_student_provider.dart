@@ -60,6 +60,13 @@ class AddStudentProvider extends ChangeNotifier {
     await fetchStudents();
   }
 
+  Future<void> refreshData() async {
+    isLoading = true;
+    await fetchSchools();
+    await fetchParentAddress();
+    await fetchStudents();
+  }
+
   // Reset provider data and initialization flag (for logout)
   void resetProvider() {
     _isInitialized = false;
@@ -109,7 +116,6 @@ class AddStudentProvider extends ChangeNotifier {
   }
 
   Future<void> fetchStudents() async {
-    isLoading = true;
     errorMessage = null;
     notifyListeners();
 
