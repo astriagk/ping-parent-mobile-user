@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:skolo/config.dart';
 import '../../api/api_client.dart';
 import '../../api/services/student_service.dart';
@@ -19,6 +22,8 @@ class AddStudentProvider extends ChangeNotifier {
   bool isEditMode = false;
   int? editIndex;
   Student? currentStudent;
+  File? selectedPhotoFile;
+  String? originalPhotoUrl;
 
   // Form controllers
   final TextEditingController studentNameController = TextEditingController();
@@ -154,6 +159,8 @@ class AddStudentProvider extends ChangeNotifier {
     selectedPickupAddressId = null;
     selectedGender = null;
     selectedClass = null;
+    selectedPhotoFile = null;
+    originalPhotoUrl = null;
     notifyListeners();
   }
 
@@ -172,6 +179,8 @@ class AddStudentProvider extends ChangeNotifier {
     sectionController.text = currentStudent?.section ?? '';
     rollNumberController.text = currentStudent?.rollNumber ?? '';
     photoUrlController.text = currentStudent?.photoUrl ?? '';
+    originalPhotoUrl = currentStudent?.photoUrl;
+    selectedPhotoFile = null;
     dateOfBirthController.text = currentStudent?.dateOfBirth ?? '';
     emergencyContactController.text = currentStudent?.emergencyContact ?? '';
     medicalInfoController.text = currentStudent?.medicalInfo ?? '';
@@ -208,6 +217,42 @@ class AddStudentProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      String? photoUrlForPayload = photoUrlController.text.trim().isNotEmpty
+          ? photoUrlController.text.trim()
+          : null;
+
+      if (selectedPhotoFile != null) {
+        final studentService = StudentService(ApiClient());
+        final uploadResult = await studentService.uploadSharedFile(
+          file: selectedPhotoFile!,
+          folderPath: 'student',
+          oldFileUrl: isEditMode &&
+                  originalPhotoUrl != null &&
+                  originalPhotoUrl!.isNotEmpty
+              ? originalPhotoUrl
+              : null,
+        );
+
+        if (uploadResult['success'] != true) {
+          errorMessage = uploadResult['message']?.toString() ??
+              uploadResult['error']?.toString() ??
+              'Failed to upload student photo';
+          isSaving = false;
+          notifyListeners();
+          return false;
+        }
+
+        photoUrlForPayload = uploadResult['url']?.toString();
+        if (photoUrlForPayload == null || photoUrlForPayload.isEmpty) {
+          errorMessage = 'Failed to get uploaded photo URL';
+          isSaving = false;
+          notifyListeners();
+          return false;
+        }
+
+        photoUrlController.text = photoUrlForPayload;
+      }
+
       final request = AddStudentRequest(
         schoolId: selectedSchoolId!,
         studentName: studentNameController.text.trim(),
@@ -218,9 +263,7 @@ class AddStudentProvider extends ChangeNotifier {
         rollNumber: rollNumberController.text.trim().isNotEmpty
             ? rollNumberController.text.trim()
             : null,
-        photoUrl: photoUrlController.text.trim().isNotEmpty
-            ? photoUrlController.text.trim()
-            : null,
+        photoUrl: photoUrlForPayload,
         dateOfBirth: dateOfBirthController.text.trim().isNotEmpty
             ? dateOfBirthController.text.trim()
             : null,
@@ -263,34 +306,29 @@ class AddStudentProvider extends ChangeNotifier {
   }
 
   // Photo selection methods
-  void selectPhotoFromGallery() {
-    // TODO: Implement image picker for gallery
-    // For now, you can use image_picker package
-    // Example: final ImagePicker picker = ImagePicker();
-    // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    // if (image != null) {
-    //   photoUrlController.text = image.path;
-    //   notifyListeners();
-    // }
-
-    // Placeholder - Set a dummy URL for testing
-    photoUrlController.text = 'https://via.placeholder.com/150';
-    notifyListeners();
+  Future<void> selectPhotoFromGallery() async {
+    await _pickPhoto(ImageSource.gallery);
   }
 
-  void selectPhotoFromCamera() {
-    // TODO: Implement image picker for camera
-    // For now, you can use image_picker package
-    // Example: final ImagePicker picker = ImagePicker();
-    // final XFile? image = await picker.pickImage(source: ImageSource.camera);
-    // if (image != null) {
-    //   photoUrlController.text = image.path;
-    //   notifyListeners();
-    // }
+  Future<void> selectPhotoFromCamera() async {
+    await _pickPhoto(ImageSource.camera);
+  }
 
-    // Placeholder - Set a dummy URL for testing
-    photoUrlController.text = 'https://via.placeholder.com/150';
-    notifyListeners();
+  Future<void> _pickPhoto(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile =
+          await picker.pickImage(source: source, imageQuality: 85);
+
+      if (pickedFile == null) return;
+
+      selectedPhotoFile = File(pickedFile.path);
+      errorMessage = null;
+      notifyListeners();
+    } catch (e) {
+      errorMessage = 'Failed to select photo';
+      notifyListeners();
+    }
   }
 
   @override

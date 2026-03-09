@@ -106,7 +106,8 @@ class _SubscriptionManagementScreenState
                               currentSubscription:
                                   subscriptionsCtrl.currentSubscription,
                             )
-                          : subscriptionsCtrl.recommendedPlans.isEmpty
+                          : (subscriptionsCtrl.recommendedPlans.isEmpty &&
+                                  subscriptionsCtrl.currentSubscription == null)
                               ? CommonEmptyState(
                                   mainText:
                                       appFonts.noSubscriptionPlansAvailable,

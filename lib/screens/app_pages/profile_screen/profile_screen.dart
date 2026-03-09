@@ -10,8 +10,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
-    with AutoRefreshMixin {
+class _ProfileScreenState extends State<ProfileScreen> with AutoRefreshMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -112,7 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                       children: [
                         //profile image and edit button layout
                         ProfileWidgets().profileImageLayout(context,
-                            photoUrl: profileData?.photoUrl),
+                            photoUrl: profileData?.photoUrl,
+                            selectedImageFile:
+                                userProvider.selectedProfileImage,
+                            onPickFromGallery:
+                                userProvider.pickProfileImageFromGallery,
+                            onPickFromCamera:
+                                userProvider.pickProfileImageFromCamera),
                         Divider(
                                 color: appColor(context).appTheme.stroke,
                                 height: 0)

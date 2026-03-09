@@ -36,6 +36,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
   Future<void> _saveStudent() async {
     final studentCtrl = context.read<AddStudentProvider>();
+    final wasEditMode = studentCtrl.isEditMode;
 
     final success = await studentCtrl.createStudent();
 
@@ -44,7 +45,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: TextWidgetCommon(
-              text: studentCtrl.isEditMode
+              text: wasEditMode
                   ? appFonts.studentUpdatedSuccessfully
                   : appFonts.studentCreatedSuccessfully,
             ),
@@ -169,15 +170,12 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   photoUrl: studentCtrl.photoUrlController.text.isNotEmpty
                       ? studentCtrl.photoUrlController.text
                       : null,
+                  selectedPhotoFile: studentCtrl.selectedPhotoFile,
                   onTap: () {
                     widgets.showPhotoSelectionDialog(
                       context,
-                      onGalleryTap: () {
-                        studentCtrl.selectPhotoFromGallery();
-                      },
-                      onCameraTap: () {
-                        studentCtrl.selectPhotoFromCamera();
-                      },
+                      onGalleryTap: studentCtrl.selectPhotoFromGallery,
+                      onCameraTap: studentCtrl.selectPhotoFromCamera,
                     );
                   },
                 ),
@@ -449,7 +447,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   text: studentCtrl.isEditMode
                       ? appFonts.updateStudent
                       : appFonts.saveStudent,
-                  isLoading: studentCtrl.isLoading,
+                  isLoading: studentCtrl.isSaving,
                   onTap: _saveStudent)),
         ),
       );
