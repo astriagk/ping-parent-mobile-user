@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "795467293197",
+    "project_id": "skolo-5168a",
+    "storage_bucket": "skolo-5168a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795467293197:android:332c32bb399814103feb44",
+        "android_client_info": {
+          "package_name": "com.pixelstrap.skolo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3_E0vMivp0ObMnecIt7Y0qReXht75C60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

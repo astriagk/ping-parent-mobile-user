@@ -4,9 +4,9 @@ class Endpoints {
   // For Android Emulator: use 10.0.2.2
   // For iOS Simulator: use localhost or 127.0.0.1
   // For Physical Device: use your computer's network IP (check with ipconfig/ifconfig)
-  // static const String baseUrl =
-  //     'https://ping-parent-backend-m8yc.onrender.com/api';
-  static const String baseUrl = 'http://192.168.0.126:3000/api';
+  static const String baseUrl =
+      'https://ping-parent-backend-m8yc.onrender.com/api';
+  // static const String baseUrl = 'http://192.168.0.126:3000/api';
 
   // static const String getUser = '$baseUrl/user';
 
@@ -62,5 +62,20 @@ class Endpoints {
   static const String razorpayOrders = '$baseUrl/public/razorpay/orders';
   static const String razorpayVerify = '$baseUrl/public/razorpay/verify';
 
-  // Add more endpoints as needed
+// Notification Endpoints
+  static const String notifications = '$baseUrl/shared/notifications';
+  static const String unreadNotifications =
+      '$baseUrl/shared/notifications/unread';
+  static const String unreadCount =
+      '$baseUrl/shared/notifications/unread-count';
+  static String markAsRead(String id) =>
+      '$baseUrl/shared/notifications/$id/mark-as-read';
+  static const String markAllAsRead =
+      '$baseUrl/shared/notifications/mark-all-as-read';
+
+// Device Token Endpoints
+  static const String deviceTokenRegister =
+      '$baseUrl/shared/device-tokens/register';
+  static const String deviceTokenRemove =
+      '$baseUrl/shared/device-tokens/remove';
 }

@@ -81,12 +81,12 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                     //       chatCtrl.homeChat = true;
                     //       route.pushNamed(context, routeName.noInternetScreen);
                     //     }),
-                    // CommonIconButton(
-                    //         icon: svgAssets.bell,
-                    //         onTap: () => route.pushNamed(
-                    //             context, routeName.emptyNotification,
-                    //             arg: appFonts.notification))
-                    //     .padding(horizontal: Sizes.s10),
+                    CommonIconButton(
+                            icon: svgAssets.bell,
+                            onTap: () => route.pushNamed(
+                                context, routeName.emptyNotification,
+                                arg: appFonts.notification))
+                        .padding(horizontal: Sizes.s10),
                     CommonIconButton(icon: svgAssets.wallet).inkWell(
                         onTap: () =>
                             route.pushNamed(context, routeName.myWalletScreen)),

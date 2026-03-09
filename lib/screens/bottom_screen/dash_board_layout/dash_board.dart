@@ -15,11 +15,15 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     super.initState();
-    // Fetch user data if not already loaded (handles app restart with existing session)
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Fetch user data if not already loaded (handles app restart with existing session)
       final userProvider = context.read<UserProvider>();
       if (!userProvider.hasUserData && !userProvider.isFetching) {
         await userProvider.fetchUserProfile();
+      }
+      // Initialize push notifications (permission prompt shows here on dashboard)
+      if (mounted) {
+        context.read<NotificationProvider>().initPushNotifications(context);
       }
     });
   }

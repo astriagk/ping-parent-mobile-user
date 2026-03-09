@@ -5,7 +5,7 @@ class ChooseRiderProvider extends ChangeNotifier {
   bool permissionDenied = false;
 
   onInit() {
-    fetchContacts();
+    // fetchContacts();
     notifyListeners();
   }
 
