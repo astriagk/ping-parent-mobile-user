@@ -1,10 +1,14 @@
 import 'package:flutter/services.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/driver_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/my_wallet_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
-import 'package:taxify_user_ui/api/services/trip_tracking_service.dart';
-import 'package:taxify_user_ui/api/api_client.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:skolo/provider/app_pages_providers/driver_provider.dart';
+import 'package:skolo/provider/app_pages_providers/my_wallet_provider.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:skolo/provider/app_pages_providers/user_provider.dart';
+import 'package:skolo/api/services/trip_tracking_service.dart';
+import 'package:skolo/api/api_client.dart';
+import 'package:skolo/api/services/push_notification_service.dart';
+import 'firebase_options.dart';
 import 'config.dart';
 
 /// Global key for showing snackbars from anywhere (providers, services)
@@ -13,8 +17,14 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await ScreenUtil.ensureScreenSize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   runApp(const MyApp());
 }
 

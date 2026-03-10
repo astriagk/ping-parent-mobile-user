@@ -1,6 +1,6 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/widgets/location/route_location_display.dart';
-import 'package:taxify_user_ui/widgets/location/route_distance_display.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/widgets/location/route_location_display.dart';
+import 'package:skolo/widgets/location/route_distance_display.dart';
 import 'layout/ride_data_model.dart';
 import 'layout/ride_header_section.dart';
 import 'layout/ride_driver_info_section.dart';

@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 //setting screen all data list layout
 class SettingListLayout extends StatelessWidget {

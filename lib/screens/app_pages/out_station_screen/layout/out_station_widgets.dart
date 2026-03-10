@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/widgets/common_bg_layout.dart';
+import 'package:skolo/widgets/common_bg_layout.dart';
 
 import '../../../../config.dart';
 

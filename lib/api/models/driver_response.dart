@@ -99,6 +99,8 @@ class Driver {
     this.user,
   });
 
+  // Backward-compatible alias for API payload usage where driver_id is required.
+  String? get driverId => id;
   factory Driver.fromJson(Map<String, dynamic> json) {
     return Driver(
       id: json['_id'],

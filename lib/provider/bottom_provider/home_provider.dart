@@ -1,7 +1,7 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/api/api_client.dart';
-import 'package:taxify_user_ui/api/services/trip_tracking_service.dart';
-import 'package:taxify_user_ui/api/models/trip_tracking_response.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/api/api_client.dart';
+import 'package:skolo/api/services/trip_tracking_service.dart';
+import 'package:skolo/api/models/trip_tracking_response.dart';
 
 class HomeScreenProvider extends ChangeNotifier {
   List cards = [];

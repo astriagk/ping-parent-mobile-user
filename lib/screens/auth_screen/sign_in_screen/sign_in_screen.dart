@@ -1,7 +1,7 @@
-import 'package:taxify_user_ui/api/api_client.dart';
-import 'package:taxify_user_ui/api/models/send_otp_response.dart';
-import 'package:taxify_user_ui/api/services/auth_service.dart';
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/api/api_client.dart';
+import 'package:skolo/api/models/send_otp_response.dart';
+import 'package:skolo/api/services/auth_service.dart';
+import 'package:skolo/config.dart';
 import 'dart:async';
 
 class SignInScreen extends StatefulWidget {
@@ -55,6 +55,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Consumer<SignInProvider>(builder: (context, value, child) {
       return Scaffold(
+          backgroundColor: appColor(context).appTheme.bgBox,
           resizeToAvoidBottomInset: false,
           body: Stack(children: [
             Column(

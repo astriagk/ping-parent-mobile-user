@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:skolo/config.dart';
 import '../api/services/storage_service.dart';
 
 /// Widget to check authentication status and return the appropriate initial screen
@@ -60,9 +60,13 @@ class _AuthCheckWidgetState extends State<AuthCheckWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return Scaffold(
+        backgroundColor: const Color(0xFFF1F1F1),
+        body: Padding(
+          padding: EdgeInsets.only(bottom: Insets.i256 + Insets.i15),
+          child: Center(
+            child: Image.asset(imageAssets.mainLogo, width: Sizes.s200),
+          ),
         ),
       );
     }

@@ -1,6 +1,7 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/user_provider.dart';
-import 'package:taxify_user_ui/widgets/skeletons/profile_screen_skeleton.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/provider/app_pages_providers/user_provider.dart';
+import 'package:skolo/widgets/auto_refresh_mixin.dart';
+import 'package:skolo/widgets/skeletons/profile_screen_skeleton.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -9,7 +10,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with AutoRefreshMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -18,20 +19,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final FocusNode _phoneFocusNode = FocusNode();
 
   @override
+  void refreshData() {
+    final userProvider = context.read<UserProvider>();
+    userProvider.fetchUserProfile().then((_) {
+      if (mounted && userProvider.userData != null) {
+        _updateControllers(userProvider.userData!);
+      }
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
     // Prevent phone field from gaining focus
     _phoneFocusNode.addListener(() {
       if (_phoneFocusNode.hasFocus) {
         _emailFocusNode.requestFocus();
-      }
-    });
-
-    // Populate controllers with existing user data if available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userProvider = context.read<UserProvider>();
-      if (userProvider.userData != null) {
-        _updateControllers(userProvider.userData!);
       }
     });
   }
@@ -108,7 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         //profile image and edit button layout
                         ProfileWidgets().profileImageLayout(context,
-                            photoUrl: profileData?.photoUrl),
+                            photoUrl: profileData?.photoUrl,
+                            selectedImageFile:
+                                userProvider.selectedProfileImage,
+                            onPickFromGallery:
+                                userProvider.pickProfileImageFromGallery,
+                            onPickFromCamera:
+                                userProvider.pickProfileImageFromCamera),
                         Divider(
                                 color: appColor(context).appTheme.stroke,
                                 height: 0)

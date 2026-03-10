@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import 'layout/tracking_card.dart';
 import 'layout/welcome_header.dart';
 
@@ -10,7 +10,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  int? _lastTabIndex;
   bool _wasInBackground = false;
 
   @override
@@ -38,24 +37,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       _wasInBackground = true;
     } else if (state == AppLifecycleState.resumed && _wasInBackground) {
       _wasInBackground = false;
-      if (_lastTabIndex == 0) {
-        context.read<TripTrackingProvider>().fetchActiveTrips();
-      }
+      context.read<TripTrackingProvider>().fetchActiveTrips();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentTab = context.watch<DashBoardProvider>().currentTab;
-    if (currentTab == 0 && _lastTabIndex != 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          context.read<TripTrackingProvider>().fetchActiveTrips();
-        }
-      });
-    }
-    _lastTabIndex = currentTab;
-
     return Consumer3<ChooseRiderProvider, HomeScreenProvider,
         TripTrackingProvider>(
       builder: (context, chooseCtrl, homeCtrl, tripCtrl, child) {

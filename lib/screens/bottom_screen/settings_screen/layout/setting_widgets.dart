@@ -93,18 +93,30 @@ class SettingScreenWidgets {
     return Align(
       alignment: Alignment.topCenter,
       child: photoUrl != null && photoUrl.isNotEmpty
-          ? Image.network(
-              photoUrl,
-              height: Sizes.s82,
-              width: Sizes.s82,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(imageAssets.profileImg,
-                    height: Sizes.s82, width: Sizes.s82);
-              },
-            ).clipRRect(all: Sizes.s41)
-          : Image.asset(imageAssets.profileImg,
-              height: Sizes.s82, width: Sizes.s82),
+          ? ClipOval(
+              child: Image.network(
+                photoUrl,
+                height: Sizes.s82,
+                width: Sizes.s82,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    imageAssets.profileImg,
+                    height: Sizes.s82,
+                    width: Sizes.s82,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            )
+          : ClipOval(
+              child: Image.asset(
+                imageAssets.profileImg,
+                height: Sizes.s82,
+                width: Sizes.s82,
+                fit: BoxFit.cover,
+              ),
+            ),
     ).padding(top: Sizes.s30);
   }
 }

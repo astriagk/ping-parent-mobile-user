@@ -2,6 +2,7 @@ import '../../../api/models/driver_response.dart';
 import '../../../config.dart';
 import '../../../helper/date_formatter_helper.dart';
 import '../../../provider/app_pages_providers/driver_provider.dart';
+import '../../../widgets/auto_refresh_mixin.dart';
 import '../../../widgets/ride_card/ride_card.dart';
 import '../../../widgets/ride_card/layout/ride_data_model.dart';
 import '../../../../widgets/common_confirmation_dialog.dart';
@@ -15,16 +16,19 @@ class AssignDriverScreen extends StatefulWidget {
   State<AssignDriverScreen> createState() => _AssignDriverScreenState();
 }
 
-class _AssignDriverScreenState extends State<AssignDriverScreen> {
+class _AssignDriverScreenState extends State<AssignDriverScreen>
+    with AutoRefreshMixin {
   final TextEditingController _searchController = TextEditingController();
   List<Driver> _filteredDrivers = [];
 
   @override
+  void refreshData() {
+    context.read<DriverProvider>().fetchDrivers();
+  }
+
+  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DriverProvider>().onInit();
-    });
     _searchController.addListener(_filterDrivers);
   }
 
@@ -67,7 +71,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
       return;
     }
 
-    if (driver.driverUniqueId == null) {
+    if (driver.driverId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: TextWidgetCommon(text: appFonts.driverIdNotAvailable),
@@ -90,7 +94,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
 
             final success = await driverCtrl.assignDriverToStudent(
               studentId: widget.studentId!,
-              driverUniqueId: driver.driverUniqueId!,
+              driverId: driver.driverId!,
             );
 
             if (!mounted) return;

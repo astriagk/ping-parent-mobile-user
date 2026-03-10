@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
 import 'package:provider/provider.dart';
-import 'package:taxify_user_ui/api/models/trip_tracking_response.dart';
-import 'package:taxify_user_ui/helper/location_service.dart';
-import 'package:taxify_user_ui/provider/bottom_provider/trip_tracking_provider.dart';
-import 'package:taxify_user_ui/widgets/maps/index.dart';
+import 'package:skolo/api/models/trip_tracking_response.dart';
+import 'package:skolo/helper/location_service.dart';
+import 'package:skolo/provider/bottom_provider/trip_tracking_provider.dart';
+import 'package:skolo/widgets/maps/index.dart';
 
 /// Widget for displaying real-time driver tracking on the map
 class TrackingMapWidget extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import '../../../widgets/ride_card/ride_card.dart';
 import '../../../widgets/ride_card/layout/ride_data_model.dart';
 

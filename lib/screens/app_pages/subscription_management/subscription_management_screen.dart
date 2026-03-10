@@ -1,9 +1,9 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/widgets/common_empty_state.dart';
-import 'package:taxify_user_ui/widgets/common_error_state.dart';
-import 'package:taxify_user_ui/widgets/skeletons/student_card_skeleton.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
-import 'package:taxify_user_ui/widgets/loading/payment_loading_overlay.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/widgets/common_empty_state.dart';
+import 'package:skolo/widgets/common_error_state.dart';
+import 'package:skolo/widgets/skeletons/student_card_skeleton.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:skolo/widgets/loading/payment_loading_overlay.dart';
 import 'layouts/school_coverage_card.dart';
 import 'layouts/subscription_plans_list.dart';
 
@@ -21,7 +21,6 @@ class _SubscriptionManagementScreenState
   String? _pendingPlanId;
   bool _pendingIsUpgrade = false;
   late final RazorpayProvider _razorpayProvider;
-  int? _lastTabIndex;
   bool _wasInBackground = false;
 
   @override
@@ -49,11 +48,9 @@ class _SubscriptionManagementScreenState
       _wasInBackground = true;
     } else if (state == AppLifecycleState.resumed && _wasInBackground) {
       _wasInBackground = false;
-      if (_lastTabIndex == 2) {
-        context
-            .read<SubscriptionsProvider>()
-            .fetchRecommendations(isRefresh: true);
-      }
+      context
+          .read<SubscriptionsProvider>()
+          .fetchRecommendations(isRefresh: true);
     }
   }
 
@@ -89,19 +86,6 @@ class _SubscriptionManagementScreenState
 
   @override
   Widget build(BuildContext context) {
-    final currentTab = context.watch<DashBoardProvider>().currentTab;
-    if (currentTab == 2 && _lastTabIndex != 2) {
-      final isFirstVisit = _lastTabIndex == null;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          context
-              .read<SubscriptionsProvider>()
-              .fetchRecommendations(isRefresh: !isFirstVisit);
-        }
-      });
-    }
-    _lastTabIndex = currentTab;
-
     return Consumer2<SubscriptionsProvider, RazorpayProvider>(
       builder: (context, subscriptionsCtrl, razorpayCtrl, child) {
         return Scaffold(
@@ -122,7 +106,8 @@ class _SubscriptionManagementScreenState
                               currentSubscription:
                                   subscriptionsCtrl.currentSubscription,
                             )
-                          : subscriptionsCtrl.recommendedPlans.isEmpty
+                          : (subscriptionsCtrl.recommendedPlans.isEmpty &&
+                                  subscriptionsCtrl.currentSubscription == null)
                               ? CommonEmptyState(
                                   mainText:
                                       appFonts.noSubscriptionPlansAvailable,

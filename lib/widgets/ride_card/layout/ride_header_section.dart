@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import 'ride_data_model.dart';
 
 class RideHeaderSection extends StatelessWidget {
@@ -12,6 +12,11 @@ class RideHeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isNetworkImage = rideData.image?.startsWith('http') ?? false;
+    final hasImage = rideData.image != null && rideData.image!.isNotEmpty;
+    final showSvgAsset = hasImage && !isNetworkImage;
+    final avatarImageProvider = isNetworkImage && hasImage
+        ? NetworkImage(rideData.image!) as ImageProvider
+        : AssetImage(imageAssets.profileImg);
 
     return Row(children: [
       Container(
@@ -20,20 +25,16 @@ class RideHeaderSection extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Sizes.s7),
               color: appColor(context).appTheme.bgBox,
-              image: isNetworkImage && rideData.image!.isNotEmpty
-                  ? DecorationImage(
-                      image: NetworkImage(rideData.image!),
+              image: showSvgAsset
+                  ? null
+                  : DecorationImage(
+                      image: avatarImageProvider,
                       fit: BoxFit.cover,
-                      onError: (exception, stackTrace) {})
-                  : null),
-          child: isNetworkImage
-              ? (rideData.image == null || rideData.image!.isEmpty
-                  ? Icon(Icons.person,
-                      size: Sizes.s30,
-                      color: appColor(context).appTheme.lightText)
-                  : null)
-              : SvgPicture.asset(rideData.image ?? '')
-                  .padding(horizontal: Sizes.s4)),
+                      onError: (exception, stackTrace) {})),
+          child: showSvgAsset
+              ? SvgPicture.asset(rideData.image ?? '')
+                  .padding(horizontal: Sizes.s4)
+              : null),
       HSpace(Sizes.s10),
       Expanded(
           child: Column(children: [

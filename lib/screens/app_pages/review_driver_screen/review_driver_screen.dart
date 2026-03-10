@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/screens/app_pages/review_driver_screen/layouts/tip_layout.dart';
+import 'package:skolo/screens/app_pages/review_driver_screen/layouts/tip_layout.dart';
 import '../../../config.dart';
 
 class ReviewDriverScreen extends StatelessWidget {

@@ -1,20 +1,20 @@
 import 'dart:io';
 
-export 'package:taxify_user_ui/common/app_array.dart';
-import 'package:taxify_user_ui/common/app_fonts.dart';
-import 'package:taxify_user_ui/screens/app_pages/my_wallet_screen/layouts/home_screen_widget.dart';
-export 'package:taxify_user_ui/common/session.dart';
-export 'package:taxify_user_ui/routes/screen_list.dart';
-export 'package:taxify_user_ui/common/assets/index.dart';
-export 'package:taxify_user_ui/helper/navigation_class.dart';
+export 'package:skolo/common/app_array.dart';
+import 'package:skolo/common/app_fonts.dart';
+import 'package:skolo/screens/app_pages/my_wallet_screen/layouts/home_screen_widget.dart';
+export 'package:skolo/common/session.dart';
+export 'package:skolo/routes/screen_list.dart';
+export 'package:skolo/common/assets/index.dart';
+export 'package:skolo/helper/navigation_class.dart';
 export 'package:flutter/material.dart';
-export 'package:taxify_user_ui/package_list.dart';
-export 'package:taxify_user_ui/provider/index.dart';
-export 'package:taxify_user_ui/models/index.dart';
-export 'package:taxify_user_ui/common/index.dart';
-export 'package:taxify_user_ui/routes/index.dart';
+export 'package:skolo/package_list.dart';
+export 'package:skolo/provider/index.dart';
+export 'package:skolo/models/index.dart';
+export 'package:skolo/common/index.dart';
+export 'package:skolo/routes/index.dart';
 export 'package:flutter/physics.dart';
-export 'package:taxify_user_ui/widgets/index.dart';
+export 'package:skolo/widgets/index.dart';
 export 'package:flutter/gestures.dart';
 import 'config.dart';
 
