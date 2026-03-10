@@ -71,7 +71,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
       return;
     }
 
-    if (driver.driverUniqueId == null) {
+    if (driver.driverId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: TextWidgetCommon(text: appFonts.driverIdNotAvailable),
@@ -94,7 +94,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
 
             final success = await driverCtrl.assignDriverToStudent(
               studentId: widget.studentId!,
-              driverUniqueId: driver.driverUniqueId!,
+              driverId: driver.driverId!,
             );
 
             if (!mounted) return;
