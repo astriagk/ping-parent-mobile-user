@@ -100,7 +100,7 @@ class UserProvider extends ChangeNotifier {
       if (_selectedProfileImage != null) {
         final uploadResult = await _userService.uploadSharedFile(
           file: _selectedProfileImage!,
-          folderPath: 'profile/parent',
+          folderPath: 'parent',
           oldFileUrl:
               (_originalPhotoUrl != null && _originalPhotoUrl!.isNotEmpty)
                   ? _originalPhotoUrl
@@ -127,8 +127,8 @@ class UserProvider extends ChangeNotifier {
       }
 
       final response = await _userService.updateParentProfile(
-        name: name,
-        email: email,
+        name: name.trim().isNotEmpty ? name : null,
+        email: email.trim().isNotEmpty ? email : null,
         photoUrl: photoUrlForUpdate,
       );
 
