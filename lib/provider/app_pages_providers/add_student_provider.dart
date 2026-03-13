@@ -67,9 +67,17 @@ class AddStudentProvider extends ChangeNotifier {
 
   Future<void> refreshData() async {
     isLoading = true;
-    await fetchSchools();
-    await fetchParentAddress();
-    await fetchStudents();
+    notifyListeners(); // Notify immediately so UI shows loading state
+
+    try {
+      await fetchSchools();
+      await fetchParentAddress();
+      await fetchStudents();
+    } catch (e) {
+      print('Error refreshing data: $e');
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   // Reset provider data and initialization flag (for logout)

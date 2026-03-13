@@ -18,7 +18,7 @@ mixin AutoRefreshMixin<T extends StatefulWidget> on State<T>
     super.didChangeDependencies();
     final modal = ModalRoute.of(context);
     if (modal != null) {
-      routeObserver.subscribe(this, modal as ModalRoute<void>);
+      routeObserver.subscribe(this, modal);
     }
   }
 

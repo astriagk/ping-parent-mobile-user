@@ -47,5 +47,11 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+		<string>We need access to your camera to take photos of your profile or student photos.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need access to your photo library to select photos for your profile or student profiles.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>We need permission to save photos to your photo library.</string>
 	</dict>
 </plist>

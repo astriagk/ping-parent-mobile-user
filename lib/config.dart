@@ -27,8 +27,8 @@ AppTheme get appTheme => _appTheme;
 AppTheme _appTheme = AppTheme.fromType(ThemeType.light);
 HomeScreenWidget homeScreenWidget = HomeScreenWidget();
 // RouteObserver to detect page navigation (used by screens to refresh on resume)
-final RouteObserver<ModalRoute<void>> routeObserver =
-  RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<dynamic>> routeObserver =
+    RouteObserver<ModalRoute<dynamic>>();
 
 ThemeService appColor(context) {
   final themeServices = Provider.of<ThemeService>(context, listen: false);

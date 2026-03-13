@@ -17,8 +17,18 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // Initialize Firebase with platform-specific options
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  } catch (e) {
+    // Firebase initialization failed (likely iOS with missing GoogleService-Info.plist)
+    print('Firebase initialization error: $e');
+  }
+
   await ScreenUtil.ensureScreenSize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -85,7 +95,8 @@ class MyApp extends StatelessWidget {
                   ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
                   ChangeNotifierProvider(create: (_) => AddStudentProvider()),
                   ChangeNotifierProvider(create: (_) => DriverProvider()),
-                  ChangeNotifierProvider(create: (_) => SubscriptionsProvider()),
+                  ChangeNotifierProvider(
+                      create: (_) => SubscriptionsProvider()),
                   ChangeNotifierProvider(create: (_) => RazorpayProvider())
                 ],
                 child: Consumer<ThemeService>(builder: (context, theme, child) {
@@ -93,12 +104,12 @@ class MyApp extends StatelessWidget {
                       builder: (context, lang, child) {
                     return Consumer<CurrencyProvider>(
                         builder: (context, currency, child) {
-                        return ScreenUtilInit(
+                      return ScreenUtilInit(
                           child: MaterialApp(
                               scaffoldMessengerKey: scaffoldMessengerKey,
                               title: appFonts.taxify,
                               debugShowCheckedModeBanner: false,
-                            navigatorObservers: [routeObserver],
+                              navigatorObservers: [routeObserver],
                               theme:
                                   AppTheme.fromType(ThemeType.light).themeData,
                               darkTheme:

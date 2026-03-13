@@ -1,11 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../../../firebase_options.dart';
 
 /// Must be a top-level function (not inside a class)
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Background message handler runs in a separate isolate.
+  // Initialize Firebase for this isolate before using messaging APIs.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // Background message received — the system notification is shown automatically.
-  // No need to call Firebase.initializeApp() here as the plugin handles it.
+  // FCM plugin handles showing the notification.
 }
 
 class PushNotificationService {

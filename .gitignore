@@ -13,6 +13,7 @@ pubspec.lock (optional, for packages)
 local.properties
 ios/Flutter/Flutter.podspec
 Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
 ios/Flutter/ephemeral/
 ios/Pods/
 Runner.xcworkspace

@@ -22,9 +22,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     // Initialize data when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final studentProvider = context.read<AddStudentProvider>();
-      print("AddStudentScreen initState: ${studentProvider.parentAddress}");
-      print(
-          "AddStudentScreen initState: ${studentProvider.selectedPickupAddressId}");
       // Pre-select pickup address if available
       if (studentProvider.parentAddress != null &&
           studentProvider.selectedPickupAddressId == null) {
