@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 class SelectRiderProvider extends ChangeNotifier {
   bool isInfo = false;

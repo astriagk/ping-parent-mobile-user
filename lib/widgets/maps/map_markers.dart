@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:taxify_user_ui/config.dart' hide Marker, Polyline, LatLng;
+import 'package:skolo/config.dart' hide Marker, Polyline, LatLng;
 
 /// Reusable marker builder for all map providers
 class MapMarkers {

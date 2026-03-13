@@ -1,4 +1,4 @@
-# taxify_user_ui
+# skolo
 
 A new Flutter project.
 
@@ -119,6 +119,36 @@ Examples:
 **In VS Code:**
 - Click device selector in bottom-right status bar
 - Or Command Palette (`Ctrl+Shift+P`) → "Flutter: Select Device"
+
+### Update App Icons & Splash Screen
+
+After replacing images in `assets/icon/` (`logo.png` and `logo_dark.png`), regenerate platform assets:
+
+```bash
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
+
+- `flutter_launcher_icons` generates all Android mipmap and iOS AppIcon sizes
+- `flutter_native_splash` generates splash screens with light/dark mode support
+
+### Firebase Setup (Push Notifications)
+
+1. **Install FlutterFire CLI** (one-time):
+   ```bash
+   dart pub global activate flutterfire_cli
+   ```
+
+2. **Configure Firebase for the project**:
+   ```bash
+   flutterfire configure
+   ```
+   This generates `lib/firebase_options.dart` and `android/app/google-services.json`.
+
+3. **Install dependencies**:
+   ```bash
+   flutter pub get
+   ```
 
 ### Clean & Reinstall Dependencies
 

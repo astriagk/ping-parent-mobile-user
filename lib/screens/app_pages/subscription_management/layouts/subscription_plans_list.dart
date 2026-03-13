@@ -1,6 +1,6 @@
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/widgets/subscription_card/subscription_card.dart';
-import 'package:taxify_user_ui/provider/app_pages_providers/subscriptions_provider.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/widgets/subscription_card/subscription_card.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
 import 'current_subscription_banner.dart';
 
 class SubscriptionPlansList extends StatelessWidget {

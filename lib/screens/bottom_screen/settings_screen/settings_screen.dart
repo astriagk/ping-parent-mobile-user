@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import '../../../provider/app_pages_providers/user_provider.dart';
 
 class SettingsScreen extends StatelessWidget {

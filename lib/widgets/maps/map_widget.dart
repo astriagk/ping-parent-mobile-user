@@ -1,9 +1,9 @@
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:taxify_user_ui/config.dart' hide Marker, Polyline, LatLng;
-import 'package:taxify_user_ui/helper/location_service.dart';
-import 'package:taxify_user_ui/widgets/maps/map_controls.dart';
-import 'package:taxify_user_ui/widgets/maps/map_markers.dart';
+import 'package:skolo/config.dart' hide Marker, Polyline, LatLng;
+import 'package:skolo/helper/location_service.dart';
+import 'package:skolo/widgets/maps/map_controls.dart';
+import 'package:skolo/widgets/maps/map_markers.dart';
 
 // import 'package:flutter_map/flutter_map.dart';
 // import 'package:latlong2/latlong.dart';

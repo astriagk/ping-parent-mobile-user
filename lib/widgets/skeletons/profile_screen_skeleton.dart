@@ -1,5 +1,5 @@
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 class ProfileScreenSkeleton extends StatelessWidget {
   const ProfileScreenSkeleton({super.key});

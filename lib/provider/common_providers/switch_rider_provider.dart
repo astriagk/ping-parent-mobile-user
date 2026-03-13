@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/screens/app_pages/search_location_screen/layout/switch_rider_sheet.dart';
+import 'package:skolo/screens/app_pages/search_location_screen/layout/switch_rider_sheet.dart';
 
 import '../../config.dart';
 

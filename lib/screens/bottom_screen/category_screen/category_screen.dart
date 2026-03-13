@@ -52,15 +52,15 @@ class CategoryScreen extends StatelessWidget {
                                       .inkWell(onTap: () {
                                 if (e.key == 0) {
                                   route.pushNamed(
-                                      context, routeName.searchLocationScreen);
+                                      context, routeName.studentListScreen);
                                 }
                                 if (e.key == 1) {
-                                  route.pushNamed(
-                                      context, routeName.outStationScreen);
+                                  // route.pushNamed(
+                                  //     context, routeName.outStationScreen);
                                 }
                                 if (e.key == 2) {
-                                  route.pushNamed(
-                                      context, routeName.rentalScreen);
+                                  // route.pushNamed(
+                                  //     context, routeName.rentalScreen);
                                 }
                               })).padding(bottom: Sizes.s15))
                           .toList())

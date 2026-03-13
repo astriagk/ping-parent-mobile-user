@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 
 class LoadingDriverLayout extends StatelessWidget {
   const LoadingDriverLayout({super.key});

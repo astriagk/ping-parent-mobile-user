@@ -65,4 +65,30 @@ class ApiClient {
       body: body is Map ? json.encode(body) : body,
     );
   }
+
+  Future<http.Response> multipart(
+    String method,
+    String url, {
+    Map<String, String>? headers,
+    Map<String, String>? fields,
+    List<http.MultipartFile>? files,
+  }) async {
+    final requestHeaders = await getHeaders(additionalHeaders: headers);
+    // Let MultipartRequest set its own Content-Type with boundary.
+    requestHeaders.remove('Content-Type');
+
+    final request = http.MultipartRequest(method, Uri.parse(url))
+      ..headers.addAll(requestHeaders);
+
+    if (fields != null && fields.isNotEmpty) {
+      request.fields.addAll(fields);
+    }
+
+    if (files != null && files.isNotEmpty) {
+      request.files.addAll(files);
+    }
+
+    final streamedResponse = await _client.send(request);
+    return http.Response.fromStream(streamedResponse);
+  }
 }

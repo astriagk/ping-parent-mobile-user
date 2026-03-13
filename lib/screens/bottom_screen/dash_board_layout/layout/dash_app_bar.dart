@@ -17,68 +17,70 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                   pinned: true,
                   floating: true,
                   snap: true,
-                  expandedHeight: Sizes.s140,
+                  expandedHeight: Sizes.s60,
                   automaticallyImplyLeading: false,
                   shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
                           cornerRadius: Sizes.s20, cornerSmoothing: 1)),
-                  flexibleSpace: FlexibleSpaceBar(
-                      expandedTitleScale: 1,
-                      background: TextFieldCommon(
-                              readOnly: true,
-                              onTap: () => route.pushNamed(
-                                  context, routeName.searchLocationScreen),
-                              prefixIcon: SvgPicture.asset(svgAssets.search)
-                                  .padding(
-                                      vertical: Sizes.s12,
-                                      left: Sizes.s12,
-                                      right: Sizes.s8),
-                              hintText: appFonts.searchDestinations,
-                              contentPadding: EdgeInsets.zero,
-                              suffixIcon: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                        width: Sizes.s1,
-                                        color: appColor(context).appTheme.bgBox,
-                                        height: Sizes.s24),
-                                    Container(
-                                            height: Sizes.s36,
-                                            padding: EdgeInsets.all(Sizes.s8),
-                                            width: Sizes.s36,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: appColor(context)
-                                                    .appTheme
-                                                    .bgBox),
-                                            child: SvgPicture.asset(
-                                                svgAssets.calendar))
-                                        .inkWell(onTap: () {
-                                      route.pushNamed(
-                                          context, routeName.dateTimePicker);
-                                    }).paddingOnly(
-                                            top: Sizes.s5,
-                                            bottom: Sizes.s5,
-                                            right: Sizes.s5,
-                                            left: Sizes.s10)
-                                  ]),
-                              borderRadius: SmoothBorderRadius(
-                                  cornerRadius: Sizes.s23, cornerSmoothing: 1),
-                              enabledBorder: SmoothBorderRadius(
-                                  cornerRadius: Sizes.s23, cornerSmoothing: 1))
-                          .padding(horizontal: Sizes.s20, top: Sizes.s95)),
+                  // flexibleSpace: FlexibleSpaceBar(
+                  //     expandedTitleScale: 1,
+                  //     background: TextFieldCommon(
+                  //             readOnly: true,
+                  //             onTap: () => {
+                  //                   // route.pushNamed(
+                  //                   //     context, routeName.searchLocationScreen)
+                  //                 },
+                  //             prefixIcon: SvgPicture.asset(svgAssets.search)
+                  //                 .padding(
+                  //                     vertical: Sizes.s12,
+                  //                     left: Sizes.s12,
+                  //                     right: Sizes.s8),
+                  //             hintText: appFonts.search,
+                  //             contentPadding: EdgeInsets.zero,
+                  //             suffixIcon: Row(
+                  //                 mainAxisSize: MainAxisSize.min,
+                  //                 children: [
+                  //                   Container(
+                  //                       width: Sizes.s1,
+                  //                       color: appColor(context).appTheme.bgBox,
+                  //                       height: Sizes.s24),
+                  //                   Container(
+                  //                           height: Sizes.s36,
+                  //                           padding: EdgeInsets.all(Sizes.s8),
+                  //                           width: Sizes.s36,
+                  //                           decoration: BoxDecoration(
+                  //                               shape: BoxShape.circle,
+                  //                               color: appColor(context)
+                  //                                   .appTheme
+                  //                                   .bgBox),
+                  //                           child: SvgPicture.asset(
+                  //                               svgAssets.calendar))
+                  //                       .inkWell(onTap: () {
+                  //                     // route.pushNamed(
+                  //                     //     context, routeName.dateTimePicker);
+                  //                   }).paddingOnly(
+                  //                           top: Sizes.s5,
+                  //                           bottom: Sizes.s5,
+                  //                           right: Sizes.s5,
+                  //                           left: Sizes.s10)
+                  //                 ]),
+                  //             borderRadius: SmoothBorderRadius(
+                  //                 cornerRadius: Sizes.s23, cornerSmoothing: 1),
+                  //             enabledBorder: SmoothBorderRadius(
+                  //                 cornerRadius: Sizes.s23, cornerSmoothing: 1))
+                  //         .padding(horizontal: Sizes.s20, top: Sizes.s95)),
                   backgroundColor: appColor(context).appTheme.bgBox,
                   leading: SvgPicture.asset(svgAssets.logo,
                           width: Sizes.s80, height: Sizes.s28)
                       .padding(horizontal: Sizes.s20),
                   leadingWidth: Sizes.s130,
                   actions: [
-                    CommonIconButton(
-                        icon: svgAssets.messages,
-                        onTap: () {
-                          chatCtrl.homeChat = true;
-                          route.pushNamed(context, routeName.noInternetScreen);
-                        }),
+                    // CommonIconButton(
+                    //     icon: svgAssets.messages,
+                    //     onTap: () {
+                    //       chatCtrl.homeChat = true;
+                    //       route.pushNamed(context, routeName.noInternetScreen);
+                    //     }),
                     CommonIconButton(
                             icon: svgAssets.bell,
                             onTap: () => route.pushNamed(
@@ -86,11 +88,8 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 arg: appFonts.notification))
                         .padding(horizontal: Sizes.s10),
                     CommonIconButton(icon: svgAssets.wallet).inkWell(
-                        // onTap: () =>
-                        // route.pushNamed(context, routeName.myWalletScreen)
-                        onTap: () => route.pushNamed(
-                            context, routeName.emptyNotification,
-                            arg: "My Wallet")),
+                        onTap: () =>
+                            route.pushNamed(context, routeName.myWalletScreen)),
                     HSpace(Sizes.s20)
                   ]),
               SliverFillRemaining(child: dashCtrl.screens[dashCtrl.currentTab])
@@ -121,22 +120,22 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 style: AppCss.lexendBold20.textColor(
                                     appColor(context).appTheme.darkText)),
                             Row(children: [
-                              if (dashCtrl.currentTab != 3)
-                                CommonIconButton(
-                                    icon: svgAssets.messages,
-                                    onTap: () {
-                                      chatCtrl.homeChat = true;
-                                      route.pushNamed(
-                                          context, routeName.chatScreen);
-                                    }),
-                              HSpace(Sizes.s10),
-                              dashCtrl.currentTab == 1 ||
-                                      dashCtrl.currentTab == 2
-                                  ? CommonIconButton(
-                                      icon: svgAssets.bell,
-                                      onTap: () => route.pushNamed(
-                                          context, routeName.appSettingScreen))
-                                  : SizedBox(height: Insets.i40)
+                              // if (dashCtrl.currentTab != 3)
+                              //   CommonIconButton(
+                              //       icon: svgAssets.messages,
+                              //       onTap: () {
+                              //         chatCtrl.homeChat = true;
+                              //         route.pushNamed(
+                              //             context, routeName.chatScreen);
+                              //       }),
+                              // HSpace(Sizes.s10),
+                              // dashCtrl.currentTab == 1 ||
+                              //         dashCtrl.currentTab == 2
+                              //     ? CommonIconButton(
+                              //         icon: svgAssets.bell,
+                              //         onTap: () => route.pushNamed(
+                              //             context, routeName.appSettingScreen))
+                              //     : SizedBox(height: Insets.i40)
                             ])
                           ])).padding(bottom: Sizes.s25, horizontal: Sizes.s20),
                   shape: SmoothRectangleBorder(

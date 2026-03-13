@@ -43,7 +43,7 @@ class DriverProvider extends ChangeNotifier {
 
   Future<bool> assignDriverToStudent({
     required String studentId,
-    required String driverUniqueId,
+    required String driverId,
   }) async {
     isAssigning = true;
     errorMessage = null;
@@ -53,7 +53,7 @@ class DriverProvider extends ChangeNotifier {
       final driverService = DriverService(ApiClient());
       final response = await driverService.createDriverStudentAssignment(
         studentId: studentId,
-        driverUniqueId: driverUniqueId,
+        driverId: driverId,
       );
 
       if (response.success) {

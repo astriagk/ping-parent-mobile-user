@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:share_plus/share_plus.dart';
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import '../../widgets/common_confirmation_dialog.dart';
 import '../../api/services/storage_service.dart';
 import '../app_pages_providers/user_provider.dart';
@@ -81,6 +81,10 @@ class SettingProvider extends ChangeNotifier {
             onConfirm: () async {
               final navigator = Navigator.of(dialogContext);
               final messenger = ScaffoldMessenger.of(context);
+
+              // Remove FCM token before logout
+              await Provider.of<NotificationProvider>(context, listen: false)
+                  .removePushToken();
 
               // Get UserProvider from the correct context (outside dialog)
               final userProvider =
@@ -235,15 +239,20 @@ class SettingProvider extends ChangeNotifier {
 
   // Logout functionality
   Future<void> logout(BuildContext context) async {
-    // Get UserProvider from context
+    // Capture providers before async gaps
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final studentProvider =
+        Provider.of<AddStudentProvider>(context, listen: false);
+
+    // Remove FCM token before logout
+    await notificationProvider.removePushToken();
 
     // Clear user data from provider
     userProvider.clearUserData();
 
-    // Get AddStudentProvider and reset it
-    final studentProvider =
-        Provider.of<AddStudentProvider>(context, listen: false);
+    // Reset student provider
     studentProvider.resetProvider();
 
     // Clear authentication data

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../config.dart';
 
 class ProfileWidgets {
@@ -32,22 +34,54 @@ class ProfileWidgets {
   }
 
   //profile image and edit button layout
-  Widget profileImageLayout(BuildContext context, {String? photoUrl}) {
+  Widget profileImageLayout(BuildContext context,
+      {String? photoUrl,
+      File? selectedImageFile,
+      Future<void> Function()? onPickFromGallery,
+      Future<void> Function()? onPickFromCamera}) {
     return Stack(children: [
-      photoUrl != null && photoUrl.isNotEmpty
-          ? Image.network(
-              photoUrl,
-              height: Insets.i79,
-              width: Insets.i79,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(imageAssets.profileImg,
-                    height: Insets.i79, width: Insets.i79);
-              },
-            ).clipRRect(all: Insets.i39).center()
-          : Image.asset(imageAssets.profileImg,
-                  height: Insets.i79, width: Insets.i79)
-              .center(),
+      selectedImageFile != null
+          ? ClipOval(
+              child: Image.file(
+                selectedImageFile,
+                height: Insets.i79,
+                width: Insets.i79,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    imageAssets.profileImg,
+                    height: Insets.i79,
+                    width: Insets.i79,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            ).center()
+          : photoUrl != null && photoUrl.isNotEmpty
+              ? ClipOval(
+                  child: Image.network(
+                    photoUrl,
+                    height: Insets.i79,
+                    width: Insets.i79,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        imageAssets.profileImg,
+                        height: Insets.i79,
+                        width: Insets.i79,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ).center()
+              : ClipOval(
+                  child: Image.asset(
+                    imageAssets.profileImg,
+                    height: Insets.i79,
+                    width: Insets.i79,
+                    fit: BoxFit.cover,
+                  ),
+                ).center(),
       CommonIconButton(
           height: Insets.i30,
           bgColor: Colors.white,
@@ -86,7 +120,12 @@ class ProfileWidgets {
                                     language(context, "Select From Gallery"),
                                     style: AppCss.lexendMedium14
                                         .textColor(appTheme.primary)),
-                                onTap: () => route.pop(context)),
+                                onTap: () async {
+                                  route.pop(context);
+                                  if (onPickFromGallery != null) {
+                                    await onPickFromGallery();
+                                  }
+                                }),
                             ListTile(
                                 contentPadding: EdgeInsets.all(0),
                                 leading: CommonIconButton(
@@ -97,7 +136,12 @@ class ProfileWidgets {
                                 title: Text(language(context, "Open Camera"),
                                     style: AppCss.lexendMedium14
                                         .textColor(appTheme.primary)),
-                                onTap: () => route.pop(context))
+                                onTap: () async {
+                                  route.pop(context);
+                                  if (onPickFromCamera != null) {
+                                    await onPickFromCamera();
+                                  }
+                                })
                           ])));
                 });
           }).center().padding(top: Insets.i53, left: Insets.i60)

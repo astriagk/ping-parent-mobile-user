@@ -1,7 +1,7 @@
-import 'package:taxify_user_ui/common/maps/map_config.dart';
-import 'package:taxify_user_ui/config.dart' hide Marker, Polyline, LatLng;
-import 'package:taxify_user_ui/widgets/maps/layout/map_tile_layer.dart';
-import 'package:taxify_user_ui/widgets/maps/map_widget.dart';
+import 'package:skolo/common/maps/map_config.dart';
+import 'package:skolo/config.dart' hide Marker, Polyline, LatLng;
+import 'package:skolo/widgets/maps/layout/map_tile_layer.dart';
+import 'package:skolo/widgets/maps/map_widget.dart';
 
 /// Map Example Screen - Main Map Screen
 /// Tiles with MapWidget

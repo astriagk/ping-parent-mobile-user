@@ -1,10 +1,10 @@
-import 'package:taxify_user_ui/api/models/school_response.dart';
-import 'package:taxify_user_ui/config.dart';
-import 'package:taxify_user_ui/helper/distance_helper.dart';
-import 'package:taxify_user_ui/widgets/common_app_bar_layout1.dart';
-import 'package:taxify_user_ui/widgets/location/route_distance_display.dart';
-import 'package:taxify_user_ui/widgets/location/route_location_display.dart';
-import 'package:taxify_user_ui/widgets/searchable_dropdown.dart';
+import 'package:skolo/api/models/school_response.dart';
+import 'package:skolo/config.dart';
+import 'package:skolo/helper/distance_helper.dart';
+import 'package:skolo/widgets/common_app_bar_layout1.dart';
+import 'package:skolo/widgets/location/route_distance_display.dart';
+import 'package:skolo/widgets/location/route_location_display.dart';
+import 'package:skolo/widgets/searchable_dropdown.dart';
 
 import 'student_widgets.dart';
 
@@ -33,6 +33,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
   Future<void> _saveStudent() async {
     final studentCtrl = context.read<AddStudentProvider>();
+    final wasEditMode = studentCtrl.isEditMode;
 
     final success = await studentCtrl.createStudent();
 
@@ -41,7 +42,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: TextWidgetCommon(
-              text: studentCtrl.isEditMode
+              text: wasEditMode
                   ? appFonts.studentUpdatedSuccessfully
                   : appFonts.studentCreatedSuccessfully,
             ),
@@ -166,15 +167,12 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   photoUrl: studentCtrl.photoUrlController.text.isNotEmpty
                       ? studentCtrl.photoUrlController.text
                       : null,
+                  selectedPhotoFile: studentCtrl.selectedPhotoFile,
                   onTap: () {
                     widgets.showPhotoSelectionDialog(
                       context,
-                      onGalleryTap: () {
-                        studentCtrl.selectPhotoFromGallery();
-                      },
-                      onCameraTap: () {
-                        studentCtrl.selectPhotoFromCamera();
-                      },
+                      onGalleryTap: studentCtrl.selectPhotoFromGallery,
+                      onCameraTap: studentCtrl.selectPhotoFromCamera,
                     );
                   },
                 ),
@@ -446,7 +444,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   text: studentCtrl.isEditMode
                       ? appFonts.updateStudent
                       : appFonts.saveStudent,
-                  isLoading: studentCtrl.isLoading,
+                  isLoading: studentCtrl.isSaving,
                   onTap: _saveStudent)),
         ),
       );

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:taxify_user_ui/config.dart';
+import 'package:skolo/config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../api/api_client.dart';
 import '../../api/services/accept_ride_service.dart';

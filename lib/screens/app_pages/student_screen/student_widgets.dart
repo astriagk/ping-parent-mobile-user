@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../config.dart';
 
 class StudentWidgets {
@@ -127,20 +129,34 @@ class StudentWidgets {
 
   //student photo upload layout
   Widget studentPhotoLayout(context,
-      {String? photoUrl, required VoidCallback onTap}) {
+      {String? photoUrl,
+      File? selectedPhotoFile,
+      required VoidCallback onTap}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Stack(children: [
-        photoUrl != null && photoUrl.isNotEmpty
-            ? Image.network(
-                photoUrl,
-                height: Insets.i79,
-                width: Insets.i79,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return _defaultPhotoWidget(context);
-                },
-              ).clipRRect(all: Insets.i39).center()
-            : _defaultPhotoWidget(context).center(),
+        selectedPhotoFile != null
+            ? ClipOval(
+                child: Image.file(
+                  selectedPhotoFile,
+                  height: Insets.i79,
+                  width: Insets.i79,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return _defaultPhotoWidget(context);
+                  },
+                ),
+              ).center()
+            : photoUrl != null && photoUrl.isNotEmpty
+                ? Image.network(
+                    photoUrl,
+                    height: Insets.i79,
+                    width: Insets.i79,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _defaultPhotoWidget(context);
+                    },
+                  ).clipRRect(all: Insets.i39).center()
+                : _defaultPhotoWidget(context).center(),
         CommonIconButton(
                 height: Insets.i30,
                 bgColor: Colors.white,
@@ -154,28 +170,20 @@ class StudentWidgets {
 
   //default photo widget
   Widget _defaultPhotoWidget(context) {
-    return Container(
-      height: Insets.i79,
-      width: Insets.i79,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: appColor(context).appTheme.bgBox,
-        border: Border.all(
-          color: appColor(context).appTheme.stroke,
-          width: 2,
-        ),
-      ),
-      child: Icon(
-        Icons.person,
-        size: Insets.i40,
-        color: appColor(context).appTheme.lightText,
+    return ClipOval(
+      child: Image.asset(
+        imageAssets.profileImg,
+        height: Insets.i79,
+        width: Insets.i79,
+        fit: BoxFit.cover,
       ),
     );
   }
 
   //photo selection dialog
   void showPhotoSelectionDialog(context,
-      {required VoidCallback onGalleryTap, required VoidCallback onCameraTap}) {
+      {required Future<void> Function() onGalleryTap,
+      required Future<void> Function() onCameraTap}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -208,9 +216,9 @@ class StudentWidgets {
                     title: Text(appFonts.selectFromGallery,
                         style: AppCss.lexendMedium14
                             .textColor(appColor(context).appTheme.primary)),
-                    onTap: () {
+                    onTap: () async {
                       route.pop(context);
-                      onGalleryTap();
+                      await onGalleryTap();
                     }),
                 ListTile(
                     contentPadding: EdgeInsets.all(0),
@@ -222,9 +230,9 @@ class StudentWidgets {
                     title: Text(appFonts.openCamera,
                         style: AppCss.lexendMedium14
                             .textColor(appColor(context).appTheme.primary)),
-                    onTap: () {
+                    onTap: () async {
                       route.pop(context);
-                      onCameraTap();
+                      await onCameraTap();
                     })
               ],
             ),

@@ -1,4 +1,5 @@
 import '../../../config.dart';
+import '../../../widgets/auto_refresh_mixin.dart';
 import '../../../widgets/common_app_bar_layout1.dart';
 import '../../../widgets/common_empty_state.dart';
 import '../../../widgets/common_error_state.dart';
@@ -22,15 +23,11 @@ class StudentListScreen extends StatefulWidget {
   State<StudentListScreen> createState() => _StudentListScreenState();
 }
 
-class _StudentListScreenState extends State<StudentListScreen> {
+class _StudentListScreenState extends State<StudentListScreen>
+    with AutoRefreshMixin {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final studentCtrl =
-          Provider.of<AddStudentProvider>(context, listen: false);
-      studentCtrl.onInit();
-    });
+  void refreshData() {
+    context.read<AddStudentProvider>().refreshData();
   }
 
   @override

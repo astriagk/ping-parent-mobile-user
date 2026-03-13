@@ -18,11 +18,11 @@ class DriverService implements DriverServiceInterface {
   @override
   Future<DriverStudentAssignmentResponse> createDriverStudentAssignment({
     required String studentId,
-    required String driverUniqueId,
+    required String driverId,
   }) async {
     final body = {
       'student_id': studentId,
-      'driver_unique_id': driverUniqueId,
+      'driver_id': driverId,
     };
 
     final response = await _apiClient.post(

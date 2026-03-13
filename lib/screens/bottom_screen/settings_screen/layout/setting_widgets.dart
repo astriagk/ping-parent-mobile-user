@@ -13,24 +13,25 @@ class SettingScreenWidgets {
           text: userEmail ?? appFonts.yourEmail,
           style: AppCss.lexendMedium12
               .textColor(appColor(context).appTheme.lightText)),
-      Column(children: [
-        VSpace(Sizes.s5),
-        TextWidgetCommon(
-            text: appFonts.myWalletBalance,
-            style: AppCss.lexendRegular12.textColor(
-                appColor(context).appTheme.darkText.withValues(alpha: .6))),
-        VSpace(Sizes.s5),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          TextWidgetCommon(
-              text:
-                  '${getSymbol(context)}${(currency(context).currencyVal * double.parse(appFonts.walletValue)).toStringAsFixed(2)}',
-              style: AppCss.lexendSemiBold15
-                  .textColor(appColor(context).appTheme.darkText)),
-          HSpace(Sizes.s6),
-          SvgPicture.asset(svgAssets.rightArrowMyWallet)
-        ]),
-        VSpace(Sizes.s5)
-      ]).settingWalletExtension(context)
+      VSpace(Sizes.s15)
+      // Column(children: [
+      //   VSpace(Sizes.s5),
+      //   TextWidgetCommon(
+      //       text: appFonts.myWalletBalance,
+      //       style: AppCss.lexendRegular12.textColor(
+      //           appColor(context).appTheme.darkText.withValues(alpha: .6))),
+      //   VSpace(Sizes.s5),
+      //   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      //     TextWidgetCommon(
+      //         text:
+      //             '${getSymbol(context)}${(currency(context).currencyVal * double.parse(appFonts.walletValue)).toStringAsFixed(2)}',
+      //         style: AppCss.lexendSemiBold15
+      //             .textColor(appColor(context).appTheme.darkText)),
+      //     HSpace(Sizes.s6),
+      //     SvgPicture.asset(svgAssets.rightArrowMyWallet)
+      //   ]),
+      //   VSpace(Sizes.s5)
+      // ]).settingWalletExtension(context)
     ]);
   }
 
@@ -92,18 +93,30 @@ class SettingScreenWidgets {
     return Align(
       alignment: Alignment.topCenter,
       child: photoUrl != null && photoUrl.isNotEmpty
-          ? Image.network(
-              photoUrl,
-              height: Sizes.s82,
-              width: Sizes.s82,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(imageAssets.profileImg,
-                    height: Sizes.s82, width: Sizes.s82);
-              },
-            ).clipRRect(all: Sizes.s41)
-          : Image.asset(imageAssets.profileImg,
-              height: Sizes.s82, width: Sizes.s82),
+          ? ClipOval(
+              child: Image.network(
+                photoUrl,
+                height: Sizes.s82,
+                width: Sizes.s82,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    imageAssets.profileImg,
+                    height: Sizes.s82,
+                    width: Sizes.s82,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            )
+          : ClipOval(
+              child: Image.asset(
+                imageAssets.profileImg,
+                height: Sizes.s82,
+                width: Sizes.s82,
+                fit: BoxFit.cover,
+              ),
+            ),
     ).padding(top: Sizes.s30);
   }
 }

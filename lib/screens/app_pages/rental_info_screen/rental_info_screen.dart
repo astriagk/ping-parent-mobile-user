@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/screens/app_pages/rental_info_screen/rental_info_widgets.dart';
+import 'package:skolo/screens/app_pages/rental_info_screen/rental_info_widgets.dart';
 
 import '../../../config.dart';
 

@@ -143,6 +143,16 @@ class AppArray {
       'title': "Add Student",
       "subtitle": "Used for add your student details"
     },
+    // {
+    //   'image': imageAssets.commingSoon,
+    //   'title': "Trip History",
+    //   "subtitle": "Used for view your trip history"
+    // },
+    // {
+    //   'image': imageAssets.commingSoon,
+    //   'title': "Attendance",
+    //   "subtitle": "Used for view your student attendance"
+    // },
   ];
 
   var offer = [
@@ -210,8 +220,8 @@ class AppArray {
       "data": [
         {"subTitle": appFonts.profileSettings, "icon": svgAssets.profile},
         {"subTitle": appFonts.savedLocation, "icon": svgAssets.locationSetting},
-        {"subTitle": appFonts.bankDetails, "icon": svgAssets.bank},
-        {"subTitle": appFonts.promoCodeList, "icon": svgAssets.promoCode}
+        // {"subTitle": appFonts.bankDetails, "icon": svgAssets.bank},
+        // {"subTitle": appFonts.promoCodeList, "icon": svgAssets.promoCode}
       ]
     },
     {
@@ -219,7 +229,7 @@ class AppArray {
       "data": [
         {"subTitle": appFonts.appSettings, "icon": svgAssets.check},
         {"subTitle": appFonts.shareApp, "icon": svgAssets.share},
-        {"subTitle": appFonts.chatSupport, "icon": svgAssets.chatSupport}
+        // {"subTitle": appFonts.chatSupport, "icon": svgAssets.chatSupport}
       ]
     },
     {
@@ -230,6 +240,7 @@ class AppArray {
       ]
     }
   ];
+
   var promoList = [
     {
       "off": appFonts.off,
@@ -284,8 +295,8 @@ class AppArray {
               isNotification ? appFonts.notification : appFonts.notification,
           'icon': svgAssets.notification
         },
-        {'title': appFonts.changeCurrency, 'icon': svgAssets.currency},
-        {'title': appFonts.changeLanguage, 'icon': svgAssets.translate},
+        // {'title': appFonts.changeCurrency, 'icon': svgAssets.currency},
+        // {'title': appFonts.changeLanguage, 'icon': svgAssets.translate},
       ];
 
   //chat list
@@ -851,90 +862,19 @@ class AppArray {
 
   final List<Map<String, String>> onboardingData = [
     {
-      "title": "Ride with Ease",
+      "title": "Track Your Kids",
       "description":
-          "Discover seamless rides at your fingertips. Book your taxi anytime, anywhere, and travel stress-free."
+          "Keep your children safe with Skolo. Track their school commute in real-time and know exactly when they arrive."
     },
     {
       "title": "Safety First",
       "description":
-          "Your safety is our priority. Enjoy real-time tracking, verified drivers, and 24/7 support on every journey."
+          "Your child's safety is our priority. Get live updates, verified drivers, and instant alerts throughout every school trip."
     },
     {
-      "title": "Affordable Rides for All",
+      "title": "Stay Connected with School",
       "description":
-          "Choose from a variety of ride options to fit your budget. Affordable and reliable rides are just a tap away."
+          "Never miss a moment. Check school events, activities, and announcements — all in one affordable app."
     },
-  ];
-
-  final List<Map<String, dynamic>> totalEarningTransactions = [
-    {
-      'type': 'Admin Commission Debit',
-      'id': '#ACR148856',
-      'amount': 200,
-      'isCredit': false,
-    },
-    {
-      'type': 'Wallet TopUp',
-      'id': '#ACR148856',
-      'amount': 200,
-      'isCredit': true,
-    },
-    {
-      'type': 'Wallet TopUp',
-      'id': '#ACR148856',
-      'amount': 200,
-      'isCredit': true,
-    },
-    {
-      'type': 'Admin Commission Debit',
-      'id': '#ACR148856',
-      'amount': 200,
-      'isCredit': false,
-    },
-    {
-      'type': 'Admin Commission Debit',
-      'id': '#ACR148856',
-      'amount': 200,
-      'isCredit': false,
-    },
-    {
-      'type': 'Wallet TopUp',
-      'id': '#ACR148856',
-      'amount': 200,
-      'isCredit': true,
-    },
-  ];
-  final List<Map<String, dynamic>> withdrawHistory = [
-    {
-      'type': 'Withdrawal Processed',
-      'id': '#WDR123456',
-      'amount': 300,
-      'isCredit': false
-    },
-    {
-      'type': 'Withdrawal Processed',
-      'id': '#WDR123457',
-      'amount': 250,
-      'isCredit': false
-    },
-    {
-      'type': 'Withdrawal Processed',
-      'id': '#WDR123458',
-      'amount': 400,
-      'isCredit': false
-    },
-    {
-      'type': 'Withdrawal Processed',
-      'id': '#WDR123459',
-      'amount': 350,
-      'isCredit': false
-    },
-    {
-      'type': 'Withdrawal Processed',
-      'id': '#WDR123460',
-      'amount': 150,
-      'isCredit': false
-    }
   ];
 }

@@ -1,4 +1,4 @@
-import 'package:taxify_user_ui/screens/app_pages/subscription_management/subscription_management_screen.dart';
+import 'package:skolo/screens/app_pages/subscription_management/subscription_management_screen.dart';
 
 import '../../config.dart';
 
