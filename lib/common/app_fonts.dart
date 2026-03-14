@@ -283,17 +283,22 @@ class AppFonts {
   final noPaymentsDescription =
       "Your payment history will appear here once you subscribe to a plan.";
 
-  // Partial school coverage
-  final coveredBySchool = "Covered by School";
+  // Partial / mixed coverage
+  final alreadyCovered = "Already covered";
+  final alreadyCoveredLabel = "Already Covered";
   final needsSubscription = "Needs Subscription";
   final partialCoverageNote =
-      "Some of your students are covered by school. Subscribe for the rest below.";
+      "Some of your students are already covered. Subscribe for the rest below.";
   final selectStudents = "Select Students";
   final selectStudentsDescription =
       "Choose which students to include in this subscription.";
-  final alreadyCoveredBySchool = "Already covered by school";
   final continueText = "Continue";
   final noAccessToTrip = "You don't have access to this trip";
+  final allKidsAlreadySubscribed =
+      "All your kids already have active subscriptions.";
+  final studentCountAboveMaxPrefix = "This plan supports max";
+  final studentCountAboveMaxSuffix =
+      "kid(s). Please select fewer students.";
 
   // Subscription redemption
   final redeemCode = "Redeem Code";

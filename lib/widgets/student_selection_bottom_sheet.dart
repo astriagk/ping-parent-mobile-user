@@ -3,14 +3,16 @@ import 'package:skolo/api/models/subscription_recommendations_response.dart';
 
 /// Shows a bottom sheet for selecting which students to include in a subscription.
 /// [allStudents] — full list of students from parentSummary.kids
-/// [coveredStudents] — students already covered by school (shown disabled/pre-checked)
-/// [uncoveredStudents] — students needing subscription (pre-checked and selectable)
+/// [coveredStudents] — students already covered (school or self-pay), shown disabled
+/// [uncoveredStudents] — students needing subscription, pre-checked
+/// [maxStudents] — optional plan max; shows inline error if exceeded
 /// Returns selected student IDs or null if dismissed.
 Future<List<String>?> showStudentSelectionBottomSheet({
   required BuildContext context,
   required List<KidSummary> allStudents,
   required List<KidSummary> coveredStudents,
   required List<KidSummary> uncoveredStudents,
+  int? maxStudents,
 }) {
   return showModalBottomSheet<List<String>>(
     context: context,
@@ -20,6 +22,7 @@ Future<List<String>?> showStudentSelectionBottomSheet({
       allStudents: allStudents,
       coveredStudents: coveredStudents,
       uncoveredStudents: uncoveredStudents,
+      maxStudents: maxStudents,
     ),
   );
 }
@@ -28,11 +31,13 @@ class _StudentSelectionSheet extends StatefulWidget {
   final List<KidSummary> allStudents;
   final List<KidSummary> coveredStudents;
   final List<KidSummary> uncoveredStudents;
+  final int? maxStudents;
 
   const _StudentSelectionSheet({
     required this.allStudents,
     required this.coveredStudents,
     required this.uncoveredStudents,
+    this.maxStudents,
   });
 
   @override
@@ -42,6 +47,7 @@ class _StudentSelectionSheet extends StatefulWidget {
 class _StudentSelectionSheetState extends State<_StudentSelectionSheet> {
   late Set<String> _selectedIds;
   late Set<String> _coveredIds;
+  String? _maxError;
 
   @override
   void initState() {
@@ -49,6 +55,29 @@ class _StudentSelectionSheetState extends State<_StudentSelectionSheet> {
     _coveredIds = widget.coveredStudents.map((s) => s.studentId).toSet();
     // Pre-select uncovered students
     _selectedIds = widget.uncoveredStudents.map((s) => s.studentId).toSet();
+  }
+
+  void _onToggle(String studentId, bool? val) {
+    setState(() {
+      if (val == true) {
+        _selectedIds.add(studentId);
+      } else {
+        _selectedIds.remove(studentId);
+      }
+      _maxError = null; // clear error on change
+    });
+  }
+
+  void _onContinue() {
+    if (widget.maxStudents != null &&
+        _selectedIds.length > widget.maxStudents!) {
+      setState(() {
+        _maxError =
+            '${appFonts.studentCountAboveMaxPrefix} ${widget.maxStudents} ${appFonts.studentCountAboveMaxSuffix}';
+      });
+      return;
+    }
+    Navigator.of(context).pop(_selectedIds.toList());
   }
 
   @override
@@ -104,33 +133,41 @@ class _StudentSelectionSheetState extends State<_StudentSelectionSheet> {
               student: student,
               isCovered: isCovered,
               isSelected: isSelected,
-              onChanged: isCovered
-                  ? null
-                  : (val) {
-                      setState(() {
-                        if (val == true) {
-                          _selectedIds.add(student.studentId);
-                        } else {
-                          _selectedIds.remove(student.studentId);
-                        }
-                      });
-                    },
+              onChanged:
+                  isCovered ? null : (val) => _onToggle(student.studentId, val),
             );
           }),
+          // Max-students inline error
+          if (_maxError != null) ...[
+            VSpace(Sizes.s8),
+            Row(
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: Sizes.s16,
+                  color: appColor(context).appTheme.alertZone,
+                ),
+                HSpace(Sizes.s6),
+                Expanded(
+                  child: TextWidgetCommon(
+                    text: _maxError!,
+                    style: AppCss.lexendRegular12
+                        .textColor(appColor(context).appTheme.alertZone),
+                  ),
+                ),
+              ],
+            ),
+          ],
           VSpace(Sizes.s20),
           // Continue button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: canContinue
-                  ? () => Navigator.of(context).pop(_selectedIds.toList())
-                  : null,
+              onPressed: canContinue ? _onContinue : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: appColor(context).appTheme.activeColor,
-                disabledBackgroundColor:
-                    appColor(context).appTheme.stroke,
-                padding:
-                    EdgeInsets.symmetric(vertical: Sizes.s14),
+                disabledBackgroundColor: appColor(context).appTheme.stroke,
+                padding: EdgeInsets.symmetric(vertical: Sizes.s14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(Sizes.s12),
                 ),
@@ -163,7 +200,7 @@ class _StudentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final schoolColor = appColor(context).appTheme.success;
+    final coveredColor = appColor(context).appTheme.success;
     final textColor = isCovered
         ? appColor(context).appTheme.lightText
         : appColor(context).appTheme.darkText;
@@ -176,12 +213,12 @@ class _StudentRow extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isCovered
-            ? schoolColor.withValues(alpha: 0.06)
+            ? coveredColor.withValues(alpha: 0.06)
             : appColor(context).appTheme.bgBox,
         borderRadius: BorderRadius.circular(Sizes.s10),
         border: Border.all(
           color: isCovered
-              ? schoolColor.withValues(alpha: 0.25)
+              ? coveredColor.withValues(alpha: 0.25)
               : appColor(context).appTheme.stroke,
         ),
       ),
@@ -191,7 +228,7 @@ class _StudentRow extends StatelessWidget {
             value: isSelected,
             onChanged: onChanged,
             activeColor: isCovered
-                ? schoolColor
+                ? coveredColor
                 : appColor(context).appTheme.activeColor,
           ),
           HSpace(Sizes.s8),
@@ -206,8 +243,8 @@ class _StudentRow extends StatelessWidget {
                 TextWidgetCommon(
                   text:
                       'Class ${student.studentClass}${student.section != null ? ' - ${student.section}' : ''}',
-                  style: AppCss.lexendRegular12.textColor(
-                      appColor(context).appTheme.lightText),
+                  style: AppCss.lexendRegular12
+                      .textColor(appColor(context).appTheme.lightText),
                 ),
               ],
             ),
@@ -219,12 +256,12 @@ class _StudentRow extends StatelessWidget {
                 vertical: Sizes.s3,
               ),
               decoration: BoxDecoration(
-                color: schoolColor.withValues(alpha: 0.12),
+                color: coveredColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(Sizes.s20),
               ),
               child: TextWidgetCommon(
-                text: appFonts.alreadyCoveredBySchool,
-                style: AppCss.lexendMedium10.textColor(schoolColor),
+                text: appFonts.alreadyCovered,
+                style: AppCss.lexendMedium10.textColor(coveredColor),
               ),
             ),
         ],

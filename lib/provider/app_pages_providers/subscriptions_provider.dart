@@ -25,10 +25,11 @@ class SubscriptionsProvider extends ChangeNotifier {
     }
   }
 
-  /// True when not all students are covered by school but at least one is.
-  bool get hasPartialSchoolCoverage =>
+  /// True when at least one student is already covered (school or self-pay)
+  /// but not all students are covered.
+  bool get hasPartialCoverage =>
       !coveredBySchool &&
-      currentSubscriptions.any((s) => s.isSchoolRedemption);
+      (parentSummary?.coveredStudents.isNotEmpty ?? false);
 
   Future<void> onInit() async {
     if (_isInitialized && recommendedPlans.isNotEmpty) return;
@@ -111,7 +112,18 @@ class SubscriptionsProvider extends ChangeNotifier {
         await fetchRecommendations(isRefresh: true);
         return true;
       }
-      errorMessage = response['error'] ?? 'Failed to create subscription';
+
+      final errorCode = response['error'] as String?;
+      if (errorCode == 'STUDENT_ALREADY_SUBSCRIBED') {
+        errorMessage = 'All your kids already have active subscriptions.';
+      } else if (errorCode == 'STUDENT_COUNT_ABOVE_MAX') {
+        final max = response['data']?['max'] ?? response['max'];
+        errorMessage = max != null
+            ? 'This plan supports max $max kid(s). Please select fewer students.'
+            : 'Too many students selected for this plan.';
+      } else {
+        errorMessage = errorCode ?? 'Failed to create subscription';
+      }
       notifyListeners();
       return false;
     } catch (e) {
@@ -188,6 +200,11 @@ class SubscriptionsProvider extends ChangeNotifier {
     } catch (e) {
       return null;
     }
+  }
+
+  void clearError() {
+    errorMessage = null;
+    notifyListeners();
   }
 
   void reset() {

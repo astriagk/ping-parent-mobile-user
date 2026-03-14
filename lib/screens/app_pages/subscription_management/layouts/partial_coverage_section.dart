@@ -21,8 +21,8 @@ class PartialCoverageSection extends StatelessWidget {
       children: [
         if (coveredStudents.isNotEmpty) ...[
           _SectionHeader(
-            icon: Icons.school_rounded,
-            label: appFonts.coveredBySchool,
+            icon: Icons.verified_rounded,
+            label: appFonts.alreadyCoveredLabel,
             color: accentColor,
           ),
           VSpace(Sizes.s8),

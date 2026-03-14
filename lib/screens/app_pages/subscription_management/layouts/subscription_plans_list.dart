@@ -13,6 +13,7 @@ class SubscriptionPlansList extends StatelessWidget {
     bool isUpgrade,
     int amount,
     String description,
+    int kidsCovered,
   ) onSubscribeTap;
 
   const SubscriptionPlansList({
@@ -35,7 +36,7 @@ class SubscriptionPlansList extends StatelessWidget {
         : subscriptionsCtrl.recommendedPlans;
 
     final summary = subscriptionsCtrl.parentSummary;
-    final showPartialCoverage = subscriptionsCtrl.hasPartialSchoolCoverage &&
+    final showPartialCoverage = subscriptionsCtrl.hasPartialCoverage &&
         summary != null &&
         !hasSubscription;
 
@@ -98,6 +99,7 @@ class SubscriptionPlansList extends StatelessWidget {
                 plan.isUpgrade,
                 amount,
                 plan.planName,
+                plan.kidsCovered,
               );
         }
 
