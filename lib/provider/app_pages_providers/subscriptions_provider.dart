@@ -8,12 +8,27 @@ class SubscriptionsProvider extends ChangeNotifier {
   List<SubscriptionPlan> subscriptionPlans = [];
   List<RecommendedPlan> recommendedPlans = [];
   ParentSummary? parentSummary;
-  CurrentSubscription? currentSubscription;
+  List<CurrentSubscription> currentSubscriptions = [];
   bool coveredBySchool = false;
   bool isLoading = true; // Start with loading true to prevent empty state flash
   bool isRefreshing = false;
   String? errorMessage;
   bool _isInitialized = false;
+
+  /// Returns the first self-pay subscription, if any.
+  CurrentSubscription? get firstSelfPaySubscription {
+    try {
+      return currentSubscriptions
+          .firstWhere((s) => s.subscriptionSource == 'self_pay');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// True when not all students are covered by school but at least one is.
+  bool get hasPartialSchoolCoverage =>
+      !coveredBySchool &&
+      currentSubscriptions.any((s) => s.isSchoolRedemption);
 
   Future<void> onInit() async {
     if (_isInitialized && recommendedPlans.isNotEmpty) return;
@@ -37,7 +52,7 @@ class SubscriptionsProvider extends ChangeNotifier {
       if (response.success && response.data != null) {
         recommendedPlans = response.data!.recommendedPlans;
         parentSummary = response.data!.parentSummary;
-        currentSubscription = response.data!.currentSubscription;
+        currentSubscriptions = response.data!.currentSubscriptions;
         coveredBySchool = response.data!.coveredBySchool;
         errorMessage = null;
       } else {
@@ -84,10 +99,14 @@ class SubscriptionsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> createSubscription(String planId) async {
+  Future<bool> createSubscription(String planId,
+      {List<String>? studentIds}) async {
     try {
       final subscriptionsService = SubscriptionsService(ApiClient());
-      final response = await subscriptionsService.createSubscription(planId);
+      final response = await subscriptionsService.createSubscription(
+        planId,
+        studentIds: studentIds,
+      );
       if (response['success'] == true) {
         await fetchRecommendations(isRefresh: true);
         return true;
@@ -124,10 +143,28 @@ class SubscriptionsProvider extends ChangeNotifier {
     try {
       final subscriptionsService = SubscriptionsService(ApiClient());
       final response = await subscriptionsService.getActiveSubscription();
-      return response.success &&
-          response.data != null &&
-          response.data!.isActive;
+      return response.success && response.data.any((s) => s.isActive);
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> redeemSubscriptionCode(String code) async {
+    try {
+      final subscriptionsService = SubscriptionsService(ApiClient());
+      final response = await subscriptionsService.redeemCode(code);
+      if (response.success) {
+        await fetchRecommendations(isRefresh: true);
+        errorMessage = null;
+        notifyListeners();
+        return true;
+      }
+      errorMessage = response.error ?? 'Failed to redeem code';
+      notifyListeners();
+      return false;
+    } catch (e) {
+      errorMessage = 'Failed to redeem code. Please try again.';
+      notifyListeners();
       return false;
     }
   }
@@ -157,7 +194,7 @@ class SubscriptionsProvider extends ChangeNotifier {
     subscriptionPlans = [];
     recommendedPlans = [];
     parentSummary = null;
-    currentSubscription = null;
+    currentSubscriptions = [];
     coveredBySchool = false;
     isLoading = false;
     isRefreshing = false;

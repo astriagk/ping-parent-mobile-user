@@ -11,6 +11,14 @@ class TripTrackingService {
   Future<TripTrackingResponse> getActiveTrips() async {
     try {
       final response = await _apiClient.get(Endpoints.activeTrips);
+      if (response.statusCode == 403) {
+        return TripTrackingResponse(
+          success: false,
+          data: [],
+          count: 0,
+          error: "You don't have access to this trip",
+        );
+      }
       return TripTrackingResponse.fromJson(jsonDecode(response.body));
     } catch (e) {
       return TripTrackingResponse(

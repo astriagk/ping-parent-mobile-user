@@ -157,7 +157,18 @@ class TrackingCard extends StatelessWidget {
 
       await homeCtrl.fetchTrackingData();
 
-      final trips = homeCtrl.trackingData?.data ?? [];
+      if (!context.mounted) return;
+
+      final trackingData = homeCtrl.trackingData;
+      if (trackingData != null &&
+          !trackingData.success &&
+          trackingData.error != null) {
+        _showDialog(context,
+            title: 'Access Denied', message: trackingData.error!);
+        return;
+      }
+
+      final trips = trackingData?.data ?? [];
 
       final activeTrips = trips
           .where((t) =>

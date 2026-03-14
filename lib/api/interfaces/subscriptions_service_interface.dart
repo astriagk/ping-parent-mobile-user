@@ -6,6 +6,6 @@ abstract class SubscriptionsServiceInterface {
   Future<SubscriptionPlansResponse> getSubscriptionPlans();
   Future<SubscriptionRecommendationsResponse> getRecommendations();
   Future<ActiveSubscriptionResponse> getActiveSubscription();
-  Future<Map<String, dynamic>> createSubscription(String planId);
+  Future<Map<String, dynamic>> createSubscription(String planId, {List<String>? studentIds});
   Future<Map<String, dynamic>> upgradeSubscription(String planId);
 }

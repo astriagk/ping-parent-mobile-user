@@ -282,4 +282,26 @@ class AppFonts {
   final noPayments = "No payments yet";
   final noPaymentsDescription =
       "Your payment history will appear here once you subscribe to a plan.";
+
+  // Partial school coverage
+  final coveredBySchool = "Covered by School";
+  final needsSubscription = "Needs Subscription";
+  final partialCoverageNote =
+      "Some of your students are covered by school. Subscribe for the rest below.";
+  final selectStudents = "Select Students";
+  final selectStudentsDescription =
+      "Choose which students to include in this subscription.";
+  final alreadyCoveredBySchool = "Already covered by school";
+  final continueText = "Continue";
+  final noAccessToTrip = "You don't have access to this trip";
+
+  // Subscription redemption
+  final redeemCode = "Redeem Code";
+  final cancel = "Cancel";
+  final code = "Code";
+  final redeem = "Redeem";
+  final redeeming = "Redeeming...";
+  final enterSchoolProvidedCode = "Enter the code provided by your school";
+  final enterCode = "Enter code";
+  final pleaseEnterCode = "Please enter a code";
 }

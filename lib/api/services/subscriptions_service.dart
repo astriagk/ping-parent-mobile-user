@@ -4,6 +4,7 @@ import '../interfaces/subscriptions_service_interface.dart';
 import '../models/active_subscription_response.dart';
 import '../models/subscription_plans_response.dart';
 import '../models/subscription_recommendations_response.dart';
+import '../models/redeem_code_response.dart';
 import 'dart:convert';
 
 class SubscriptionsService implements SubscriptionsServiceInterface {
@@ -32,10 +33,15 @@ class SubscriptionsService implements SubscriptionsServiceInterface {
   }
 
   @override
-  Future<Map<String, dynamic>> createSubscription(String planId) async {
+  Future<Map<String, dynamic>> createSubscription(String planId,
+      {List<String>? studentIds}) async {
+    final body = <String, dynamic>{'plan_id': planId};
+    if (studentIds != null && studentIds.isNotEmpty) {
+      body['student_ids'] = studentIds;
+    }
     final response = await _apiClient.post(
       Endpoints.parentSubscriptions,
-      body: {'plan_id': planId},
+      body: body,
     );
     return jsonDecode(response.body) as Map<String, dynamic>;
   }
@@ -47,5 +53,13 @@ class SubscriptionsService implements SubscriptionsServiceInterface {
       body: {'plan_id': planId},
     );
     return jsonDecode(response.body) as Map<String, dynamic>;
+  }
+
+  Future<RedeemCodeResponse> redeemCode(String subscriptionCode) async {
+    final response = await _apiClient.post(
+      Endpoints.redeemCode,
+      body: {'subscription_code': subscriptionCode},
+    );
+    return RedeemCodeResponse.fromJson(jsonDecode(response.body));
   }
 }
