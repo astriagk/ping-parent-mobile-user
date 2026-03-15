@@ -47,6 +47,7 @@ class Endpoints {
       '$baseUrl/parent/subscriptions/upgrade';
   static const String myActiveSubscription =
       '$baseUrl/parent/subscriptions/active';
+  static const String redeemCode = '$baseUrl/parent/redemptions/redeem';
 
 // Trip Tracking Endpoints
   static const String activeTrips = '$baseUrl/parent/trips/active';

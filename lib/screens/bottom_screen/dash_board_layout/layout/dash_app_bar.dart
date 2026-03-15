@@ -1,4 +1,6 @@
 import '../../../../config.dart';
+import 'package:skolo/widgets/redeem_code_dialog.dart';
+import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
 
 class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int? index;
@@ -119,24 +121,43 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         : "Settings",
                                 style: AppCss.lexendBold20.textColor(
                                     appColor(context).appTheme.darkText)),
-                            Row(children: [
-                              // if (dashCtrl.currentTab != 3)
-                              //   CommonIconButton(
-                              //       icon: svgAssets.messages,
-                              //       onTap: () {
-                              //         chatCtrl.homeChat = true;
-                              //         route.pushNamed(
-                              //             context, routeName.chatScreen);
-                              //       }),
-                              // HSpace(Sizes.s10),
-                              // dashCtrl.currentTab == 1 ||
-                              //         dashCtrl.currentTab == 2
-                              //     ? CommonIconButton(
-                              //         icon: svgAssets.bell,
-                              //         onTap: () => route.pushNamed(
-                              //             context, routeName.appSettingScreen))
-                              //     : SizedBox(height: Insets.i40)
-                            ])
+                            // Row(children: [
+                            // if (dashCtrl.currentTab != 3)
+                            //   CommonIconButton(
+                            //       icon: svgAssets.messages,
+                            //       onTap: () {
+                            //         chatCtrl.homeChat = true;
+                            //         route.pushNamed(
+                            //             context, routeName.chatScreen);
+                            //       }),
+                            // HSpace(Sizes.s10),
+                            // dashCtrl.currentTab == 1 ||
+                            //         dashCtrl.currentTab == 2
+                            //     ? CommonIconButton(
+                            //         icon: svgAssets.bell,
+                            //         onTap: () => route.pushNamed(
+                            //             context, routeName.appSettingScreen))
+                            //     : SizedBox(height: Insets.i40)
+                            // ]),
+                            if (dashCtrl.currentTab == 2)
+                              Consumer<SubscriptionsProvider>(
+                                builder: (context, subscriptionsCtrl, child) {
+                                  return TextWidgetCommon(
+                                    text: appFonts.redeemCode,
+                                    style: AppCss.lexendMedium13.textColor(
+                                      appColor(context).appTheme.primary,
+                                    ),
+                                  ).inkWell(
+                                    onTap: () => showDialog(
+                                      context: context,
+                                      builder: (context) => RedeemCodeDialog(
+                                        onRedeem: (code) => subscriptionsCtrl
+                                            .redeemSubscriptionCode(code),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
                           ])).padding(bottom: Sizes.s25, horizontal: Sizes.s20),
                   shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius.only(

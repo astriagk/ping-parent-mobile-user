@@ -4,6 +4,7 @@ import 'package:skolo/widgets/common_error_state.dart';
 import 'package:skolo/widgets/skeletons/student_card_skeleton.dart';
 import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
 import 'package:skolo/widgets/loading/payment_loading_overlay.dart';
+import 'package:skolo/widgets/student_selection_bottom_sheet.dart';
 import 'layouts/school_coverage_card.dart';
 import 'layouts/subscription_plans_list.dart';
 
@@ -20,6 +21,7 @@ class _SubscriptionManagementScreenState
   bool _isActivatingSubscription = false;
   String? _pendingPlanId;
   bool _pendingIsUpgrade = false;
+  List<String>? _pendingStudentIds;
   late final RazorpayProvider _razorpayProvider;
   bool _wasInBackground = false;
 
@@ -68,10 +70,14 @@ class _SubscriptionManagementScreenState
     setState(() => _isActivatingSubscription = true);
 
     final subscriptionsCtrl = context.read<SubscriptionsProvider>();
+    bool success;
     if (isUpgrade) {
-      await subscriptionsCtrl.upgradeSubscription(planId);
+      success = await subscriptionsCtrl.upgradeSubscription(planId);
     } else {
-      await subscriptionsCtrl.createSubscription(planId);
+      success = await subscriptionsCtrl.createSubscription(
+        planId,
+        studentIds: _pendingStudentIds,
+      );
     }
 
     if (mounted) {
@@ -80,14 +86,89 @@ class _SubscriptionManagementScreenState
       setState(() {
         _isActivatingSubscription = false;
         _pendingPlanId = null;
+        _pendingStudentIds = null;
       });
+
+      if (!success && subscriptionsCtrl.errorMessage != null) {
+        _showErrorDialog(subscriptionsCtrl.errorMessage!);
+        subscriptionsCtrl.clearError();
+      }
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: TextWidgetCommon(
+          text: appFonts.somethingWentWrong,
+          style: AppCss.lexendSemiBold16
+              .textColor(appColor(context).appTheme.darkText),
+        ),
+        content: TextWidgetCommon(
+          text: message,
+          style: AppCss.lexendRegular14
+              .textColor(appColor(context).appTheme.lightText),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: TextWidgetCommon(
+              text: appFonts.done,
+              style: AppCss.lexendSemiBold14
+                  .textColor(appColor(context).appTheme.activeColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Always shows a student-selection sheet for new subscriptions,
+  /// then initiates payment with the chosen student IDs.
+  Future<void> _handleSubscribeTap({
+    required SubscriptionsProvider subscriptionsCtrl,
+    required RazorpayProvider razorpayCtrl,
+    required String planId,
+    required bool isUpgrade,
+    required int amount,
+    required String description,
+    required int kidsCovered,
+  }) async {
+    List<String>? studentIds;
+
+    if (!isUpgrade) {
+      final summary = subscriptionsCtrl.parentSummary;
+      if (summary != null && summary.kids.isNotEmpty) {
+        final selected = await showStudentSelectionBottomSheet(
+          context: context,
+          allStudents: summary.kids,
+          coveredStudents: summary.coveredStudents,
+          uncoveredStudents: summary.uncoveredStudents,
+          maxStudents: kidsCovered > 0 ? kidsCovered : null,
+        );
+        if (selected == null) return; // user dismissed
+        studentIds = selected;
+      }
+    }
+
+    _pendingPlanId = planId;
+    _pendingIsUpgrade = isUpgrade;
+    _pendingStudentIds = studentIds;
+    razorpayCtrl.initiatePayment(
+      amount: amount,
+      subscriptionId: planId,
+      description: description,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<SubscriptionsProvider, RazorpayProvider>(
       builder: (context, subscriptionsCtrl, razorpayCtrl, child) {
+        final hasNoData = subscriptionsCtrl.recommendedPlans.isEmpty &&
+            subscriptionsCtrl.currentSubscriptions.isEmpty;
+
         return Scaffold(
           body: Stack(
             children: [
@@ -103,11 +184,10 @@ class _SubscriptionManagementScreenState
                         )
                       : subscriptionsCtrl.coveredBySchool
                           ? SchoolCoverageCard(
-                              currentSubscription:
-                                  subscriptionsCtrl.currentSubscription,
+                              currentSubscriptions:
+                                  subscriptionsCtrl.currentSubscriptions,
                             )
-                          : (subscriptionsCtrl.recommendedPlans.isEmpty &&
-                                  subscriptionsCtrl.currentSubscription == null)
+                          : hasNoData
                               ? CommonEmptyState(
                                   mainText:
                                       appFonts.noSubscriptionPlansAvailable,
@@ -122,16 +202,22 @@ class _SubscriptionManagementScreenState
                                   razorpayCtrl: razorpayCtrl,
                                   isActivatingSubscription:
                                       _isActivatingSubscription,
-                                  onSubscribeTap:
-                                      (planId, isUpgrade, amount, description) {
-                                    _pendingPlanId = planId;
-                                    _pendingIsUpgrade = isUpgrade;
-                                    razorpayCtrl.initiatePayment(
-                                      amount: amount,
-                                      subscriptionId: planId,
-                                      description: description,
-                                    );
-                                  },
+                                  onSubscribeTap: (
+                                    planId,
+                                    isUpgrade,
+                                    amount,
+                                    description,
+                                    kidsCovered,
+                                  ) =>
+                                      _handleSubscribeTap(
+                                    subscriptionsCtrl: subscriptionsCtrl,
+                                    razorpayCtrl: razorpayCtrl,
+                                    planId: planId,
+                                    isUpgrade: isUpgrade,
+                                    amount: amount,
+                                    description: description,
+                                    kidsCovered: kidsCovered,
+                                  ),
                                 ),
               if (razorpayCtrl.isLoading || _isActivatingSubscription)
                 PaymentLoadingOverlay(),

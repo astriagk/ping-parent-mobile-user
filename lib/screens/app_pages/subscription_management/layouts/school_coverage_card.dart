@@ -3,16 +3,22 @@ import 'package:skolo/config.dart';
 import 'package:skolo/api/models/subscription_recommendations_response.dart';
 
 class SchoolCoverageCard extends StatelessWidget {
-  final CurrentSubscription? currentSubscription;
+  final List<CurrentSubscription> currentSubscriptions;
 
   const SchoolCoverageCard({
     super.key,
-    required this.currentSubscription,
+    required this.currentSubscriptions,
   });
 
   @override
   Widget build(BuildContext context) {
-    final currentSub = currentSubscription;
+    // Use the first school-redemption subscription for display, falling back to first available.
+    final currentSub = currentSubscriptions.isNotEmpty
+        ? (currentSubscriptions.firstWhere(
+            (s) => s.isSchoolRedemption,
+            orElse: () => currentSubscriptions.first,
+          ))
+        : null;
     String? formattedEndDate;
     if (currentSub != null && currentSub.endDate.isNotEmpty) {
       try {

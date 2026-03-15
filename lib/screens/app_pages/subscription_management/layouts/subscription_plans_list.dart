@@ -2,6 +2,7 @@ import 'package:skolo/config.dart';
 import 'package:skolo/widgets/subscription_card/subscription_card.dart';
 import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
 import 'current_subscription_banner.dart';
+import 'partial_coverage_section.dart';
 
 class SubscriptionPlansList extends StatelessWidget {
   final SubscriptionsProvider subscriptionsCtrl;
@@ -12,6 +13,7 @@ class SubscriptionPlansList extends StatelessWidget {
     bool isUpgrade,
     int amount,
     String description,
+    int kidsCovered,
   ) onSubscribeTap;
 
   const SubscriptionPlansList({
@@ -24,12 +26,24 @@ class SubscriptionPlansList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasSubscription = subscriptionsCtrl.currentSubscription != null;
+    final selfPaySub = subscriptionsCtrl.firstSelfPaySubscription;
+    final hasSubscription = selfPaySub != null;
+
     final visiblePlans = hasSubscription
         ? subscriptionsCtrl.recommendedPlans
             .where((p) => p.isCurrentPlan || p.isUpgrade)
             .toList()
         : subscriptionsCtrl.recommendedPlans;
+
+    final summary = subscriptionsCtrl.parentSummary;
+    final showPartialCoverage = subscriptionsCtrl.hasPartialCoverage &&
+        summary != null &&
+        !hasSubscription;
+
+    // Header items: optional partial-coverage section + optional current-subscription banner
+    int headerCount = 0;
+    if (showPartialCoverage) headerCount++;
+    if (hasSubscription) headerCount++;
 
     return ListView.builder(
       padding: EdgeInsets.only(
@@ -38,22 +52,39 @@ class SubscriptionPlansList extends StatelessWidget {
         top: Sizes.s20,
         bottom: Sizes.s100,
       ),
-      itemCount: visiblePlans.length + (hasSubscription ? 1 : 0),
+      itemCount: visiblePlans.length + headerCount,
       itemBuilder: (context, index) {
-        if (hasSubscription && index == 0) {
-          final currentPlan = subscriptionsCtrl.recommendedPlans
-              .where((p) => p.isCurrentPlan)
-              .toList();
-          final planName = currentPlan.isNotEmpty
-              ? currentPlan.first.planName
-              : 'Current Plan';
-          return CurrentSubscriptionBanner(
-            currentSub: subscriptionsCtrl.currentSubscription!,
-            planName: planName,
-          );
+        int offset = 0;
+
+        // Partial coverage info row
+        if (showPartialCoverage) {
+          if (index == offset) {
+            return PartialCoverageSection(
+              coveredStudents: summary.coveredStudents,
+              uncoveredStudents: summary.uncoveredStudents,
+            );
+          }
+          offset++;
         }
 
-        final planIndex = hasSubscription ? index - 1 : index;
+        // Current subscription banner (self-pay only)
+        if (hasSubscription) {
+          if (index == offset) {
+            final currentPlan = subscriptionsCtrl.recommendedPlans
+                .where((p) => p.isCurrentPlan)
+                .toList();
+            final planName = currentPlan.isNotEmpty
+                ? currentPlan.first.planName
+                : 'Current Plan';
+            return CurrentSubscriptionBanner(
+              currentSub: selfPaySub,
+              planName: planName,
+            );
+          }
+          offset++;
+        }
+
+        final planIndex = index - offset;
         final plan = visiblePlans[planIndex];
 
         VoidCallback? onSubscribe;
@@ -68,6 +99,7 @@ class SubscriptionPlansList extends StatelessWidget {
                 plan.isUpgrade,
                 amount,
                 plan.planName,
+                plan.kidsCovered,
               );
         }
 
