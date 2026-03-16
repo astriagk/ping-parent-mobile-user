@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as old_provider;
 import 'package:skolo/provider/app_pages_providers/driver_provider.dart';
 import 'package:skolo/provider/app_pages_providers/my_wallet_provider.dart';
 import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
@@ -35,7 +37,11 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
   ));
-  runApp(const MyApp());
+  runApp(
+    ProviderScope(
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -50,59 +56,59 @@ class MyApp extends StatelessWidget {
           if (snapData.hasData) {
             return MultiProvider(
                 providers: [
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => ThemeService(snapData.data!)),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => LanguageProvider(snapData.data!)),
-                  ChangeNotifierProvider(create: (_) => CurrencyProvider()),
-                  ChangeNotifierProvider(create: (_) => UserProvider()),
-                  ChangeNotifierProvider(create: (_) => SplashProvider()),
-                  ChangeNotifierProvider(create: (_) => SignInProvider()),
-                  ChangeNotifierProvider(create: (_) => SignUpProvider()),
-                  ChangeNotifierProvider(create: (_) => OtpProvider()),
-                  ChangeNotifierProvider(create: (_) => DashBoardProvider()),
-                  ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(create: (_) => CurrencyProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => UserProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => SplashProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => SignInProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => SignUpProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => OtpProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => DashBoardProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => TripTrackingProvider(
                           TripTrackingService(ApiClient()))),
-                  ChangeNotifierProvider(create: (_) => NotificationProvider()),
-                  ChangeNotifierProvider(create: (_) => NewLocationProvider()),
-                  ChangeNotifierProvider(create: (_) => AddLocationProvider()),
-                  ChangeNotifierProvider(create: (_) => SettingProvider()),
-                  ChangeNotifierProvider(create: (_) => BankDetailsProvider()),
-                  ChangeNotifierProvider(create: (_) => PromoProvider()),
-                  ChangeNotifierProvider(create: (_) => MyWalletProvider()),
-                  ChangeNotifierProvider(create: (_) => SaveLocationProvider()),
-                  ChangeNotifierProvider(create: (_) => AppSettingProvider()),
-                  ChangeNotifierProvider(create: (_) => ChatProvider()),
-                  ChangeNotifierProvider(create: (_) => DateTimeProvider()),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(create: (_) => NotificationProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => NewLocationProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => AddLocationProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => SettingProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => BankDetailsProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => PromoProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => MyWalletProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => SaveLocationProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => AppSettingProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => ChatProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => DateTimeProvider()),
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => SearchLocationProvider()),
-                  ChangeNotifierProvider(create: (_) => SwitchRiderProvider()),
-                  ChangeNotifierProvider(create: (_) => ChooseRiderProvider()),
-                  ChangeNotifierProvider(create: (_) => SelectRiderProvider()),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(create: (_) => SwitchRiderProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => ChooseRiderProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => SelectRiderProvider()),
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => LoadingScreenProvider()),
-                  ChangeNotifierProvider(create: (_) => CancelRideProvider()),
-                  ChangeNotifierProvider(create: (_) => CategoryProvider()),
-                  ChangeNotifierProvider(create: (_) => OutStationProvider()),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(create: (_) => CancelRideProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => CategoryProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => OutStationProvider()),
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => FindingDriverProvider()),
-                  ChangeNotifierProvider(create: (_) => RentalProvider()),
-                  ChangeNotifierProvider(create: (_) => MyRideScreenProvider()),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(create: (_) => RentalProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => MyRideScreenProvider()),
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => CompletedRideProvider()),
-                  ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
-                  ChangeNotifierProvider(create: (_) => AddStudentProvider()),
-                  ChangeNotifierProvider(create: (_) => DriverProvider()),
-                  ChangeNotifierProvider(
+                  old_provider.ChangeNotifierProvider(create: (_) => AcceptRideProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => AddStudentProvider()),
+                  old_provider.ChangeNotifierProvider(create: (_) => DriverProvider()),
+                  old_provider.ChangeNotifierProvider(
                       create: (_) => SubscriptionsProvider()),
-                  ChangeNotifierProvider(create: (_) => RazorpayProvider())
+                  old_provider.ChangeNotifierProvider(create: (_) => RazorpayProvider())
                 ],
-                child: Consumer<ThemeService>(builder: (context, theme, child) {
-                  return Consumer<LanguageProvider>(
+                child: old_provider.Consumer<ThemeService>(builder: (context, theme, child) {
+                  return old_provider.Consumer<LanguageProvider>(
                       builder: (context, lang, child) {
-                    return Consumer<CurrencyProvider>(
+                    return old_provider.Consumer<CurrencyProvider>(
                         builder: (context, currency, child) {
                       return ScreenUtilInit(
                           child: MaterialApp(
