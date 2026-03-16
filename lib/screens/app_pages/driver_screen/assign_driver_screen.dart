@@ -1,11 +1,10 @@
 import '../../../api/models/driver_response.dart';
 import '../../../config.dart';
-import '../../../helper/date_formatter_helper.dart';
 import '../../../provider/app_pages_providers/driver_provider.dart';
 import '../../../widgets/auto_refresh_mixin.dart';
-import '../../../widgets/ride_card/ride_card.dart';
-import '../../../widgets/ride_card/layout/ride_data_model.dart';
+import '../../../widgets/skeletons/driver_card_skeleton.dart';
 import '../../../../widgets/common_confirmation_dialog.dart';
+import 'driver_card.dart';
 
 class AssignDriverScreen extends StatefulWidget {
   final String? studentId;
@@ -20,6 +19,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
     with AutoRefreshMixin {
   final TextEditingController _searchController = TextEditingController();
   List<Driver> _filteredDrivers = [];
+  bool _isInitialized = false;
 
   @override
   void refreshData() {
@@ -30,6 +30,24 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
   void initState() {
     super.initState();
     _searchController.addListener(_filterDrivers);
+    // Trigger API call to fetch drivers
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      refreshData();
+    });
+  }
+
+  void _initializeApprovedDrivers() {
+    final driverCtrl = context.read<DriverProvider>();
+    final approvedDrivers = driverCtrl.driverList
+        .where((driver) => driver.approvalStatus?.toLowerCase() == 'approved')
+        .toList();
+    approvedDrivers.sort((a, b) =>
+        (a.name ?? '').toLowerCase().compareTo((b.name ?? '').toLowerCase()));
+
+    setState(() {
+      _filteredDrivers = approvedDrivers;
+      _isInitialized = true;
+    });
   }
 
   @override
@@ -42,15 +60,23 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
     final query = _searchController.text.toLowerCase();
     final driverCtrl = context.read<DriverProvider>();
 
+    // Filter only approved drivers
+    final approvedDrivers = driverCtrl.driverList
+        .where((driver) => driver.approvalStatus?.toLowerCase() == 'approved')
+        .toList();
+
     if (query.isEmpty) {
+      // Sort alphabetically when search is empty
+      approvedDrivers.sort((a, b) =>
+          (a.name ?? '').toLowerCase().compareTo((b.name ?? '').toLowerCase()));
       setState(() {
-        _filteredDrivers = [];
+        _filteredDrivers = approvedDrivers;
       });
       return;
     }
 
     setState(() {
-      _filteredDrivers = driverCtrl.driverList.where((driver) {
+      _filteredDrivers = approvedDrivers.where((driver) {
         final name = (driver.name ?? '').toLowerCase();
         final driverId = (driver.driverUniqueId ?? '').toLowerCase();
         final email = (driver.email ?? '').toLowerCase();
@@ -86,9 +112,9 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
       builder: (dialogContext) {
         return CustomConfirmationDialog(
           message: appFonts.confirmAssignDriver,
-          onCancel: () => route.pop(dialogContext),
+          onCancel: () => Navigator.pop(dialogContext),
           onConfirm: () async {
-            route.pop(dialogContext);
+            Navigator.pop(dialogContext);
 
             final driverCtrl = context.read<DriverProvider>();
 
@@ -132,10 +158,8 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
   }
 
   void _clearSearch() {
-    setState(() {
-      _searchController.clear();
-      _filteredDrivers = [];
-    });
+    _searchController.clear();
+    _filterDrivers();
   }
 
   @override
@@ -144,6 +168,15 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
       backgroundColor: appColor(context).appTheme.screenBg,
       body: Consumer<DriverProvider>(
         builder: (context, driverCtrl, child) {
+          // Initialize drivers once loading is complete
+          if (!driverCtrl.isLoading && !_isInitialized) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!_isInitialized && mounted) {
+                _initializeApprovedDrivers();
+              }
+            });
+          }
+
           return CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
@@ -226,11 +259,13 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
                 centerTitle: true,
               ),
               SliverFillRemaining(
-                child: driverCtrl.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: appColor(context).appTheme.primary,
-                        ),
+                child: driverCtrl.isLoading || !_isInitialized
+                    ? ListView.builder(
+                        padding: EdgeInsets.only(top: Sizes.s20),
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return const DriverCardSkeleton();
+                        },
                       )
                     : _filteredDrivers.isNotEmpty
                         ? ListView.builder(
@@ -239,18 +274,41 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
                             ),
                             itemCount: _filteredDrivers.length,
                             itemBuilder: (context, index) {
-                              return _buildDriverDetails(
-                                  context, _filteredDrivers[index]);
+                              return DriverCard(
+                                driver: _filteredDrivers[index],
+                                onTap: () =>
+                                    _selectDriver(_filteredDrivers[index]),
+                                getStatusColor: _getStatusColor,
+                              );
                             },
                           )
                         : Center(
-                            child: TextWidgetCommon(
-                              text: language(context,
-                                  appFonts.searchForDriverByNameIdOrEmail),
-                              style: AppCss.lexendRegular14.textColor(
-                                  appColor(context).appTheme.lightText),
-                              textAlign: TextAlign.center,
-                            ).padding(horizontal: Sizes.s40),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.people_outline,
+                                    size: Sizes.s60,
+                                    color: appColor(context)
+                                        .appTheme
+                                        .lightText
+                                        .withValues(alpha: 0.3)),
+                                VSpace(Sizes.s16),
+                                TextWidgetCommon(
+                                  text: _searchController.text.isNotEmpty
+                                      ? language(
+                                          context,
+                                          appFonts
+                                              .searchForDriverByNameIdOrEmail)
+                                      : language(
+                                          context,
+                                          appFonts
+                                              .searchForDriverByNameIdOrEmail),
+                                  style: AppCss.lexendRegular14.textColor(
+                                      appColor(context).appTheme.lightText),
+                                  textAlign: TextAlign.center,
+                                ).padding(horizontal: Sizes.s40),
+                              ],
+                            ),
                           ),
               ),
             ],
@@ -260,34 +318,18 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
     );
   }
 
-  Widget _buildDriverDetails(BuildContext context, Driver driver) {
-    return RideCard(
-      rideData: RideDataModel(
-        image: svgAssets.car,
-        id: driver.driverUniqueId?.toUpperCase(),
-        status: driver.isAvailable == true
-            ? appFonts.available
-            : appFonts.unavailable,
-        statusColor: driver.isAvailable == true
-            ? appColor(context).appTheme.activeColor
-            : appColor(context).appTheme.alertZone,
-        price: driver.currentStudentCount?.toString() ?? '0',
-        date: DateFormatterHelper.formatToShortDate(driver.approvedAt),
-        time: DateFormatterHelper.formatTo12HourTime(driver.approvedAt),
-        driverName: driver.name,
-        rating: (driver.rating != null && driver.rating! > 0)
-            ? driver.rating!.toStringAsFixed(1)
-            : '',
-        userRatingNumber: ' (${driver.totalTrips ?? 0})',
-        carName:
-            '${driver.vehicleType.toDisplayString()} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
-                .trim(),
-        currentLocation: '123 Main Street, Downtown',
-        addLocation: '',
-      ),
-      profileImageUrl: driver.photoUrl,
-      index: 0,
-      onTap: () => _selectDriver(driver),
-    );
+  Color _getStatusColor(BuildContext context, String status) {
+    switch (status.toLowerCase()) {
+      case 'active':
+      case 'approved':
+        return appColor(context).appTheme.activeColor;
+      case 'pending':
+        return appColor(context).appTheme.yellowIcon;
+      case 'rejected':
+      case 'inactive':
+        return appColor(context).appTheme.alertZone;
+      default:
+        return appColor(context).appTheme.lightText;
+    }
   }
 }
