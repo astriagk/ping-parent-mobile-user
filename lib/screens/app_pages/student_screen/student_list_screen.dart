@@ -231,8 +231,10 @@ class _StudentListScreenState extends State<StudentListScreen>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          AssignDriverScreen(studentId: student.id!),
+                      builder: (context) => AssignDriverScreen(
+                        studentId: student.id!,
+                        assignmentId: assignment.id,
+                      ),
                     ),
                   );
                 }

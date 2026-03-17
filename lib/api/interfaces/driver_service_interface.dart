@@ -6,4 +6,8 @@ abstract class DriverServiceInterface {
     required String studentId,
     required String driverId,
   });
+  Future<DriverStudentAssignmentResponse> reassignDriver({
+    required String assignmentId,
+    required String driverId,
+  });
 }

@@ -37,6 +37,8 @@ class Endpoints {
 // Assignment Endpoints
   static const String allDrivers = '$baseUrl/parent/assignments/all-drivers';
   static const String driverStudentAssignments = '$baseUrl/parent/assignments';
+  static String reassignDriver(String id) =>
+      '$baseUrl/parent/assignments/$id/reassign';
 
 // Subscription Endpoints
   static const String subscriptionPlans = '$baseUrl/public/subscription-plans';

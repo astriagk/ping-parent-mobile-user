@@ -7,8 +7,9 @@ import '../../../../widgets/common_confirmation_dialog.dart';
 
 class AssignDriverScreen extends StatefulWidget {
   final String? studentId;
+  final String? assignmentId;
 
-  const AssignDriverScreen({super.key, this.studentId});
+  const AssignDriverScreen({super.key, this.studentId, this.assignmentId});
 
   @override
   State<AssignDriverScreen> createState() => _AssignDriverScreenState();
@@ -86,10 +87,18 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
 
             final driverCtrl = context.read<DriverProvider>();
 
-            final success = await driverCtrl.assignDriverToStudent(
-              studentId: widget.studentId!,
-              driverId: driver.driverId!,
-            );
+            final bool success;
+            if (widget.assignmentId != null) {
+              success = await driverCtrl.reassignDriver(
+                assignmentId: widget.assignmentId!,
+                driverId: driver.driverId!,
+              );
+            } else {
+              success = await driverCtrl.assignDriverToStudent(
+                studentId: widget.studentId!,
+                driverId: driver.driverId!,
+              );
+            }
 
             if (!mounted) return;
 

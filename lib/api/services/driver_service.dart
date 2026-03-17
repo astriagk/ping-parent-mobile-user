@@ -32,4 +32,21 @@ class DriverService implements DriverServiceInterface {
 
     return DriverStudentAssignmentResponse.fromJson(jsonDecode(response.body));
   }
+
+  @override
+  Future<DriverStudentAssignmentResponse> reassignDriver({
+    required String assignmentId,
+    required String driverId,
+  }) async {
+    final body = {
+      'driver_id': driverId,
+    };
+
+    final response = await _apiClient.post(
+      Endpoints.reassignDriver(assignmentId),
+      body: body,
+    );
+
+    return DriverStudentAssignmentResponse.fromJson(jsonDecode(response.body));
+  }
 }

@@ -72,8 +72,8 @@ class Trip {
       students: json['students'] != null
           ? (json['students'] as List).map((e) => Student.fromJson(e)).toList()
           : [],
-      optimizedRouteData: json['optimized_route_data'] != null
-          ? OptimizedRouteData.fromJson(json['optimized_route_data'])
+      optimizedRouteData: (json['route_geometry'] ?? json['optimized_route_data']) != null
+          ? OptimizedRouteData.fromJson(json['route_geometry'] ?? json['optimized_route_data'])
           : null,
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
@@ -104,17 +104,35 @@ class Student {
   }
 }
 
+class RouteLeg {
+  final List<List<double>> coordinates;
+
+  RouteLeg({required this.coordinates});
+
+  factory RouteLeg.fromJson(Map<String, dynamic> json) {
+    return RouteLeg(
+      coordinates: json['coordinates'] != null
+          ? (json['coordinates'] as List)
+              .map((e) => [(e[0] as num).toDouble(), (e[1] as num).toDouble()])
+              .toList()
+          : [],
+    );
+  }
+}
+
 class OptimizedRouteData {
   final List<Waypoint> waypoints;
   final double totalDistance;
   final int totalDuration;
   final List<List<double>> coordinates;
+  final List<RouteLeg> legs;
 
   OptimizedRouteData({
     required this.waypoints,
     required this.totalDistance,
     required this.totalDuration,
     required this.coordinates,
+    required this.legs,
   });
 
   factory OptimizedRouteData.fromJson(Map<String, dynamic> json) {
@@ -130,6 +148,9 @@ class OptimizedRouteData {
           ? (json['coordinates'] as List)
               .map((e) => [(e[0] as num).toDouble(), (e[1] as num).toDouble()])
               .toList()
+          : [],
+      legs: json['legs'] != null
+          ? (json['legs'] as List).map((e) => RouteLeg.fromJson(e)).toList()
           : [],
     );
   }
@@ -153,6 +174,9 @@ class Waypoint {
   final String? estimatedArrivalTime;
   final double distanceFromPrevious;
   final int durationFromPrevious;
+  final WaypointSchool? school;
+  final List<String>? schoolIds;
+  final Map<String, String>? schoolIdMap;
 
   Waypoint({
     required this.latitude,
@@ -172,6 +196,9 @@ class Waypoint {
     this.estimatedArrivalTime,
     required this.distanceFromPrevious,
     required this.durationFromPrevious,
+    this.school,
+    this.schoolIds,
+    this.schoolIdMap,
   });
 
   factory Waypoint.fromJson(Map<String, dynamic> json) {
@@ -197,6 +224,51 @@ class Waypoint {
       estimatedArrivalTime: json['estimated_arrival_time'],
       distanceFromPrevious: (json['distance_from_previous'] ?? 0.0).toDouble(),
       durationFromPrevious: json['duration_from_previous'] ?? 0,
+      school: json['school'] != null ? WaypointSchool.fromJson(json['school']) : null,
+      schoolIds: json['school_ids'] != null
+          ? List<String>.from(json['school_ids'])
+          : null,
+      schoolIdMap: json['school_id_map'] != null
+          ? Map<String, String>.from(json['school_id_map'])
+          : null,
+    );
+  }
+}
+
+class WaypointSchool {
+  final String? schoolId;
+  final String? schoolName;
+  final String? schoolAddress;
+  final String? schoolCity;
+  final String? schoolState;
+  final double? schoolLatitude;
+  final double? schoolLongitude;
+  final String? schoolContact;
+  final String? schoolEmail;
+
+  WaypointSchool({
+    this.schoolId,
+    this.schoolName,
+    this.schoolAddress,
+    this.schoolCity,
+    this.schoolState,
+    this.schoolLatitude,
+    this.schoolLongitude,
+    this.schoolContact,
+    this.schoolEmail,
+  });
+
+  factory WaypointSchool.fromJson(Map<String, dynamic> json) {
+    return WaypointSchool(
+      schoolId: json['school_id'],
+      schoolName: json['school_name'],
+      schoolAddress: json['school_address'],
+      schoolCity: json['school_city'],
+      schoolState: json['school_state'],
+      schoolLatitude: (json['school_latitude'] as num?)?.toDouble(),
+      schoolLongitude: (json['school_longitude'] as num?)?.toDouble(),
+      schoolContact: json['school_contact'],
+      schoolEmail: json['school_email'],
     );
   }
 }

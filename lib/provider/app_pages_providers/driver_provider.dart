@@ -77,6 +77,42 @@ class DriverProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> reassignDriver({
+    required String assignmentId,
+    required String driverId,
+  }) async {
+    isAssigning = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final driverService = DriverService(ApiClient());
+      final response = await driverService.reassignDriver(
+        assignmentId: assignmentId,
+        driverId: driverId,
+      );
+
+      if (response.success) {
+        lastAssignment = response.data;
+        errorMessage = null;
+        isAssigning = false;
+        notifyListeners();
+        return true;
+      } else {
+        errorMessage =
+            response.error ?? response.message ?? 'Reassignment failed';
+        isAssigning = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      errorMessage = 'An error occurred. Please try again.';
+      isAssigning = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   void reset() {
     _isInitialized = false;
     driverList = [];
