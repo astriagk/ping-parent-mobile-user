@@ -67,13 +67,11 @@ class _ProfileScreenState extends State<ProfileScreen> with AutoRefreshMixin {
 
     if (mounted) {
       if (success) {
-        // Update controllers with new data
-        _updateControllers(userProvider.userData!);
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: TextWidgetCommon(text: 'Profile updated successfully')),
         );
+        route.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -92,62 +90,63 @@ class _ProfileScreenState extends State<ProfileScreen> with AutoRefreshMixin {
       builder: (context, userProvider, child) {
         final profileData = userProvider.userData;
 
-        // Show skeleton while fetching initial data from API
-        if (userProvider.isFetching) {
-          return const ProfileScreenSkeleton();
-        }
-
         return Scaffold(
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             backgroundColor: appColor(context).appTheme.white,
             appBar: CommonAppBarLayout(
                 title: appFonts.profileSetting, radius: Sizes.s20),
-            body: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //profile image and edit button layout
-                        ProfileWidgets().profileImageLayout(context,
-                            photoUrl: profileData?.photoUrl,
-                            selectedImageFile:
-                                userProvider.selectedProfileImage,
-                            onPickFromGallery:
-                                userProvider.pickProfileImageFromGallery,
-                            onPickFromCamera:
-                                userProvider.pickProfileImageFromCamera),
-                        Divider(
-                                color: appColor(context).appTheme.stroke,
-                                height: 0)
-                            .padding(top: Sizes.s25, bottom: Sizes.s20),
-                        //common title and text-field layout
-                        ProfileWidgets().commonTextField(context,
-                            title: appFonts.userName,
-                            hintText: appFonts.enterYourName,
-                            controller: _nameController),
-                        //common title and text-field layout
-                        ProfileWidgets().commonTextField(context,
-                            title: appFonts.mobileNumber,
-                            hintText: appFonts.enterYourNumber,
-                            textInputType: TextInputType.number,
-                            controller: _phoneController,
-                            focusNode: _phoneFocusNode,
-                            readOnly: true),
-                        //common title and text-field layout
-                        ProfileWidgets().commonTextField(context,
-                            title: appFonts.email,
-                            hintText: appFonts.enterYourEmailId,
-                            focusNode: _emailFocusNode,
-                            controller: _emailController)
-                      ]).padding(horizontal: Sizes.s20).authExtension(context),
-                  CommonButton(
-                          text: appFonts.updateProfile,
-                          isLoading: userProvider.isUpdating,
-                          onTap: _updateProfile)
-                      .padding(horizontal: Sizes.s20, bottom: Sizes.s20)
-                ]));
+            body: userProvider.isFetching
+                ? const ProfileScreenSkeleton()
+                : Column(children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                              //profile image and edit button layout
+                              ProfileWidgets().profileImageLayout(context,
+                                  photoUrl: profileData?.photoUrl,
+                                  selectedImageFile:
+                                      userProvider.selectedProfileImage,
+                                  onPickFromGallery:
+                                      userProvider.pickProfileImageFromGallery,
+                                  onPickFromCamera:
+                                      userProvider.pickProfileImageFromCamera),
+                              Divider(
+                                      color: appColor(context).appTheme.stroke,
+                                      height: 0)
+                                  .padding(top: Sizes.s25, bottom: Sizes.s20),
+                              //common title and text-field layout
+                              ProfileWidgets().commonTextField(context,
+                                  title: appFonts.userName,
+                                  hintText: appFonts.enterYourName,
+                                  controller: _nameController),
+                              //common title and text-field layout
+                              ProfileWidgets().commonTextField(context,
+                                  title: appFonts.mobileNumber,
+                                  hintText: appFonts.enterYourNumber,
+                                  textInputType: TextInputType.number,
+                                  controller: _phoneController,
+                                  focusNode: _phoneFocusNode,
+                                  readOnly: true),
+                              //common title and text-field layout
+                              ProfileWidgets().commonTextField(context,
+                                  title: appFonts.email,
+                                  hintText: appFonts.enterYourEmailId,
+                                  focusNode: _emailFocusNode,
+                                  controller: _emailController)
+                            ])
+                            .padding(horizontal: Sizes.s20)
+                            .authExtension(context),
+                      ),
+                    ),
+                    CommonButton(
+                            text: appFonts.updateProfile,
+                            isLoading: userProvider.isUpdating,
+                            onTap: _updateProfile)
+                        .padding(horizontal: Sizes.s20, bottom: Sizes.s20)
+                  ]));
       },
     );
   }

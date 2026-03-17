@@ -35,6 +35,11 @@ class SaveLocationProvider with ChangeNotifier {
                 address.isPrimary ? svgAssets.home : svgAssets.briefcaseDark,
             'title': address.isPrimary ? 'Home' : 'Other',
             'address': address.displayAddress,
+            'addressLine1': address.addressLine1,
+            'addressLine2': address.addressLine2,
+            'city': address.city,
+            'state': address.state,
+            'pincode': address.pincode,
           }
         ];
       } else {

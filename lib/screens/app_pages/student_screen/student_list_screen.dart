@@ -80,25 +80,26 @@ class _StudentListScreenState extends State<StudentListScreen>
 
   Widget _buildStudentCard(BuildContext context, AddStudentProvider studentCtrl,
       Student student, int index) {
-    return GestureDetector(
-        onTap: () {
-          studentCtrl.setEditStudent(index);
-          route.pushNamed(context, routeName.addStudentScreen);
-        },
-        child: Column(children: [
-          // Student info row with photo
-          RideHeaderSection(
-            rideData: RideDataModel(
-              image: student.photoUrl ?? '',
-              id: student.studentName ?? '',
-              status: student.isActive ? 'Active' : 'Inactive',
-              statusColor: student.isActive
-                  ? appColor(context).appTheme.activeColor
-                  : appColor(context).appTheme.alertZone,
-              price:
-                  'Class ${student.studentClass ?? ''}${student.section != null && student.section!.isNotEmpty ? ' - ${student.section}' : ''}',
-              date: DateFormatterHelper.formatToShortDate(student.createdAt),
-              time: DateFormatterHelper.formatTo12HourTime(student.createdAt),
+    return Column(children: [
+          // Student info row with photo — tappable for edit
+          GestureDetector(
+            onTap: () {
+              studentCtrl.setEditStudent(index);
+              route.pushNamed(context, routeName.addStudentScreen);
+            },
+            child: RideHeaderSection(
+              rideData: RideDataModel(
+                image: student.photoUrl ?? '',
+                id: student.studentName ?? '',
+                status: student.isActive ? 'Active' : 'Inactive',
+                statusColor: student.isActive
+                    ? appColor(context).appTheme.activeColor
+                    : appColor(context).appTheme.alertZone,
+                price:
+                    'Class ${student.studentClass ?? ''}${student.section != null && student.section!.isNotEmpty ? ' - ${student.section}' : ''}',
+                date: DateFormatterHelper.formatToShortDate(student.createdAt),
+                time: DateFormatterHelper.formatTo12HourTime(student.createdAt),
+              ),
             ),
           ),
           DottedLine(dashColor: appColor(context).appTheme.stroke)
@@ -150,7 +151,7 @@ class _StudentListScreenState extends State<StudentListScreen>
               ),
             ),
           ],
-        ]).myRideListExtension(context));
+        ]).myRideListExtension(context);
   }
 
   Widget _buildAssignDriverButton(BuildContext context, Student student) {
@@ -214,7 +215,48 @@ class _StudentListScreenState extends State<StudentListScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Driver details row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextWidgetCommon(
+              text: language(context, appFonts.assignDriver),
+              fontSize: Sizes.s11,
+              color: appColor(context).appTheme.lightText,
+            ),
+            // Change button — large enough hit area
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                if (student.id != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AssignDriverScreen(studentId: student.id!),
+                    ),
+                  );
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Sizes.s8, vertical: Sizes.s6),
+                child: Row(children: [
+                  Icon(Icons.edit_outlined,
+                      size: Sizes.s15,
+                      color: appColor(context).appTheme.primary),
+                  HSpace(Sizes.s4),
+                  TextWidgetCommon(
+                    text: language(context, appFonts.change),
+                    fontSize: Sizes.s12,
+                    fontWeight: FontWeight.w500,
+                    color: appColor(context).appTheme.primary,
+                  ),
+                ]),
+              ),
+            ),
+          ],
+        ),
+        VSpace(Sizes.s8),
         RideDriverInfoSection(
           rideData: RideDataModel(
             driverName: driver.name ?? 'Driver',
@@ -230,7 +272,6 @@ class _StudentListScreenState extends State<StudentListScreen>
           profileImageUrl: driver.photoUrl,
         ),
         VSpace(Sizes.s6),
-        // Status badge below vehicle number
         StatusBadge(
           status: assignment.statusDisplay,
           statusColor: statusColor,

@@ -141,6 +141,43 @@ class AppTheme {
         textSelectionTheme: TextSelectionThemeData(
             selectionHandleColor: Colors.transparent, cursorColor: primary),
         buttonTheme: ButtonThemeData(buttonColor: primary),
-        highlightColor: primary);
+        highlightColor: primary,
+        datePickerTheme: DatePickerThemeData(
+          backgroundColor: white,
+          headerBackgroundColor: primary,
+          headerForegroundColor: white,
+          weekdayStyle: TextStyle(color: darkText, fontSize: 12),
+          dayStyle: TextStyle(color: darkText, fontSize: 13),
+          dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return white;
+            if (states.contains(WidgetState.disabled)) return darkText.withValues(alpha: 0.3);
+            return darkText;
+          }),
+          dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return primary;
+            return Colors.transparent;
+          }),
+          yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return white;
+            if (states.contains(WidgetState.disabled)) return darkText.withValues(alpha: 0.3);
+            return darkText;
+          }),
+          yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return primary;
+            return Colors.transparent;
+          }),
+          todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return white;
+            return primary;
+          }),
+          todayBorder: BorderSide(color: primary),
+          dividerColor: stroke,
+          cancelButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(darkText),
+          ),
+          confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(primary),
+          ),
+        ));
   }
 }

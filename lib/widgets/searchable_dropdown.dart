@@ -6,24 +6,32 @@ class SearchableDropdown<T> extends StatelessWidget {
   final List<T> items;
   final T? selectedItem;
   final String? hintText;
+  final String? searchHintText;
   final String Function(T) itemAsString;
   final Widget Function(BuildContext, T, bool, bool)? itemBuilder;
+  final Widget Function(BuildContext, T?)? dropdownBuilder;
+  final Widget Function(BuildContext, String)? emptyBuilder;
   final ValueChanged<T?>? onChanged;
   final bool Function(T, String)? filterFn;
   final Color? bgColor;
   final BorderRadiusGeometry? borderRadius;
+  final double popupHeight;
 
   const SearchableDropdown({
     super.key,
     required this.items,
     this.selectedItem,
     this.hintText,
+    this.searchHintText,
     required this.itemAsString,
     this.itemBuilder,
+    this.dropdownBuilder,
+    this.emptyBuilder,
     this.onChanged,
     this.filterFn,
     this.bgColor,
     this.borderRadius,
+    this.popupHeight = 320,
   });
 
   @override
@@ -35,11 +43,13 @@ class SearchableDropdown<T> extends StatelessWidget {
       itemAsString: itemAsString,
       filterFn: filterFn,
       compareFn: (item1, item2) => itemAsString(item1) == itemAsString(item2),
+      dropdownBuilder: dropdownBuilder,
       popupProps: PopupProps.menu(
         showSearchBox: true,
         searchFieldProps: TextFieldProps(
+          autofocus: true,
           decoration: InputDecoration(
-            hintText: language(context, 'Search...'),
+            hintText: language(context, searchHintText ?? 'Search...'),
             hintStyle: AppCss.lexendRegular13
                 .textColor(appColor(context).appTheme.hintText),
             prefixIcon: Icon(Icons.search,
@@ -70,11 +80,12 @@ class SearchableDropdown<T> extends StatelessWidget {
         ),
         menuProps: MenuProps(
           backgroundColor: appColor(context).appTheme.white,
-          borderRadius: BorderRadius.circular(Sizes.s8),
-          elevation: 4,
+          borderRadius: BorderRadius.circular(Sizes.s12),
+          elevation: 6,
         ),
         itemBuilder: itemBuilder,
-        constraints: BoxConstraints(maxHeight: 300),
+        emptyBuilder: emptyBuilder,
+        constraints: BoxConstraints(maxHeight: popupHeight),
       ),
       decoratorProps: DropDownDecoratorProps(
         decoration: InputDecoration(

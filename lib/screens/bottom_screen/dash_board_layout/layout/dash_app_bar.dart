@@ -1,6 +1,4 @@
 import '../../../../config.dart';
-import 'package:skolo/widgets/redeem_code_dialog.dart';
-import 'package:skolo/provider/app_pages_providers/subscriptions_provider.dart';
 
 class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int? index;
@@ -139,25 +137,6 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                             //             context, routeName.appSettingScreen))
                             //     : SizedBox(height: Insets.i40)
                             // ]),
-                            if (dashCtrl.currentTab == 2)
-                              Consumer<SubscriptionsProvider>(
-                                builder: (context, subscriptionsCtrl, child) {
-                                  return TextWidgetCommon(
-                                    text: appFonts.redeemCode,
-                                    style: AppCss.lexendMedium13.textColor(
-                                      appColor(context).appTheme.primary,
-                                    ),
-                                  ).inkWell(
-                                    onTap: () => showDialog(
-                                      context: context,
-                                      builder: (context) => RedeemCodeDialog(
-                                        onRedeem: (code) => subscriptionsCtrl
-                                            .redeemSubscriptionCode(code),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
                           ])).padding(bottom: Sizes.s25, horizontal: Sizes.s20),
                   shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius.only(
