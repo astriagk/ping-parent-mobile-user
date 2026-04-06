@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
 import 'package:provider/provider.dart';
+import 'package:skolo/api/enums/trip_type.dart';
 import 'package:skolo/api/models/trip_tracking_response.dart';
 import 'package:skolo/helper/location_service.dart';
 import 'package:skolo/provider/bottom_provider/trip_tracking_provider.dart';
@@ -10,8 +11,9 @@ import 'package:skolo/widgets/maps/index.dart';
 /// Widget for displaying real-time driver tracking on the map
 class TrackingMapWidget extends StatefulWidget {
   final Trip? trip;
+  final Waypoint? parentWaypoint;
 
-  const TrackingMapWidget({super.key, this.trip});
+  const TrackingMapWidget({super.key, this.trip, this.parentWaypoint});
 
   @override
   State<TrackingMapWidget> createState() => _TrackingMapWidgetState();
@@ -25,7 +27,6 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
 
   @override
   void initState() {
-    super.initState();
     _mapController = MapController();
     _getUserLocation();
   }
@@ -90,11 +91,31 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
           });
         }
 
-        // Build polyline from trip coordinates
+        // Pickup: full route. Drop: school waypoint → parent waypoint only.
         final polylinePoints = <ll.LatLng>[];
-        if (widget.trip?.optimizedRouteData?.coordinates != null) {
-          for (final coord in widget.trip!.optimizedRouteData!.coordinates) {
-            polylinePoints.add(ll.LatLng(coord[0], coord[1]));
+        final routeData = widget.trip?.optimizedRouteData;
+        if (routeData != null) {
+          if (widget.trip!.tripType == TripType.drop &&
+              widget.parentWaypoint != null &&
+              routeData.legs.isNotEmpty) {
+            final waypoints = routeData.waypoints;
+            final schoolIdx = waypoints.indexWhere(
+                (w) => w.studentParentId == 'SCHOOL_LOCATION');
+            final parentIdx = waypoints.indexWhere(
+                (w) => w.parentUserId == widget.parentWaypoint!.parentUserId);
+            // legs[i] covers the segment leading into waypoints[i].
+            // Combine legs from schoolIdx+1 through parentIdx inclusive.
+            final from = (schoolIdx >= 0 ? schoolIdx + 1 : 0);
+            final to = parentIdx >= 0 ? parentIdx : routeData.legs.length - 1;
+            for (int i = from; i <= to && i < routeData.legs.length; i++) {
+              for (final coord in routeData.legs[i].coordinates) {
+                polylinePoints.add(ll.LatLng(coord[0], coord[1]));
+              }
+            }
+          } else {
+            for (final coord in routeData.coordinates) {
+              polylinePoints.add(ll.LatLng(coord[0], coord[1]));
+            }
           }
         }
 
@@ -108,16 +129,15 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
             final waypointLatLng =
                 ll.LatLng(waypoint.latitude, waypoint.longitude);
 
-            final isSchoolLocation =
-                waypoint.studentParentId == "SCHOOL_LOCATION";
+            final isSchool = waypoint.studentParentId == "SCHOOL_LOCATION";
 
-            if (isSchoolLocation) {
-              // School/dropoff location
+            if (isSchool) {
               markersToShow.add(
                 MapMarkers.dropOffMarker(waypointLatLng, context),
               );
-            } else {
-              // Pickup location (any non-school waypoint)
+            } else if (widget.parentWaypoint != null &&
+                waypoint.parentUserId == widget.parentWaypoint!.parentUserId) {
+              // Only show this parent's pickup point
               markersToShow.add(
                 MapMarkers.pickupMarker(waypointLatLng, context),
               );

@@ -240,7 +240,9 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     lastDroppedStudentId = null;
     isTripCompleted = false;
     currentPositionData = {};
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   /// Show a snackbar notification for pickup events

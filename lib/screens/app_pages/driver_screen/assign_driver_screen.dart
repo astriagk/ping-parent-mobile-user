@@ -1,35 +1,36 @@
 import '../../../api/models/driver_response.dart';
 import '../../../config.dart';
-import '../../../helper/date_formatter_helper.dart';
 import '../../../provider/app_pages_providers/driver_provider.dart';
-import '../../../widgets/auto_refresh_mixin.dart';
-import '../../../widgets/ride_card/ride_card.dart';
-import '../../../widgets/ride_card/layout/ride_data_model.dart';
+import '../../../widgets/driver_card/driver_card.dart';
+import '../../../widgets/skeletons/driver_card_skeleton.dart';
 import '../../../../widgets/common_confirmation_dialog.dart';
+import 'driver_card.dart';
 
 class AssignDriverScreen extends StatefulWidget {
   final String? studentId;
+  final String? assignmentId;
 
-  const AssignDriverScreen({super.key, this.studentId});
+  const AssignDriverScreen({super.key, this.studentId, this.assignmentId});
 
   @override
   State<AssignDriverScreen> createState() => _AssignDriverScreenState();
 }
 
-class _AssignDriverScreenState extends State<AssignDriverScreen>
-    with AutoRefreshMixin {
+class _AssignDriverScreenState extends State<AssignDriverScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<Driver> _filteredDrivers = [];
-
-  @override
-  void refreshData() {
-    context.read<DriverProvider>().fetchDrivers();
-  }
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterDrivers);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<DriverProvider>().fetchDrivers();
+    });
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+      });
+    });
   }
 
   @override
@@ -38,28 +39,24 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
     super.dispose();
   }
 
-  void _filterDrivers() {
-    final query = _searchController.text.toLowerCase();
-    final driverCtrl = context.read<DriverProvider>();
+  List<Driver> _getDisplayedDrivers(List<Driver> all) {
+    // Only show approved drivers, sorted alphabetically
+    final approved = all
+        .where((d) => d.approvalStatus?.toLowerCase() == 'approved')
+        .toList()
+      ..sort((a, b) =>
+          (a.name ?? '').toLowerCase().compareTo((b.name ?? '').toLowerCase()));
 
-    if (query.isEmpty) {
-      setState(() {
-        _filteredDrivers = [];
-      });
-      return;
-    }
+    if (_searchQuery.isEmpty) return approved;
 
-    setState(() {
-      _filteredDrivers = driverCtrl.driverList.where((driver) {
-        final name = (driver.name ?? '').toLowerCase();
-        final driverId = (driver.driverUniqueId ?? '').toLowerCase();
-        final email = (driver.email ?? '').toLowerCase();
-
-        return name.contains(query) ||
-            driverId.contains(query) ||
-            email.contains(query);
-      }).toList();
-    });
+    return approved.where((driver) {
+      final name = (driver.name ?? '').toLowerCase();
+      final driverId = (driver.driverUniqueId ?? '').toLowerCase();
+      final phone = (driver.user?.phoneNumber ?? '').toLowerCase();
+      return name.contains(_searchQuery) ||
+          driverId.contains(_searchQuery) ||
+          phone.contains(_searchQuery);
+    }).toList();
   }
 
   Future<void> _selectDriver(Driver driver) async {
@@ -80,27 +77,33 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
       return;
     }
 
-    // Show confirmation dialog
     showDialog(
       context: context,
       builder: (dialogContext) {
         return CustomConfirmationDialog(
           message: appFonts.confirmAssignDriver,
-          onCancel: () => route.pop(dialogContext),
+          onCancel: () => Navigator.pop(dialogContext),
           onConfirm: () async {
-            route.pop(dialogContext);
+            Navigator.pop(dialogContext);
 
             final driverCtrl = context.read<DriverProvider>();
 
-            final success = await driverCtrl.assignDriverToStudent(
-              studentId: widget.studentId!,
-              driverId: driver.driverId!,
-            );
+            final bool success;
+            if (widget.assignmentId != null) {
+              success = await driverCtrl.reassignDriver(
+                assignmentId: widget.assignmentId!,
+                driverId: driver.driverId!,
+              );
+            } else {
+              success = await driverCtrl.assignDriverToStudent(
+                studentId: widget.studentId!,
+                driverId: driver.driverId!,
+              );
+            }
 
             if (!mounted) return;
 
             if (success) {
-              // Refresh student list
               context.read<AddStudentProvider>().fetchStudents();
 
               ScaffoldMessenger.of(context).showSnackBar(
@@ -110,11 +113,8 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
                   ),
                 ),
               );
-              // Navigate back to student list
               await Future.delayed(const Duration(milliseconds: 500));
-              if (mounted) {
-                Navigator.pop(context);
-              }
+              if (mounted) Navigator.pop(context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -132,10 +132,7 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
   }
 
   void _clearSearch() {
-    setState(() {
-      _searchController.clear();
-      _filteredDrivers = [];
-    });
+    _searchController.clear();
   }
 
   @override
@@ -144,6 +141,8 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
       backgroundColor: appColor(context).appTheme.screenBg,
       body: Consumer<DriverProvider>(
         builder: (context, driverCtrl, child) {
+          final drivers = _getDisplayedDrivers(driverCtrl.driverList);
+
           return CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
@@ -187,8 +186,9 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
                                     ),
                                     child: Icon(
                                       Icons.clear,
-                                      color:
-                                          appColor(context).appTheme.lightText,
+                                      color: appColor(context)
+                                          .appTheme
+                                          .lightText,
                                       size: Sizes.s20,
                                     ),
                                   ).inkWell(onTap: _clearSearch).paddingOnly(
@@ -227,30 +227,19 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
               ),
               SliverFillRemaining(
                 child: driverCtrl.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: appColor(context).appTheme.primary,
-                        ),
-                      )
-                    : _filteredDrivers.isNotEmpty
-                        ? ListView.builder(
+                    ? const DriverListSkeleton()
+                    : drivers.isEmpty
+                        ? _buildEmptyState(context)
+                        : ListView.builder(
                             padding: EdgeInsets.only(
-                              top: Sizes.s20,
-                            ),
-                            itemCount: _filteredDrivers.length,
+                                top: Sizes.s20, bottom: Sizes.s20),
+                            itemCount: drivers.length,
                             itemBuilder: (context, index) {
-                              return _buildDriverDetails(
-                                  context, _filteredDrivers[index]);
+                              return DriverCard(
+                                driver: drivers[index],
+                                onTap: () => _selectDriver(drivers[index]),
+                              );
                             },
-                          )
-                        : Center(
-                            child: TextWidgetCommon(
-                              text: language(context,
-                                  appFonts.searchForDriverByNameIdOrEmail),
-                              style: AppCss.lexendRegular14.textColor(
-                                  appColor(context).appTheme.lightText),
-                              textAlign: TextAlign.center,
-                            ).padding(horizontal: Sizes.s40),
                           ),
               ),
             ],
@@ -260,34 +249,27 @@ class _AssignDriverScreenState extends State<AssignDriverScreen>
     );
   }
 
-  Widget _buildDriverDetails(BuildContext context, Driver driver) {
-    return RideCard(
-      rideData: RideDataModel(
-        image: svgAssets.car,
-        id: driver.driverUniqueId?.toUpperCase(),
-        status: driver.isAvailable == true
-            ? appFonts.available
-            : appFonts.unavailable,
-        statusColor: driver.isAvailable == true
-            ? appColor(context).appTheme.activeColor
-            : appColor(context).appTheme.alertZone,
-        price: driver.currentStudentCount?.toString() ?? '0',
-        date: DateFormatterHelper.formatToShortDate(driver.approvedAt),
-        time: DateFormatterHelper.formatTo12HourTime(driver.approvedAt),
-        driverName: driver.name,
-        rating: (driver.rating != null && driver.rating! > 0)
-            ? driver.rating!.toStringAsFixed(1)
-            : '',
-        userRatingNumber: ' (${driver.totalTrips ?? 0})',
-        carName:
-            '${driver.vehicleType.toDisplayString()} ${driver.vehicleNumber ?? ''} ${driver.vehicleCapacity != null ? '(${driver.vehicleCapacity} seats)' : ''}'
-                .trim(),
-        currentLocation: '123 Main Street, Downtown',
-        addLocation: '',
-      ),
-      profileImageUrl: driver.photoUrl,
-      index: 0,
-      onTap: () => _selectDriver(driver),
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.person_search_outlined,
+            size: Sizes.s56,
+            color: appColor(context).appTheme.lightText,
+          ),
+          VSpace(Sizes.s12),
+          TextWidgetCommon(
+            text: _searchQuery.isEmpty
+                ? language(context, appFonts.noDriverAssigned)
+                : language(context, appFonts.searchForDriverByNameIdOrEmail),
+            style: AppCss.lexendRegular14
+                .textColor(appColor(context).appTheme.lightText),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ).padding(horizontal: Sizes.s40),
     );
   }
 }

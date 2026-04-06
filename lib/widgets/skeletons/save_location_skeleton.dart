@@ -6,82 +6,161 @@ class SaveLocationCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      // Header row (icon, title, phone number, edit button)
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Row(children: [
-          // Icon skeleton
-          Container(
-              height: Sizes.s40,
-              width: Sizes.s40,
-              decoration: BoxDecoration(
+    final shimmer = appColor(context).appTheme.stroke;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Header: rounded-square icon + title/subtitle + change pill ──
+        Padding(
+          padding: EdgeInsets.all(Sizes.s15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                // Rounded-square icon
+                Container(
+                  height: Sizes.s40,
+                  width: Sizes.s40,
+                  decoration: BoxDecoration(
+                    color: shimmer,
+                    borderRadius: BorderRadius.circular(Sizes.s10),
+                  ),
+                ),
+                SizedBox(width: Sizes.s12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Title (e.g. "Home")
+                    Container(
+                      height: Sizes.s14,
+                      width: Sizes.s60,
+                      decoration: BoxDecoration(
+                        color: shimmer,
+                        borderRadius: BorderRadius.circular(Sizes.s4),
+                      ),
+                    ),
+                    SizedBox(height: Sizes.s6),
+                    // Subtitle ("Primary address")
+                    Container(
+                      height: Sizes.s12,
+                      width: Sizes.s100,
+                      decoration: BoxDecoration(
+                        color: shimmer,
+                        borderRadius: BorderRadius.circular(Sizes.s4),
+                      ),
+                    ),
+                  ],
+                ),
+              ]),
+              // Change pill button
+              Container(
+                height: Sizes.s28,
+                width: Sizes.s75,
+                decoration: BoxDecoration(
+                  color: shimmer,
+                  borderRadius: BorderRadius.circular(Sizes.s20),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // ── Divider ──
+        Divider(
+          color: appColor(context).appTheme.stroke,
+          height: 1,
+          thickness: 1,
+        ),
+
+        // ── Address section ──
+        Padding(
+          padding: EdgeInsets.all(Sizes.s15),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Location pin circle icon
+              Container(
+                height: Sizes.s30,
+                width: Sizes.s30,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: appColor(context).appTheme.stroke)),
-          HSpace(Sizes.s10),
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Title skeleton (Home/Work)
-                Container(
-                    height: Sizes.s14,
-                    width: Sizes.s60,
-                    decoration: BoxDecoration(
-                        color: appColor(context).appTheme.stroke,
-                        borderRadius: BorderRadius.circular(Sizes.s4))),
-                VSpace(Sizes.s6),
-                // Phone number skeleton
-                Container(
-                    height: Sizes.s12,
-                    width: Sizes.s100,
-                    decoration: BoxDecoration(
-                        color: appColor(context).appTheme.stroke,
-                        borderRadius: BorderRadius.circular(Sizes.s4)))
-              ])
-        ]),
-        // Edit button skeleton
-        Container(
-            height: Sizes.s24,
-            width: Sizes.s24,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: appColor(context).appTheme.stroke))
-      ]).padding(all: Sizes.s15),
-      // Address row
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Location icon skeleton
-        Container(
-            height: Sizes.s15,
-            width: Sizes.s15,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: appColor(context).appTheme.stroke)),
-        HSpace(Sizes.s8),
-        Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              // Address line 1 skeleton
-              Container(
-                  height: Sizes.s12,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: appColor(context).appTheme.stroke,
-                      borderRadius: BorderRadius.circular(Sizes.s4))),
-              VSpace(Sizes.s6),
-              // Address line 2 skeleton
-              Container(
-                  height: Sizes.s12,
-                  width: Sizes.s200,
-                  decoration: BoxDecoration(
-                      color: appColor(context).appTheme.stroke,
-                      borderRadius: BorderRadius.circular(Sizes.s4)))
-            ]))
-      ]).padding(horizontal: Sizes.s15, vertical: Sizes.s12)
-    ])
+                  color: shimmer,
+                ),
+              ),
+              SizedBox(width: Sizes.s12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Address line 1
+                    Container(
+                      height: Sizes.s13,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: shimmer,
+                        borderRadius: BorderRadius.circular(Sizes.s4),
+                      ),
+                    ),
+                    SizedBox(height: Sizes.s5),
+                    // Address line 2
+                    Container(
+                      height: Sizes.s12,
+                      width: Sizes.s150,
+                      decoration: BoxDecoration(
+                        color: shimmer,
+                        borderRadius: BorderRadius.circular(Sizes.s4),
+                      ),
+                    ),
+                    SizedBox(height: Sizes.s5),
+                    // City + pincode row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: Sizes.s12,
+                            decoration: BoxDecoration(
+                              color: shimmer,
+                              borderRadius: BorderRadius.circular(Sizes.s4),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: Sizes.s8),
+                        Container(
+                          height: Sizes.s20,
+                          width: Sizes.s50,
+                          decoration: BoxDecoration(
+                            color: shimmer,
+                            borderRadius: BorderRadius.circular(Sizes.s4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    )
         .decorated(
-            color: appColor(context).appTheme.bgBox, allRadius: Sizes.s10)
-        .padding(bottom: Sizes.s20);
+          color: appColor(context).appTheme.white,
+          sideColor: appColor(context).appTheme.bgBox,
+          allRadius: Sizes.s10,
+          boxShadow: [
+            BoxShadow(
+              color: appColor(context)
+                  .appTheme
+                  .primary
+                  .withValues(alpha: 0.03),
+              blurRadius: 12,
+              spreadRadius: 4,
+            ),
+          ],
+        )
+        .padding(horizontal: Sizes.s20, bottom: Sizes.s15);
   }
 }
 
@@ -93,14 +172,15 @@ class SaveLocationListSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(itemCount, (index) {
-          return const SaveLocationCardSkeleton()
-              .animate(onPlay: (controller) => controller.repeat())
-              .shimmer(
-                  duration: const Duration(milliseconds: 1200),
-                  color:
-                      appColor(context).appTheme.white.withValues(alpha: 0.5));
-        })).padding(horizontal: Sizes.s20, top: Sizes.s25);
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(itemCount, (index) {
+        return const SaveLocationCardSkeleton()
+            .animate(onPlay: (controller) => controller.repeat())
+            .shimmer(
+              duration: const Duration(milliseconds: 1200),
+              color: appColor(context).appTheme.white.withValues(alpha: 0.5),
+            );
+      }),
+    ).padding(top: Sizes.s20);
   }
 }

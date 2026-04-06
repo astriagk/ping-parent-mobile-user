@@ -28,6 +28,13 @@ class DateFormatterHelper {
     }
   }
 
+  /// Format ISO datetime to "YYYY-MM-DD" for API requests and DOB display
+  /// Strips time portion e.g. "2000-03-17T00:00:00.000Z" → "2000-03-17"
+  static String formatToApiDate(String? raw) {
+    if (raw == null || raw.isEmpty) return '';
+    return raw.split('T').first;
+  }
+
   /// Format time to "02:30 PM" format (12-hour with AM/PM)
   /// Takes ISO date string and returns formatted time
   static String? formatTo12HourTime(String? dateString) {

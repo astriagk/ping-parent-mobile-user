@@ -31,14 +31,14 @@ class RecommendationsData {
   final bool coveredBySchool;
   final List<RecommendedPlan> recommendedPlans;
   final List<ExcludedPlan> excludedPlans;
-  final CurrentSubscription? currentSubscription;
+  final List<CurrentSubscription> currentSubscriptions;
 
   RecommendationsData({
     required this.parentSummary,
     required this.coveredBySchool,
     required this.recommendedPlans,
     required this.excludedPlans,
-    this.currentSubscription,
+    required this.currentSubscriptions,
   });
 
   factory RecommendationsData.fromJson(Map<String, dynamic> json) {
@@ -55,9 +55,11 @@ class RecommendationsData {
               .map((e) => ExcludedPlan.fromJson(e))
               .toList()
           : [],
-      currentSubscription: json['current_subscription'] != null
-          ? CurrentSubscription.fromJson(json['current_subscription'])
-          : null,
+      currentSubscriptions: json['current_subscriptions'] != null
+          ? (json['current_subscriptions'] as List)
+              .map((e) => CurrentSubscription.fromJson(e))
+              .toList()
+          : [],
     );
   }
 }
@@ -65,11 +67,15 @@ class RecommendationsData {
 class ParentSummary {
   final int totalKids;
   final List<KidSummary> kids;
+  final List<KidSummary> coveredStudents;
+  final List<KidSummary> uncoveredStudents;
   final List<SameTripGroup> sameTripGroups;
 
   ParentSummary({
     required this.totalKids,
     required this.kids,
+    required this.coveredStudents,
+    required this.uncoveredStudents,
     required this.sameTripGroups,
   });
 
@@ -78,6 +84,16 @@ class ParentSummary {
       totalKids: json['total_kids'] ?? 0,
       kids: json['kids'] != null
           ? (json['kids'] as List).map((e) => KidSummary.fromJson(e)).toList()
+          : [],
+      coveredStudents: json['covered_students'] != null
+          ? (json['covered_students'] as List)
+              .map((e) => KidSummary.fromJson(e))
+              .toList()
+          : [],
+      uncoveredStudents: json['uncovered_students'] != null
+          ? (json['uncovered_students'] as List)
+              .map((e) => KidSummary.fromJson(e))
+              .toList()
           : [],
       sameTripGroups: json['same_trip_groups'] != null
           ? (json['same_trip_groups'] as List)
@@ -114,7 +130,7 @@ class KidSummary {
       studentClass: json['class'] ?? '',
       section: json['section'],
       schoolId: json['school_id'],
-      driverUniqueId: json['driver_unique_id'],
+      driverUniqueId: json['driver_id'] ?? json['driver_unique_id'],
       hasDriver: json['has_driver'] ?? false,
     );
   }
@@ -133,7 +149,7 @@ class SameTripGroup {
 
   factory SameTripGroup.fromJson(Map<String, dynamic> json) {
     return SameTripGroup(
-      driverUniqueId: json['driver_unique_id'] ?? '',
+      driverUniqueId: json['driver_id'] ?? json['driver_unique_id'] ?? '',
       kids: json['kids'] != null
           ? (json['kids'] as List).map((e) => e.toString()).toList()
           : [],
@@ -311,6 +327,7 @@ class CurrentSubscription {
   final String endDate;
   final int remainingDays;
   final int remainingValue;
+  final List<String> studentIds;
 
   CurrentSubscription({
     required this.id,
@@ -321,7 +338,10 @@ class CurrentSubscription {
     required this.endDate,
     required this.remainingDays,
     required this.remainingValue,
+    required this.studentIds,
   });
+
+  bool get isSchoolRedemption => subscriptionSource == 'school_redemption';
 
   factory CurrentSubscription.fromJson(Map<String, dynamic> json) {
     return CurrentSubscription(
@@ -333,6 +353,9 @@ class CurrentSubscription {
       endDate: json['end_date'] ?? '',
       remainingDays: json['remaining_days'] ?? 0,
       remainingValue: json['remaining_value'] ?? 0,
+      studentIds: json['student_ids'] != null
+          ? (json['student_ids'] as List).map((e) => e.toString()).toList()
+          : [],
     );
   }
 }

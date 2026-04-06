@@ -1,4 +1,5 @@
 import 'package:skolo/config.dart';
+import 'package:skolo/widgets/skeletons/add_new_location_skeleton.dart';
 
 class AddLocationScreen extends StatelessWidget {
   const AddLocationScreen({super.key});
@@ -14,8 +15,9 @@ class AddLocationScreen extends StatelessWidget {
               }),
           child: Scaffold(
               body: Stack(children: [
-            if (locationCtrl.position != null)
-              SizedBox(
+            locationCtrl.position == null
+                ? const AddLocationMapSkeleton()
+                : SizedBox(
                   child: Stack(children: [
                 AddLocationWidgets().mapLayout(),
                 CommonIconButton(

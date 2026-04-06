@@ -41,14 +41,12 @@ class _AddNewLocationScreenState extends State<AddNewLocationScreen> {
               .then((value) => newCtrl.init()),
           child: Scaffold(
               resizeToAvoidBottomInset: false,
+              appBar: CommonAppBarLayout(title: appFonts.addNewLocation),
               body: Stack(children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        VSpace(Sizes.s15),
-                        //title and back button layout
-                        LocationWidgets().selectAppBarLayout(context),
                         // home,work, other radio category layout
                         const CategoryLayout()
                       ]),

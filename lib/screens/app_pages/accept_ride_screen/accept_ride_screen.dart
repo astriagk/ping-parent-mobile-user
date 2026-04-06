@@ -13,24 +13,17 @@ class AcceptRideScreen extends StatelessWidget {
     rideCtrl.onInit();
     tripTrackingCtrl.init();
 
-    // Ensure user ID is loaded before proceeding
     await acceptCtrl.loadCurrentUserId();
 
-    // Set current trip and parent waypoint only if not already set
-    // (user may have pre-selected a specific trip from the trip selection sheet)
     if (acceptCtrl.currentTrip == null) {
       final trips = homeCtrl.trackingData?.data ?? [];
       acceptCtrl.setCurrentTripFromList(trips);
     }
 
-    // Subscribe to the current trip's websocket for real-time position updates
     final activeTrip = acceptCtrl.currentTrip;
     if (activeTrip?.id != null) {
-      // Unsubscribe from any prior trip before subscribing to the selected one
       tripTrackingCtrl.unsubscribeFromCurrentTrip();
-      // Subscribe to websocket for real-time driver position
       await tripTrackingCtrl.subscribeToTrip(activeTrip!.id!);
-      // Fetch QR/OTP for the trip
       await acceptCtrl.fetchTripQrOtp(activeTrip.id!);
     }
   }
@@ -56,67 +49,113 @@ class AcceptRideScreen extends StatelessWidget {
           child: Scaffold(body: Consumer<AcceptRideProvider>(
             builder: (context, acceptCtrlWatch, _) {
               final activeTrip = acceptCtrlWatch.currentTrip;
+              final parentWaypoint = acceptCtrlWatch.currentParentWaypoint;
 
               return Stack(children: [
-                TrackingMapWidget(trip: activeTrip),
+                TrackingMapWidget(
+                    trip: activeTrip, parentWaypoint: parentWaypoint),
+
+                // Back button only — no cancel ride text
+                SafeArea(
+                  child: GestureDetector(
+                      onTap: () => route.pop(context),
+                      child: Container(
+                              height: Sizes.s40,
+                              width: Sizes.s40,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: appColor(context).appTheme.white),
+                              child: SvgPicture.asset(svgAssets.back,
+                                  width: Sizes.s22,
+                                  height: Sizes.s22,
+                                  fit: BoxFit.scaleDown))
+                          .paddingDirectional(
+                              horizontal: Sizes.s20, vertical: Sizes.s20)),
+                ),
+
+                // Bottom panel
                 Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SelectRiderWidgets().cancelRideAppBar(context),
-                      Column(children: [
-                        Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                                    padding: EdgeInsets.all(Sizes.s8),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color:
-                                            appColor(context).appTheme.white),
-                                    child: SvgPicture.asset(
-                                        svgAssets.shieldSecurity))
-                                .inkWell(
-                                    onTap: () =>
-                                        acceptCtrl.emergencyLayout(context))
-                                .paddingDirectional(
-                                    bottom: Sizes.s25, horizontal: Sizes.s20)),
-                        Column(children: [
-                          SvgPicture.asset(acceptCtrl.isDrag == true
-                                  ? svgAssets.downDrag
-                                  : svgAssets.upDrag)
-                              .inkWell(onTap: () => acceptCtrl.dragOnTap())
+                      // Emergency button aligned right above panel
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                                  padding: EdgeInsets.all(Sizes.s8),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: appColor(context).appTheme.white),
+                                  child: SvgPicture.asset(
+                                      svgAssets.shieldSecurity))
+                              .inkWell(
+                                  onTap: () =>
+                                      acceptCtrl.emergencyLayout(context))
                               .paddingDirectional(
-                                  top: acceptCtrl.isDrag == true
-                                      ? Sizes.s0
-                                      : Sizes.s9,
-                                  bottom: Sizes.s10)
-                              .center(),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  bottom: Sizes.s12,
+                                  horizontal: Sizes.s20)),
+
+                      // White bottom card
+                      Container(
+                          width: MediaQuery.of(context).size.width,
+                          constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.65),
+                          decoration: BoxDecoration(
+                              color: appColor(context).appTheme.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(Sizes.s20),
+                                  topRight: Radius.circular(Sizes.s20))),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                TextWidgetCommon(
-                                    text: "Your ride",
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: Sizes.s16),
-                                SvgPicture.asset(svgAssets.myRideAuto,
-                                    height: Sizes.s25)
-                              ]),
-                          Divider(
-                                  color: appColor(context).appTheme.stroke,
-                                  height: 0)
-                              .paddingDirectional(vertical: Sizes.s20),
-                          AcceptRideWidgets().driverDetailsAndOtp(
-                              driver: activeTrip?.driver,
-                              waypoints:
-                                  activeTrip?.optimizedRouteData?.waypoints)
-                        ])
-                            .paddingDirectional(
-                                horizontal: Sizes.s20, bottom: Sizes.s20)
-                            .width(MediaQuery.of(context).size.width)
-                            .decorated(
-                                color: appColor(context).appTheme.white,
-                                tLRadius: Sizes.s20,
-                                tRRadius: Sizes.s20)
-                      ])
+                                // Drag handle — centered, tappable, with space
+                                GestureDetector(
+                                    onTap: () => acceptCtrlWatch.dragOnTap(),
+                                    child: Container(
+                                        color: Colors.transparent,
+                                        width: double.infinity,
+                                        padding: EdgeInsets.only(
+                                            top: Sizes.s12, bottom: Sizes.s8),
+                                        child: SvgPicture.asset(
+                                                acceptCtrlWatch.isDrag
+                                                    ? svgAssets.downDrag
+                                                    : svgAssets.upDrag)
+                                            .center())),
+
+                                // Scrollable content
+                                Flexible(
+                                    child: SingleChildScrollView(
+                                        physics:
+                                            const BouncingScrollPhysics(),
+                                        child: Column(children: [
+                                          TextWidgetCommon(
+                                              text: "Your ride",
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: Sizes.s16),
+                                          Divider(
+                                                  color: appColor(context)
+                                                      .appTheme
+                                                      .stroke,
+                                                  height: 0)
+                                              .paddingDirectional(
+                                                  vertical: Sizes.s16),
+                                          if (acceptCtrlWatch.isDrag)
+                                            AcceptRideWidgets().studentsInRide(
+                                                trip: activeTrip,
+                                                waypoints: activeTrip
+                                                    ?.optimizedRouteData
+                                                    ?.waypoints,
+                                                parentWaypoint: parentWaypoint),
+                                          AcceptRideWidgets().driverDetailsAndOtp(
+                                              driver: activeTrip?.driver,
+                                              tripType: activeTrip?.tripType,
+                                              waypoints: activeTrip
+                                                  ?.optimizedRouteData
+                                                  ?.waypoints)
+                                        ]).paddingDirectional(
+                                            horizontal: Sizes.s20,
+                                            bottom: Sizes.s20)))
+                              ]))
                     ])
               ]);
             },

@@ -1,64 +1,90 @@
 import '../../../../config.dart';
-import '../../../../widgets/common_confirmation_dialog.dart';
-import '../../../../provider/app_pages_providers/user_provider.dart';
 
 //ICON WORK OR HOME EDIT AND DELETE LAYOUT
 class WorkTitleLayout extends StatelessWidget {
   final dynamic e;
 
-  // final int index;
-
   const WorkTitleLayout({super.key, this.e});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<SaveLocationProvider, SettingProvider, UserProvider>(
-        builder: (context, slCtrl, settingPvr, userProvider, child) {
-      final phoneNumber = userProvider.userData?.user.phoneNumber ?? '';
-      return IntrinsicHeight(
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Address type icon + label
         Row(children: [
-          CommonIconButton(icon: e['icon']),
-          HSpace(Sizes.s10),
+          Container(
+            height: Sizes.s40,
+            width: Sizes.s40,
+            decoration: BoxDecoration(
+              color: appColor(context).appTheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(Sizes.s10),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                e['icon'] ?? svgAssets.home,
+                height: Sizes.s20,
+                width: Sizes.s20,
+                colorFilter: ColorFilter.mode(
+                  appColor(context).appTheme.primary,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+          HSpace(Sizes.s12),
           Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextWidgetCommon(
-                    text: e['title'],
-                    style: AppCss.lexendRegular14
-                        .textColor(appColor(context).appTheme.darkText)),
-                TextWidgetCommon(
-                    text: phoneNumber,
-                    style: TextStyle(
-                        color: appColor(context).appTheme.lightText,
-                        fontSize: Sizes.s12,
-                        fontFamily: GoogleFonts.lexend().fontFamily,
-                        fontWeight: FontWeight.w300))
-              ])
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextWidgetCommon(
+                text: e['title'] ?? '',
+                style: AppCss.lexendMedium14
+                    .textColor(appColor(context).appTheme.darkText),
+              ),
+              VSpace(Sizes.s2),
+              TextWidgetCommon(
+                text: 'Primary address',
+                style: AppCss.lexendRegular12
+                    .textColor(appColor(context).appTheme.lightText),
+              ),
+            ],
+          ),
         ]),
-        Row(children: [
-          SvgPicture.asset(svgAssets.edit).inkWell(
-              onTap: () =>
-                  route.pushNamed(context, routeName.addLocationScreen)),
-          // VerticalDivider(color: appColor(context).appTheme.stroke, width: 0)
-          //     .padding(vertical: Sizes.s8, horizontal: Sizes.s10),
-          // SvgPicture.asset(svgAssets.trashRed).inkWell(onTap: () {
-          //   // settingPvr.showDeleteAddressSuccess(
-          //   //     context, () => route.pop(context));
 
-          //   showDialog(
-          //       context: context,
-          //       builder: (context) {
-          //         return CustomConfirmationDialog(
-          //             message: "Are you sure you want to delete Address ?",
-          //             onCancel: () => route.pop(context),
-          //             onConfirm: () => slCtrl.removeLocation(e, context));
-          //       });
-          // })
-        ])
-      ]).padding(all: Sizes.s15));
-    });
+        // Edit button
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => route.pushNamed(context, routeName.addLocationScreen),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: Sizes.s10, vertical: Sizes.s6),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: appColor(context).appTheme.stroke,
+              ),
+              borderRadius: BorderRadius.circular(Sizes.s20),
+            ),
+            child: Row(children: [
+              SvgPicture.asset(
+                svgAssets.edit,
+                height: Sizes.s14,
+                width: Sizes.s14,
+                colorFilter: ColorFilter.mode(
+                  appColor(context).appTheme.primary,
+                  BlendMode.srcIn,
+                ),
+              ),
+              HSpace(Sizes.s5),
+              TextWidgetCommon(
+                text: appFonts.change,
+                style: AppCss.lexendMedium12
+                    .textColor(appColor(context).appTheme.primary),
+              ),
+            ]),
+          ),
+        ),
+      ],
+    ).padding(all: Sizes.s15);
   }
 }

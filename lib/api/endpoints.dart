@@ -37,6 +37,8 @@ class Endpoints {
 // Assignment Endpoints
   static const String allDrivers = '$baseUrl/parent/assignments/all-drivers';
   static const String driverStudentAssignments = '$baseUrl/parent/assignments';
+  static String reassignDriver(String id) =>
+      '$baseUrl/parent/assignments/$id/reassign';
 
 // Subscription Endpoints
   static const String subscriptionPlans = '$baseUrl/public/subscription-plans';
@@ -47,6 +49,7 @@ class Endpoints {
       '$baseUrl/parent/subscriptions/upgrade';
   static const String myActiveSubscription =
       '$baseUrl/parent/subscriptions/active';
+  static const String redeemCode = '$baseUrl/parent/redemptions/redeem';
 
 // Trip Tracking Endpoints
   static const String activeTrips = '$baseUrl/parent/trips/active';

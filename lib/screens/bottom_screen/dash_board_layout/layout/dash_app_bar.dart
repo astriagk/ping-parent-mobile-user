@@ -119,24 +119,24 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                                         : "Settings",
                                 style: AppCss.lexendBold20.textColor(
                                     appColor(context).appTheme.darkText)),
-                            Row(children: [
-                              // if (dashCtrl.currentTab != 3)
-                              //   CommonIconButton(
-                              //       icon: svgAssets.messages,
-                              //       onTap: () {
-                              //         chatCtrl.homeChat = true;
-                              //         route.pushNamed(
-                              //             context, routeName.chatScreen);
-                              //       }),
-                              // HSpace(Sizes.s10),
-                              // dashCtrl.currentTab == 1 ||
-                              //         dashCtrl.currentTab == 2
-                              //     ? CommonIconButton(
-                              //         icon: svgAssets.bell,
-                              //         onTap: () => route.pushNamed(
-                              //             context, routeName.appSettingScreen))
-                              //     : SizedBox(height: Insets.i40)
-                            ])
+                            // Row(children: [
+                            // if (dashCtrl.currentTab != 3)
+                            //   CommonIconButton(
+                            //       icon: svgAssets.messages,
+                            //       onTap: () {
+                            //         chatCtrl.homeChat = true;
+                            //         route.pushNamed(
+                            //             context, routeName.chatScreen);
+                            //       }),
+                            // HSpace(Sizes.s10),
+                            // dashCtrl.currentTab == 1 ||
+                            //         dashCtrl.currentTab == 2
+                            //     ? CommonIconButton(
+                            //         icon: svgAssets.bell,
+                            //         onTap: () => route.pushNamed(
+                            //             context, routeName.appSettingScreen))
+                            //     : SizedBox(height: Insets.i40)
+                            // ]),
                           ])).padding(bottom: Sizes.s25, horizontal: Sizes.s20),
                   shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius.only(

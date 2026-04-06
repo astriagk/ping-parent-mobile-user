@@ -205,14 +205,14 @@ class AppArray {
       "title": "Home",
       "isSelected": true,
     },
-    {
-      "title": "Work",
-      "isSelected": false,
-    },
-    {
-      "title": "Other",
-      "isSelected": false,
-    }
+    // {
+    //   "title": "Work",
+    //   "isSelected": false,
+    // },
+    // {
+    //   "title": "Other",
+    //   "isSelected": false,
+    // }
   ];
   var setting = [
     {
@@ -228,7 +228,7 @@ class AppArray {
       "title": appFonts.appDetails,
       "data": [
         {"subTitle": appFonts.appSettings, "icon": svgAssets.check},
-        {"subTitle": appFonts.shareApp, "icon": svgAssets.share},
+        // {"subTitle": appFonts.shareApp, "icon": svgAssets.share},
         // {"subTitle": appFonts.chatSupport, "icon": svgAssets.chatSupport}
       ]
     },
