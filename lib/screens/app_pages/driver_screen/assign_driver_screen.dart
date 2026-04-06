@@ -4,6 +4,7 @@ import '../../../provider/app_pages_providers/driver_provider.dart';
 import '../../../widgets/driver_card/driver_card.dart';
 import '../../../widgets/skeletons/driver_card_skeleton.dart';
 import '../../../../widgets/common_confirmation_dialog.dart';
+import 'driver_card.dart';
 
 class AssignDriverScreen extends StatefulWidget {
   final String? studentId;
@@ -81,9 +82,9 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
       builder: (dialogContext) {
         return CustomConfirmationDialog(
           message: appFonts.confirmAssignDriver,
-          onCancel: () => route.pop(dialogContext),
+          onCancel: () => Navigator.pop(dialogContext),
           onConfirm: () async {
-            route.pop(dialogContext);
+            Navigator.pop(dialogContext);
 
             final driverCtrl = context.read<DriverProvider>();
 
