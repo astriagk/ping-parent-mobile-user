@@ -13,6 +13,7 @@ class SubscriptionsProvider extends ChangeNotifier {
   bool isLoading = true; // Start with loading true to prevent empty state flash
   bool isRefreshing = false;
   String? errorMessage;
+  String? redeemErrorMessage;
   bool _isInitialized = false;
 
   /// Returns the first self-pay subscription, if any.
@@ -166,16 +167,17 @@ class SubscriptionsProvider extends ChangeNotifier {
       final subscriptionsService = SubscriptionsService(ApiClient());
       final response = await subscriptionsService.redeemCode(code);
       if (response.success) {
+        redeemErrorMessage = null;
         await fetchRecommendations(isRefresh: true);
-        errorMessage = null;
         notifyListeners();
         return true;
       }
-      errorMessage = response.error ?? 'Failed to redeem code';
+      redeemErrorMessage =
+          response.error ?? response.message ?? 'Failed to redeem code';
       notifyListeners();
       return false;
     } catch (e) {
-      errorMessage = 'Failed to redeem code. Please try again.';
+      redeemErrorMessage = 'Failed to redeem code. Please try again.';
       notifyListeners();
       return false;
     }
@@ -204,6 +206,7 @@ class SubscriptionsProvider extends ChangeNotifier {
 
   void clearError() {
     errorMessage = null;
+    redeemErrorMessage = null;
     notifyListeners();
   }
 
@@ -216,6 +219,7 @@ class SubscriptionsProvider extends ChangeNotifier {
     isLoading = false;
     isRefreshing = false;
     errorMessage = null;
+    redeemErrorMessage = null;
     _isInitialized = false;
     notifyListeners();
   }

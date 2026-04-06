@@ -78,11 +78,26 @@ class SaveLocationScreen extends StatelessWidget {
                                         .decorated(
                                             color: appColor(context)
                                                 .appTheme
+                                                .white,
+                                            sideColor: appColor(context)
+                                                .appTheme
                                                 .bgBox,
-                                            allRadius: Sizes.s10)
-                                        .padding(bottom: Sizes.s20);
+                                            allRadius: Sizes.s10,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: appColor(context)
+                                                    .appTheme
+                                                    .primary
+                                                    .withValues(alpha: 0.03),
+                                                blurRadius: 12,
+                                                spreadRadius: 4,
+                                              )
+                                            ])
+                                        .padding(
+                                            horizontal: Sizes.s20,
+                                            bottom: Sizes.s15);
                                   }).toList())
-                              .padding(horizontal: Sizes.s20, top: Sizes.s25)));
+                              .padding(top: Sizes.s20)));
     });
   }
 }

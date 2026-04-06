@@ -13,7 +13,7 @@ class SubscriptionFeaturesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: plan.features.map((feature) {
+      children: plan.features.take(4).map((feature) {
         return Row(
           children: [
             Container(

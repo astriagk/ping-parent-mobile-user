@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:skolo/config.dart';
 import '../../api/api_client.dart';
 import '../../api/services/student_service.dart';
+import '../../helper/date_formatter_helper.dart';
 import '../../api/models/student_response.dart';
 import '../../api/models/add_student_request.dart';
 import '../../api/models/school_response.dart' as school_model;
@@ -107,8 +109,8 @@ class AddStudentProvider extends ChangeNotifier {
 
       if (response.success) {
         schoolList = response.data;
-        // Sort schools alphabetically by school name
-        schoolList.sort((a, b) => a.schoolName.compareTo(b.schoolName));
+        schoolList.sort((a, b) =>
+            a.schoolName.toLowerCase().compareTo(b.schoolName.toLowerCase()));
       }
     } catch (e) {
       print('Error fetching schools: $e');
@@ -191,13 +193,20 @@ class AddStudentProvider extends ChangeNotifier {
     photoUrlController.text = currentStudent?.photoUrl ?? '';
     originalPhotoUrl = currentStudent?.photoUrl;
     selectedPhotoFile = null;
-    dateOfBirthController.text = currentStudent?.dateOfBirth ?? '';
+    dateOfBirthController.text =
+        DateFormatterHelper.formatToApiDate(currentStudent?.dateOfBirth);
     emergencyContactController.text = currentStudent?.emergencyContact ?? '';
     medicalInfoController.text = currentStudent?.medicalInfo ?? '';
-    selectedSchoolId = currentStudent?.schoolId;
+    selectedSchoolId = currentStudent?.schoolId ?? currentStudent?.school?.id;
     selectedPickupAddressId = currentStudent?.pickupAddressId;
     selectedGender = currentStudent?.gender;
 
+    notifyListeners();
+  }
+
+  void selectSchool(String? schoolId) {
+    if (schoolId == null || schoolId.isEmpty) return;
+    selectedSchoolId = schoolId;
     notifyListeners();
   }
 
@@ -209,7 +218,7 @@ class AddStudentProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
-    print('Selected School ID: $selectedSchoolId');
+
     if (selectedSchoolId == null || selectedSchoolId!.isEmpty) {
       errorMessage = 'Please select a school';
       notifyListeners();

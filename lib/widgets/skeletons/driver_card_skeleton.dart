@@ -1,127 +1,149 @@
 import '../../config.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class DriverCardSkeleton extends StatelessWidget {
   const DriverCardSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: Sizes.s15, vertical: Sizes.s8),
-      padding: EdgeInsets.all(Sizes.s16),
-      decoration: BoxDecoration(
-        color: appColor(context).appTheme.white,
-        borderRadius: BorderRadius.circular(Sizes.s12),
-        boxShadow: [
-          BoxShadow(
-            color: appColor(context).appTheme.primary.withValues(alpha: 0.04),
-            blurRadius: 12,
-            spreadRadius: 4,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header: Photo, name, and status
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Driver photo skeleton
-              Container(
-                width: Sizes.s60,
-                height: Sizes.s60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: appColor(context).appTheme.bgBox,
-                ),
+    final shimmerColor = appColor(context).appTheme.bgBox;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Top row: photo + name/id + badge
+        Row(
+          children: [
+            // Photo skeleton
+            Container(
+              height: Sizes.s56,
+              width: Sizes.s56,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: shimmerColor,
               ),
-              HSpace(Sizes.s16),
-              // Driver info skeleton
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Name skeleton
-                        Expanded(
-                          child: Container(
-                            height: Sizes.s14,
-                            width: Sizes.s120,
-                            decoration: BoxDecoration(
-                              color: appColor(context).appTheme.bgBox,
-                              borderRadius: BorderRadius.circular(Sizes.s4),
-                            ),
-                          ),
-                        ),
-                        HSpace(Sizes.s8),
-                        // Status skeleton
-                        Container(
-                          height: Sizes.s20,
-                          width: Sizes.s50,
-                          decoration: BoxDecoration(
-                            color: appColor(context).appTheme.bgBox,
-                            borderRadius: BorderRadius.circular(Sizes.s12),
-                          ),
-                        ),
-                      ],
+            ),
+            HSpace(Sizes.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: Sizes.s14,
+                    width: Sizes.s130,
+                    decoration: BoxDecoration(
+                      color: shimmerColor,
+                      borderRadius: BorderRadius.circular(Sizes.s4),
                     ),
-                    VSpace(Sizes.s8),
-                    // ID skeleton
-                    Container(
-                      height: Sizes.s12,
-                      width: Sizes.s100,
-                      decoration: BoxDecoration(
-                        color: appColor(context).appTheme.bgBox,
-                        borderRadius: BorderRadius.circular(Sizes.s4),
-                      ),
+                  ),
+                  VSpace(Sizes.s6),
+                  Container(
+                    height: Sizes.s12,
+                    width: Sizes.s80,
+                    decoration: BoxDecoration(
+                      color: shimmerColor,
+                      borderRadius: BorderRadius.circular(Sizes.s4),
                     ),
-                    VSpace(Sizes.s8),
-                    // Vehicle info skeleton
-                    Container(
-                      height: Sizes.s12,
-                      width: Sizes.s150,
-                      decoration: BoxDecoration(
-                        color: appColor(context).appTheme.bgBox,
-                        borderRadius: BorderRadius.circular(Sizes.s4),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          VSpace(Sizes.s12),
-          Divider(
-            color: appColor(context).appTheme.stroke,
-            height: 0,
-          ),
-          VSpace(Sizes.s12),
-          // Students count skeleton
-          Row(
-            children: [
-              Container(
-                width: Sizes.s16,
-                height: Sizes.s16,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: appColor(context).appTheme.bgBox,
-                ),
+            ),
+            // Badge skeleton
+            Container(
+              height: Sizes.s24,
+              width: Sizes.s70,
+              decoration: BoxDecoration(
+                color: shimmerColor,
+                borderRadius: BorderRadius.circular(Sizes.s20),
               ),
-              HSpace(Sizes.s8),
-              Container(
-                height: Sizes.s12,
-                width: Sizes.s100,
-                decoration: BoxDecoration(
-                  color: appColor(context).appTheme.bgBox,
-                  borderRadius: BorderRadius.circular(Sizes.s4),
-                ),
+            ),
+          ],
+        ),
+
+        DottedLine(dashColor: appColor(context).appTheme.stroke)
+            .padding(vertical: Sizes.s12),
+
+        // Vehicle row skeleton
+        Row(
+          children: [
+            Container(
+              height: Sizes.s16,
+              width: Sizes.s16,
+              color: shimmerColor,
+            ),
+            HSpace(Sizes.s8),
+            Container(
+              height: Sizes.s13,
+              width: Sizes.s180,
+              decoration: BoxDecoration(
+                color: shimmerColor,
+                borderRadius: BorderRadius.circular(Sizes.s4),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ).padding(bottom: Sizes.s8),
+
+        // Phone row skeleton
+        Row(
+          children: [
+            Container(
+              height: Sizes.s16,
+              width: Sizes.s16,
+              color: shimmerColor,
+            ),
+            HSpace(Sizes.s8),
+            Container(
+              height: Sizes.s13,
+              width: Sizes.s120,
+              decoration: BoxDecoration(
+                color: shimmerColor,
+                borderRadius: BorderRadius.circular(Sizes.s4),
+              ),
+            ),
+          ],
+        ).padding(bottom: Sizes.s8),
+
+        // Trip info row skeleton
+        Row(
+          children: [
+            Container(
+              height: Sizes.s16,
+              width: Sizes.s16,
+              color: shimmerColor,
+            ),
+            HSpace(Sizes.s8),
+            Container(
+              height: Sizes.s13,
+              width: Sizes.s150,
+              decoration: BoxDecoration(
+                color: shimmerColor,
+                borderRadius: BorderRadius.circular(Sizes.s4),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ).myRideListExtension(context).padding(bottom: Sizes.s12);
+  }
+}
+
+class DriverListSkeleton extends StatelessWidget {
+  final int itemCount;
+
+  const DriverListSkeleton({super.key, this.itemCount = 4});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.only(top: Sizes.s20, bottom: Sizes.s20),
+      itemCount: itemCount,
+      itemBuilder: (context, index) {
+        return const DriverCardSkeleton()
+            .animate(onPlay: (controller) => controller.repeat())
+            .shimmer(
+              duration: const Duration(milliseconds: 1200),
+              color: appColor(context).appTheme.white.withValues(alpha: 0.5),
+            );
+      },
     );
   }
 }

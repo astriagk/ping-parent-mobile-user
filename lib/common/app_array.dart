@@ -205,14 +205,14 @@ class AppArray {
       "title": "Home",
       "isSelected": true,
     },
-    {
-      "title": "Work",
-      "isSelected": false,
-    },
-    {
-      "title": "Other",
-      "isSelected": false,
-    }
+    // {
+    //   "title": "Work",
+    //   "isSelected": false,
+    // },
+    // {
+    //   "title": "Other",
+    //   "isSelected": false,
+    // }
   ];
   var setting = [
     {

@@ -12,7 +12,7 @@ class ImageAssets {
   final empty = "assets/image/home/empty.png";
   final marker = "assets/image/auth/marker.png";
   final rectangle = "assets/image/setting/Rectangle.png";
-  final profileImg = "assets/image/setting/profileImage.jpg";
+  final profileImg = "assets/image/setting/profile.png";
   final myWallet = "assets/image/setting/myWallet.png";
   final subtract = "assets/svg/setting/subtract.png";
   final arabic = "assets/image/setting/arabic.png";

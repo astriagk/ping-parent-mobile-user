@@ -10,6 +10,7 @@ class CountryPickerLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SignInProvider>(builder: (context, value, child) {
       return Row(children: [
+        // TODO: Enable country picker in future
         AbsorbPointer(
           child: CountryListPickCustom(
                   appBar: AppBar(
@@ -32,6 +33,10 @@ class CountryPickerLayout extends StatelessWidget {
                       labelColor: appColor(context).appTheme.lightText,
                       alphabetSelectedBackgroundColor: appTheme.yellowIcon),
                   initialSelection: '+91',
+                  onChanged: (CountryCodeCustom? code) {
+                    value.countryCode = code!.dialCode!;
+                    value.onCountryCode(value.countryCode);
+                  },
                   useUiOverlay: true,
                   useSafeArea: true)
               .padding(all: 0, vertical: Sizes.s4)
