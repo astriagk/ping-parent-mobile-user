@@ -28,7 +28,7 @@ class SelectRiderWidgets {
   }
 
 //cancel ride dialog appBar layout
-  Widget cancelRideAppBar(context) {
+  Widget cancelRideAppBar(context, {bool showCancel = true}) {
     return Consumer<CancelRideProvider>(builder: (context, cancelCtrl, child) {
       return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,11 +46,12 @@ class SelectRiderWidgets {
                         width: Sizes.s22,
                         height: Sizes.s22,
                         fit: BoxFit.scaleDown))),
-            Material(
-                color: appColor(context).appTheme.trans,
-                child: TextWidgetCommon(
-                        text: appFonts.cancelRide, fontWeight: FontWeight.w600)
-                    .inkWell(onTap: () => cancelCtrl.dialogOnTap(context)))
+            if (showCancel)
+              Material(
+                  color: appColor(context).appTheme.trans,
+                  child: TextWidgetCommon(
+                          text: appFonts.cancelRide, fontWeight: FontWeight.w600)
+                      .inkWell(onTap: () => cancelCtrl.dialogOnTap(context)))
           ])
           .paddingDirectional(
               horizontal: Sizes.s20, top: Sizes.s35, bottom: Sizes.s20)

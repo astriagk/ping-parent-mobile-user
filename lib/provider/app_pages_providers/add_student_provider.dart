@@ -107,6 +107,8 @@ class AddStudentProvider extends ChangeNotifier {
 
       if (response.success) {
         schoolList = response.data;
+        // Sort schools alphabetically by school name
+        schoolList.sort((a, b) => a.schoolName.compareTo(b.schoolName));
       }
     } catch (e) {
       print('Error fetching schools: $e');
