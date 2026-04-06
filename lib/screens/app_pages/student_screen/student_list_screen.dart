@@ -80,14 +80,14 @@ class _StudentListScreenState extends State<StudentListScreen>
 
   Widget _buildStudentCard(BuildContext context, AddStudentProvider studentCtrl,
       Student student, int index) {
-    return Column(children: [
-          // Student info row with photo — tappable for edit
-          GestureDetector(
-            onTap: () {
-              studentCtrl.setEditStudent(index);
-              route.pushNamed(context, routeName.addStudentScreen);
-            },
-            child: RideHeaderSection(
+    return GestureDetector(
+      onTap: () {
+        studentCtrl.setEditStudent(index);
+        route.pushNamed(context, routeName.addStudentScreen);
+      },
+      child: Column(children: [
+          // Student info row with photo
+          RideHeaderSection(
               rideData: RideDataModel(
                 image: student.photoUrl ?? '',
                 id: student.studentName ?? '',
@@ -99,9 +99,7 @@ class _StudentListScreenState extends State<StudentListScreen>
                     'Class ${student.studentClass ?? ''}${student.section != null && student.section!.isNotEmpty ? ' - ${student.section}' : ''}',
                 date: DateFormatterHelper.formatToShortDate(student.createdAt),
                 time: DateFormatterHelper.formatTo12HourTime(student.createdAt),
-              ),
-            ),
-          ),
+              )),
           DottedLine(dashColor: appColor(context).appTheme.stroke)
               .padding(vertical: Sizes.s15),
 
@@ -151,7 +149,8 @@ class _StudentListScreenState extends State<StudentListScreen>
               ),
             ),
           ],
-        ]).myRideListExtension(context);
+        ]).myRideListExtension(context),
+    );
   }
 
   Widget _buildAssignDriverButton(BuildContext context, Student student) {

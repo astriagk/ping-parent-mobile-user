@@ -106,7 +106,7 @@ class _SubscriptionPlansListState extends State<SubscriptionPlansList> {
         if (trailerIndex == offset) {
           return RedeemCodeSection(
             onRedeem: subscriptionsCtrl.redeemSubscriptionCode,
-            providerError: subscriptionsCtrl.errorMessage,
+            providerError: subscriptionsCtrl.redeemErrorMessage,
           ).paddingSymmetric(horizontal: Sizes.s20);
         }
         offset++;

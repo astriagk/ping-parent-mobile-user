@@ -71,6 +71,7 @@ class _RedeemCodeSectionState extends State<RedeemCodeSection> {
       if (!_isExpanded) {
         _error = null;
         _success = false;
+        _controller.clear();
       }
     });
   }

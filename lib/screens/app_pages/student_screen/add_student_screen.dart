@@ -261,10 +261,10 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     items: studentCtrl.schoolList,
                     selectedItem: studentCtrl.schoolList.isNotEmpty &&
                             studentCtrl.selectedSchoolId != null
-                        ? studentCtrl.schoolList.firstWhere(
+                        ? studentCtrl.schoolList.cast<School?>().firstWhere(
                             (school) =>
-                                school.id == studentCtrl.selectedSchoolId,
-                            orElse: () => studentCtrl.schoolList.first,
+                                school?.id == studentCtrl.selectedSchoolId,
+                            orElse: () => null,
                           )
                         : null,
                     hintText: appFonts.enterSchoolName,
@@ -513,9 +513,9 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                           school.address.toLowerCase().contains(q);
                     },
                     onChanged: (school) {
-                      setState(() {
-                        studentCtrl.selectedSchoolId = school?.id;
-                      });
+                      if (school != null) {
+                        studentCtrl.selectSchool(school.id);
+                      }
                     },
                   ),
                   VSpace(Sizes.s16),
