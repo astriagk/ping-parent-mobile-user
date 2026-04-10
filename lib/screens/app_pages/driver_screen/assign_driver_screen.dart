@@ -4,7 +4,6 @@ import '../../../provider/app_pages_providers/driver_provider.dart';
 import '../../../widgets/driver_card/driver_card.dart';
 import '../../../widgets/skeletons/driver_card_skeleton.dart';
 import '../../../../widgets/common_confirmation_dialog.dart';
-import 'driver_card.dart';
 
 class AssignDriverScreen extends StatefulWidget {
   final String? studentId;
@@ -186,9 +185,8 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
                                     ),
                                     child: Icon(
                                       Icons.clear,
-                                      color: appColor(context)
-                                          .appTheme
-                                          .lightText,
+                                      color:
+                                          appColor(context).appTheme.lightText,
                                       size: Sizes.s20,
                                     ),
                                   ).inkWell(onTap: _clearSearch).paddingOnly(
