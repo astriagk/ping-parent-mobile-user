@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +40,7 @@ class StorageService {
 
   /// Get authentication token
   Future<String?> getAuthToken() async {
-    return await _secureStorage.read(key: _keyAuthToken);
+    return await _secureRead(_keyAuthToken);
   }
 
   /// Save refresh token
@@ -49,7 +50,7 @@ class StorageService {
 
   /// Get refresh token
   Future<String?> getRefreshToken() async {
-    return await _secureStorage.read(key: _keyRefreshToken);
+    return await _secureRead(_keyRefreshToken);
   }
 
   /// Save user ID
@@ -59,7 +60,7 @@ class StorageService {
 
   /// Get user ID
   Future<String?> getUserId() async {
-    return await _secureStorage.read(key: _keyUserId);
+    return await _secureRead(_keyUserId);
   }
 
   /// Save user phone number
@@ -69,7 +70,7 @@ class StorageService {
 
   /// Get user phone number
   Future<String?> getUserPhone() async {
-    return await _secureStorage.read(key: _keyUserPhone);
+    return await _secureRead(_keyUserPhone);
   }
 
   /// Save token with expiry time
@@ -85,7 +86,7 @@ class StorageService {
 
   /// Check if token is expired
   Future<bool> isTokenExpired() async {
-    final expiryString = await _secureStorage.read(key: _keyTokenExpiry);
+    final expiryString = await _secureRead(_keyTokenExpiry);
     if (expiryString == null) return true;
 
     try {
@@ -93,6 +94,16 @@ class StorageService {
       return DateTime.now().isAfter(expiry);
     } catch (e) {
       return true;
+    }
+  }
+
+  /// Safe read that clears corrupted keystore data on decryption failure
+  Future<String?> _secureRead(String key) async {
+    try {
+      return await _secureStorage.read(key: key);
+    } on PlatformException {
+      await _secureStorage.deleteAll();
+      return null;
     }
   }
 
