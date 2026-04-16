@@ -16,11 +16,20 @@ class AuthInterceptor {
   Future<bool> verifyAndRefreshToken() async {
     try {
       final currentToken = await _storage.getAuthToken();
+      final refreshToken = await _storage.getRefreshToken();
+
       if (currentToken == null) {
         return false;
       }
 
-      final response = await _apiClient.get(Endpoints.verifyToken);
+      // Pass refresh token in header for token refresh
+      final headers =
+          refreshToken != null ? {'x-refresh-token': refreshToken} : null;
+
+      final response = await _apiClient.get(
+        Endpoints.verifyToken,
+        headers: headers,
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
