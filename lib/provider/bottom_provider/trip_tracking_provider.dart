@@ -38,6 +38,9 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
   Map<String, dynamic>? myStudentDroppedData;
   Map<String, dynamic>? myStudentApproachingData;
 
+  // Live recalculated route (null until server sends parent:route_recalculated)
+  OptimizedRouteData? recalculatedRouteData;
+
   /// Initialize the provider. Safe to call multiple times.
   void init() {
     // Always set up callbacks (they may have been cleared)
@@ -81,6 +84,10 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     };
 
     _webSocketService.onRouteCalculated = (data) {
+      final routePayload = data['routeData'];
+      if (routePayload is Map<String, dynamic>) {
+        recalculatedRouteData = OptimizedRouteData.fromJson(routePayload);
+      }
       notifyListeners();
     };
 
@@ -154,6 +161,14 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     _webSocketService.onMyStudentAbsent = (data) {
       final studentName = data['studentName'] ?? 'Your child';
       _showSnackbar('$studentName marked as absent', isMyStudent: true);
+      notifyListeners();
+    };
+
+    _webSocketService.onRouteRecalculated = (data) {
+      final message = data['message'] as String?;
+      if (message != null) {
+        _showSnackbar(message, isMyStudent: true);
+      }
       notifyListeners();
     };
 
@@ -240,6 +255,7 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     lastDroppedStudentId = null;
     isTripCompleted = false;
     currentPositionData = {};
+    recalculatedRouteData = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });

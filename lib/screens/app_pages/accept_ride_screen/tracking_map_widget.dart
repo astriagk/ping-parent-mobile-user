@@ -93,7 +93,8 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
 
         // Pickup: full route. Drop: school waypoint → parent waypoint only.
         final polylinePoints = <ll.LatLng>[];
-        final routeData = widget.trip?.optimizedRouteData;
+        final routeData =
+            tripCtrl.recalculatedRouteData ?? widget.trip?.optimizedRouteData;
         if (routeData != null) {
           if (widget.trip!.tripType == TripType.drop &&
               widget.parentWaypoint != null &&
@@ -122,8 +123,8 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
         // Get waypoints with markers
         final markersToShow = <Marker>[];
 
-        if (widget.trip?.optimizedRouteData?.waypoints != null) {
-          final waypoints = widget.trip!.optimizedRouteData!.waypoints;
+        if (routeData?.waypoints != null) {
+          final waypoints = routeData!.waypoints;
 
           for (final waypoint in waypoints) {
             final waypointLatLng =

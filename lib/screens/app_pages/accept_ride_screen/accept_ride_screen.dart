@@ -50,6 +50,9 @@ class AcceptRideScreen extends StatelessWidget {
             builder: (context, acceptCtrlWatch, _) {
               final activeTrip = acceptCtrlWatch.currentTrip;
               final parentWaypoint = acceptCtrlWatch.currentParentWaypoint;
+              final effectiveWaypoints =
+                  tripTrackingCtrl.recalculatedRouteData?.waypoints ??
+                      activeTrip?.optimizedRouteData?.waypoints;
 
               return Stack(children: [
                 TrackingMapWidget(
@@ -142,16 +145,12 @@ class AcceptRideScreen extends StatelessWidget {
                                           if (acceptCtrlWatch.isDrag)
                                             AcceptRideWidgets().studentsInRide(
                                                 trip: activeTrip,
-                                                waypoints: activeTrip
-                                                    ?.optimizedRouteData
-                                                    ?.waypoints,
+                                                waypoints: effectiveWaypoints,
                                                 parentWaypoint: parentWaypoint),
                                           AcceptRideWidgets().driverDetailsAndOtp(
                                               driver: activeTrip?.driver,
                                               tripType: activeTrip?.tripType,
-                                              waypoints: activeTrip
-                                                  ?.optimizedRouteData
-                                                  ?.waypoints)
+                                              waypoints: effectiveWaypoints)
                                         ]).paddingDirectional(
                                             horizontal: Sizes.s20,
                                             bottom: Sizes.s20)))

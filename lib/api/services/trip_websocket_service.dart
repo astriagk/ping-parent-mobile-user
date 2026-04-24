@@ -37,6 +37,7 @@ class TripWebSocketService {
   Function(Map<String, dynamic>)? onMyStudentDropped;
   Function(Map<String, dynamic>)? onMyStudentApproaching;
   Function(Map<String, dynamic>)? onMyStudentAbsent;
+  Function(Map<String, dynamic>)? onRouteRecalculated;
 
   bool get isConnected => _socket?.connected ?? false;
   String? get currentTripId => _currentTripId;
@@ -236,6 +237,10 @@ class TripWebSocketService {
     _socket!.on(ParentNotificationEvent.myStudentAbsent.value, (data) {
       onMyStudentAbsent?.call(Map<String, dynamic>.from(data));
     });
+
+    _socket!.on(ParentNotificationEvent.routeRecalculated.value, (data) {
+      onRouteRecalculated?.call(Map<String, dynamic>.from(data));
+    });
   }
 
   /// Subscribe to a trip. Connects if not already connected.
@@ -338,5 +343,6 @@ class TripWebSocketService {
     onMyStudentDropped = null;
     onMyStudentApproaching = null;
     onMyStudentAbsent = null;
+    onRouteRecalculated = null;
   }
 }

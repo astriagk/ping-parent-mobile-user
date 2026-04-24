@@ -84,7 +84,7 @@ class DashAppBar extends StatelessWidget implements PreferredSizeWidget {
                     CommonIconButton(
                             icon: svgAssets.bell,
                             onTap: () => route.pushNamed(
-                                context, routeName.emptyNotification,
+                                context, routeName.notificationScreen,
                                 arg: appFonts.notification))
                         .padding(horizontal: Sizes.s10),
                     CommonIconButton(icon: svgAssets.wallet).inkWell(

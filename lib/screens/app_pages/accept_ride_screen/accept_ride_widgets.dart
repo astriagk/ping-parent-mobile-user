@@ -12,11 +12,12 @@ class AcceptRideWidgets {
           TripType? tripType}) =>
       Consumer2<AcceptRideProvider, UserProvider>(
           builder: (context, acceptCtrl, userProvider, child) {
-        final parentWaypoint = waypoints?.firstWhere(
-          (w) =>
-              w.parentPhoneNumber == userProvider.userData?.user?.phoneNumber,
-          orElse: () => waypoints!.first,
-        );
+        final parentWaypoint = (waypoints != null && waypoints.isNotEmpty)
+            ? waypoints.firstWhere(
+                (w) => w.parentUserId == userProvider.userData?.id,
+                orElse: () => waypoints.first,
+              )
+            : null;
         final isDrop = tripType == TripType.drop;
         return StatefulWrapper(
             onInit: () {},
