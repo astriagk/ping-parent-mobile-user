@@ -166,9 +166,6 @@ class _SubscriptionManagementScreenState
   Widget build(BuildContext context) {
     return Consumer2<SubscriptionsProvider, RazorpayProvider>(
       builder: (context, subscriptionsCtrl, razorpayCtrl, child) {
-        final hasNoData = subscriptionsCtrl.recommendedPlans.isEmpty &&
-            subscriptionsCtrl.currentSubscriptions.isEmpty;
-
         return Scaffold(
           body: Stack(
             children: [
@@ -187,38 +184,28 @@ class _SubscriptionManagementScreenState
                               currentSubscriptions:
                                   subscriptionsCtrl.currentSubscriptions,
                             )
-                          : hasNoData
-                              ? CommonEmptyState(
-                                  mainText:
-                                      appFonts.noSubscriptionPlansAvailable,
-                                  descriptionText:
-                                      appFonts.noSubscriptionPlansDescription,
-                                  buttonText: appFonts.refresh,
-                                  onButtonTap: () =>
-                                      subscriptionsCtrl.fetchRecommendations(),
-                                )
-                              : SubscriptionPlansList(
-                                  subscriptionsCtrl: subscriptionsCtrl,
-                                  razorpayCtrl: razorpayCtrl,
-                                  isActivatingSubscription:
-                                      _isActivatingSubscription,
-                                  onSubscribeTap: (
-                                    planId,
-                                    isUpgrade,
-                                    amount,
-                                    description,
-                                    kidsCovered,
-                                  ) =>
-                                      _handleSubscribeTap(
-                                    subscriptionsCtrl: subscriptionsCtrl,
-                                    razorpayCtrl: razorpayCtrl,
-                                    planId: planId,
-                                    isUpgrade: isUpgrade,
-                                    amount: amount,
-                                    description: description,
-                                    kidsCovered: kidsCovered,
-                                  ),
-                                ),
+                          : SubscriptionPlansList(
+                              subscriptionsCtrl: subscriptionsCtrl,
+                              razorpayCtrl: razorpayCtrl,
+                              isActivatingSubscription:
+                                  _isActivatingSubscription,
+                              onSubscribeTap: (
+                                planId,
+                                isUpgrade,
+                                amount,
+                                description,
+                                kidsCovered,
+                              ) =>
+                                  _handleSubscribeTap(
+                                subscriptionsCtrl: subscriptionsCtrl,
+                                razorpayCtrl: razorpayCtrl,
+                                planId: planId,
+                                isUpgrade: isUpgrade,
+                                amount: amount,
+                                description: description,
+                                kidsCovered: kidsCovered,
+                              ),
+                            ),
               if (razorpayCtrl.isLoading || _isActivatingSubscription)
                 PaymentLoadingOverlay(),
             ],

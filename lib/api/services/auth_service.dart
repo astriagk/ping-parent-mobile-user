@@ -91,11 +91,17 @@ class AuthService implements AuthServiceInterface {
   /// Save user session data after successful authentication
   Future<void> _saveUserSession(
       VerifyOtpResponse response, String phone) async {
+    // Save tokens
     if (response.token != null) {
       await _storage.saveAuthToken(response.token!);
-      await _storage.saveUserPhone(phone);
-      await _storage.saveLoginStatus(true);
     }
+
+    if (response.refreshToken != null) {
+      await _storage.saveRefreshToken(response.refreshToken!);
+    }
+
+    await _storage.saveUserPhone(phone);
+    await _storage.saveLoginStatus(true);
 
     // Save user data if available
     if (response.user != null) {

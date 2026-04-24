@@ -10,7 +10,8 @@ enum ParentNotificationEvent {
   myStudentPicked('parent:my_student_picked'),
   myStudentDropped('parent:my_student_dropped'),
   myStudentApproaching('parent:my_student_approaching'),
-  myStudentAbsent('parent:my_student_absent');
+  myStudentAbsent('parent:my_student_absent'),
+  routeRecalculated('parent:route_recalculated');
 
   final String value;
   const ParentNotificationEvent(this.value);
