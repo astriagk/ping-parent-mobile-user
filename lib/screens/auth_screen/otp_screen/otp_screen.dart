@@ -1,4 +1,5 @@
 import 'package:skolo/api/api_client.dart';
+import 'package:skolo/api/models/send_otp_response.dart';
 import 'package:skolo/api/models/verify_otp_response.dart';
 import 'package:skolo/api/services/auth_service.dart';
 import 'package:skolo/config.dart';
@@ -13,14 +14,16 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String? phone;
+  String? countryCode;
   bool isSignUp = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Clear error message when user arrives at this screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OtpProvider>().setErrorMessage(null);
+      final otpCtrl = context.read<OtpProvider>();
+      otpCtrl.setErrorMessage(null);
+      otpCtrl.startResendTimer();
     });
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is String) {
@@ -28,6 +31,7 @@ class _OtpScreenState extends State<OtpScreen> {
     } else if (args is Map<String, dynamic>) {
       phone = args['phone'] as String?;
       isSignUp = args['isSignUp'] as bool? ?? false;
+      countryCode = args['countryCode'] as String?;
     }
   }
 
@@ -46,20 +50,15 @@ class _OtpScreenState extends State<OtpScreen> {
       otpCtrl.setIsVerifying(false);
 
       if (response.success) {
-        // Authentication data is already saved by AuthService._saveUserSession()
-
         if (!mounted) return;
 
-        // Fetch user profile and store in global state
         await context.read<UserProvider>().fetchUserProfile();
 
-        // Clear OTP input
         otpCtrl.pinController.text = "";
         otpCtrl.setErrorMessage(null);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: TextWidgetCommon(text: response.message)),
-        );
+        if (!mounted) return;
+        AppSnackBar.success(context, response.message ?? 'OTP verified successfully');
 
         if (isSignUp) {
           route.pushNamed(context, routeName.addLocationScreen);
@@ -73,6 +72,40 @@ class _OtpScreenState extends State<OtpScreen> {
       if (!mounted) return;
       otpCtrl.setIsVerifying(false);
       otpCtrl.setErrorMessage('An error occurred while verifying OTP.');
+    }
+  }
+
+  Future<void> _resendOtp() async {
+    final otpCtrl = context.read<OtpProvider>();
+    if (!otpCtrl.canResend) {
+      AppSnackBar.warning(
+          context, 'Please wait ${otpCtrl.timerLabel} before resending.');
+      return;
+    }
+    final authService = AuthService(ApiClient());
+    try {
+      otpCtrl.setIsResending(true);
+      otpCtrl.setErrorMessage(null);
+      final SendOtpResponse response = isSignUp
+          ? await authService.resendRegisterOtp(
+              phone: phone ?? '', countryCode: countryCode)
+          : await authService.resendOtp(
+              phone: phone ?? '', countryCode: countryCode);
+
+      if (!mounted) return;
+      otpCtrl.setIsResending(false);
+
+      if (response.success) {
+        AppSnackBar.success(
+            context, response.message ?? 'OTP resent successfully');
+        otpCtrl.startResendTimer();
+      } else {
+        otpCtrl.setErrorMessage(response.error);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      otpCtrl.setIsResending(false);
+      otpCtrl.setErrorMessage('An error occurred. Please try again.');
     }
   }
 
@@ -94,26 +127,21 @@ class _OtpScreenState extends State<OtpScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // back button and skolo logo layout
                       AuthCommonWidgets().backAndLogo(context, onTap: () {
                         otpCtrl.pinController.text = "";
                         route.pop(context);
                       }),
-                      //gif title and subtitle layout
                       AuthCommonWidgets().gifTitleText(
                           context,
                           appFonts.otpVerification,
                           '${appFonts.enterOTPSent} $phone'),
                       TextWidgetCommon(text: appFonts.otp)
                           .padding(bottom: Sizes.s9),
-                      // PinPut layout
                       OTPScreenWidgets()
                           .pinPutLayout()
                           .padding(bottom: Sizes.s60),
-                      // Error message display
                       if (otpCtrl.errorMessage != null)
                         ErrorMessageWidget(errorMessage: otpCtrl.errorMessage!),
-                      // Common button
                       CommonButton(
                           text: appFonts.verify,
                           isLoading: otpCtrl.isVerifying,
@@ -121,30 +149,53 @@ class _OtpScreenState extends State<OtpScreen> {
                             final otp = otpCtrl.pinController.text.trim();
                             final phoneNumber = phone?.trim() ?? '';
                             if (phoneNumber.isEmpty || otp.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: TextWidgetCommon(
-                                      text: 'Please enter both phone and OTP.'),
-                                ),
-                              );
+                              AppSnackBar.warning(context,
+                                  'Please enter both phone and OTP.');
                               return;
                             }
                             await _verifyOtp(phoneNumber, otp);
                           }),
-                      // Common Rich Text layout
-                      AuthCommonWidgets()
-                          .commonRichText(context, appFonts.notReceivedYet,
-                              appFonts.resendIt)
-                          .inkWell(
-                              onTap: () => route.pushNamed(
-                                  context, routeName.addLocationScreen))
-                          .padding(bottom: Sizes.s25, top: Sizes.s15),
+                      _resendRow(context, otpCtrl),
                     ]).padding(horizontal: Sizes.s20),
-                //common car image layout
                 AuthCommonWidgets().commonImage()
-              ])
-              // .height(MediaQuery.of(context).size.height)
-              ));
+              ])));
     });
+  }
+
+  Widget _resendRow(BuildContext context, OtpProvider otpCtrl) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextWidgetCommon(
+          text: appFonts.notReceivedYet,
+          style: AppCss.lexendRegular14
+              .textColor(appColor(context).appTheme.lightText),
+        ),
+        if (!otpCtrl.canResend)
+          TextWidgetCommon(
+            text: ' ${otpCtrl.timerLabel}',
+            style: AppCss.lexendMedium14
+                .textColor(appColor(context).appTheme.primary),
+          )
+        else
+          GestureDetector(
+            onTap: otpCtrl.isResending ? null : _resendOtp,
+            child: otpCtrl.isResending
+                ? SizedBox(
+                    height: Sizes.s16,
+                    width: Sizes.s16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: appColor(context).appTheme.primary,
+                    ),
+                  ).padding(left: Sizes.s8)
+                : TextWidgetCommon(
+                    text: appFonts.resendIt,
+                    style: AppCss.lexendMedium14
+                        .textColor(appColor(context).appTheme.primary),
+                  ),
+          ),
+      ],
+    ).padding(bottom: Sizes.s25, top: Sizes.s15);
   }
 }

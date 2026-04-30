@@ -59,7 +59,7 @@ class TopCategories extends StatelessWidget {
                           // }
                         }))
                     .toList())
-            .paddingOnly(top: Sizes.s15)
+            .paddingOnly(top: Sizes.s12)
       ]);
     });
   }

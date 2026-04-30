@@ -81,46 +81,17 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: appColor(context).appTheme.success,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Sizes.s8)),
-            content: Row(children: [
-              const Icon(Icons.check_circle_outline,
-                  color: Colors.white, size: 20),
-              HSpace(Sizes.s8),
-              Expanded(
-                child: TextWidgetCommon(
-                  text: wasEditMode
-                      ? appFonts.studentUpdatedSuccessfully
-                      : appFonts.studentCreatedSuccessfully,
-                  color: Colors.white,
-                ),
-              ),
-            ]),
-          ),
+        AppSnackBar.success(
+          context,
+          wasEditMode
+              ? appFonts.studentUpdatedSuccessfully
+              : appFonts.studentCreatedSuccessfully,
         );
         route.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: appColor(context).appTheme.alertZone,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Sizes.s8)),
-            content: Row(children: [
-              const Icon(Icons.error_outline, color: Colors.white, size: 20),
-              HSpace(Sizes.s8),
-              Expanded(
-                child: TextWidgetCommon(
-                  text: studentCtrl.errorMessage ?? 'Failed to save student',
-                  color: Colors.white,
-                ),
-              ),
-            ]),
-          ),
+        AppSnackBar.error(
+          context,
+          studentCtrl.errorMessage ?? 'Failed to save student',
         );
       }
     }
@@ -222,6 +193,9 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   title: appFonts.studentName,
                   hintText: appFonts.enterStudentName,
                   controller: studentCtrl.studentNameController,
+                  errorText: studentCtrl.nameError,
+                  onChanged: (_) => studentCtrl.clearNameError(),
+                  isRequired: true,
                 ),
 
                 // Pickup Address (Required - Dropdown)
@@ -229,6 +203,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   context,
                   title: appFonts.pickupAddress,
                   hintText: appFonts.enterPickupAddress,
+                  isRequired: true,
                   value: studentCtrl.selectedPickupAddressId,
                   itemsList: studentCtrl.parentAddress != null
                       ? [
@@ -246,15 +221,26 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     setState(() {
                       studentCtrl.selectedPickupAddressId = value;
                     });
+                    studentCtrl.clearPickupError();
                   },
+                  errorText: studentCtrl.pickupError,
                 ),
 
                 // School (Required - Searchable Dropdown)
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  TextWidgetCommon(
-                    text: appFonts.schoolName,
-                    style: AppCss.lexendMedium14
-                        .textColor(appColor(context).appTheme.darkText),
+                  RichText(
+                    text: TextSpan(
+                      text: appFonts.schoolName,
+                      style: AppCss.lexendMedium14
+                          .textColor(appColor(context).appTheme.darkText),
+                      children: [
+                        TextSpan(
+                          text: ' *',
+                          style: AppCss.lexendMedium14
+                              .textColor(appColor(context).appTheme.alertZone),
+                        ),
+                      ],
+                    ),
                   ),
                   VSpace(Sizes.s8),
                   SearchableDropdown<School>(
@@ -518,6 +504,20 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                       }
                     },
                   ),
+                  if (studentCtrl.schoolError != null) ...[
+                    VSpace(Sizes.s4),
+                    Row(children: [
+                      Icon(Icons.error_outline,
+                          size: Sizes.s14,
+                          color: appColor(context).appTheme.alertZone),
+                      HSpace(Sizes.s4),
+                      TextWidgetCommon(
+                        text: studentCtrl.schoolError!,
+                        style: AppCss.lexendRegular12.textColor(
+                            appColor(context).appTheme.alertZone),
+                      ),
+                    ]),
+                  ],
                   VSpace(Sizes.s16),
                 ]),
 
@@ -530,12 +530,14 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
 
                 // ========== OPTIONAL FIELDS ==========
 
-                // Class (Optional - Dropdown)
+                // Class (Required - Dropdown)
                 widgets.commonDropdown(
                   context,
                   title: appFonts.studentClass,
                   hintText: appFonts.selectClass,
+                  isRequired: true,
                   value: studentCtrl.selectedClass,
+                  errorText: studentCtrl.classError,
                   itemsList: studentCtrl.classOptions
                       .map((classValue) => DropdownMenuItem<dynamic>(
                             value: classValue,
@@ -549,6 +551,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     setState(() {
                       studentCtrl.selectedClass = value;
                     });
+                    studentCtrl.clearClassError();
                   },
                 ),
 

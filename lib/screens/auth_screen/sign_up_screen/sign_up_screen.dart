@@ -38,11 +38,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (response.success) {
         signUpProvider.setErrorMessage(null);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: TextWidgetCommon(text: response.message)),
-        );
+        AppSnackBar.success(context, response.message ?? 'OTP sent successfully');
+        final countryCode = context.read<SignInProvider>().countryCode;
         route.pushNamed(context, routeName.otpScreen,
-            arg: {'phone': phone, 'isSignUp': true});
+            arg: {'phone': phone, 'isSignUp': true, 'countryCode': countryCode});
       } else {
         signUpProvider.setErrorMessage(response.error);
       }
@@ -88,11 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         FocusScope.of(context).unfocus();
                         String phone = phoneController.text.trim();
                         if (phone.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: TextWidgetCommon(
-                                    text: 'Please enter your phone number.')),
-                          );
+                          AppSnackBar.warning(context, 'Please enter your phone number.');
                           return;
                         }
                         await _registerSendOtp(phone);

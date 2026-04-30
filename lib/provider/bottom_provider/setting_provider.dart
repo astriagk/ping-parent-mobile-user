@@ -101,10 +101,10 @@ class SettingProvider extends ChangeNotifier {
                   routeName.signInScreen,
                   (route) => false,
                 );
-                messenger.showSnackBar(
-                  SnackBar(
-                      content:
-                          TextWidgetCommon(text: "Logged out successfully")),
+                AppSnackBar.showOnMessenger(
+                  messenger,
+                  "Logged out successfully",
+                  type: SnackBarType.success,
                 );
               }
             },

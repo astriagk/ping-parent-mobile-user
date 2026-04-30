@@ -14,20 +14,10 @@ class _AddNewLocationScreenState extends State<AddNewLocationScreen> {
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: TextWidgetCommon(text: 'Address saved successfully'),
-          ),
-        );
+        AppSnackBar.success(context, 'Address saved successfully');
         route.pushReplacementNamed(context, routeName.dashBoardLayout);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: TextWidgetCommon(
-              text: locationCtrl.errorMessage ?? 'Failed to save address',
-            ),
-          ),
-        );
+        AppSnackBar.error(context, locationCtrl.errorMessage ?? 'Failed to save address');
       }
     }
   }

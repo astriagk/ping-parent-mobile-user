@@ -60,19 +60,12 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
 
   Future<void> _selectDriver(Driver driver) async {
     if (widget.studentId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: TextWidgetCommon(text: appFonts.pleaseSelectStudentFirst)),
-      );
+      AppSnackBar.warning(context, appFonts.pleaseSelectStudentFirst);
       return;
     }
 
     if (driver.driverId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: TextWidgetCommon(text: appFonts.driverIdNotAvailable),
-        ),
-      );
+      AppSnackBar.error(context, appFonts.driverIdNotAvailable);
       return;
     }
 
@@ -104,25 +97,11 @@ class _AssignDriverScreenState extends State<AssignDriverScreen> {
 
             if (success) {
               context.read<AddStudentProvider>().fetchStudents();
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: TextWidgetCommon(
-                    text: appFonts.driverAssignedSuccessfully,
-                  ),
-                ),
-              );
+              AppSnackBar.success(context, appFonts.driverAssignedSuccessfully);
               await Future.delayed(const Duration(milliseconds: 500));
               if (mounted) Navigator.pop(context);
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: TextWidgetCommon(
-                    text: driverCtrl.errorMessage ??
-                        appFonts.failedToAssignDriver,
-                  ),
-                ),
-              );
+              AppSnackBar.error(context, driverCtrl.errorMessage ?? appFonts.failedToAssignDriver);
             }
           },
         );

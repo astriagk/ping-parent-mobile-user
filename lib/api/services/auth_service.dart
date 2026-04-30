@@ -50,6 +50,7 @@ class AuthService implements AuthServiceInterface {
   Future<SendOtpResponse> registerSendOtp({required String phone}) async {
     final response = await _apiClient.post(
       Endpoints.registerSendOtp,
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'phone': phone}),
     );
     if (response.statusCode == 200) {
@@ -59,10 +60,39 @@ class AuthService implements AuthServiceInterface {
     }
   }
 
+  Future<SendOtpResponse> resendOtp(
+      {required String phone, String? countryCode}) async {
+    final body = <String, String>{'phone': phone};
+    if (countryCode != null && countryCode.isNotEmpty) {
+      body['countryCode'] = countryCode;
+    }
+    final response = await _apiClient.post(
+      Endpoints.loginResendOtp,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    return SendOtpResponse.fromJson(jsonDecode(response.body));
+  }
+
+  Future<SendOtpResponse> resendRegisterOtp(
+      {required String phone, String? countryCode}) async {
+    final body = <String, String>{'phone': phone};
+    if (countryCode != null && countryCode.isNotEmpty) {
+      body['countryCode'] = countryCode;
+    }
+    final response = await _apiClient.post(
+      Endpoints.registerResendOtp,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+    return SendOtpResponse.fromJson(jsonDecode(response.body));
+  }
+
   Future<VerifyOtpResponse> registerVerifyOtp(
       {required String phone, required String otp}) async {
     final response = await _apiClient.post(
       Endpoints.registerVerifyOtp,
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'phone': phone, 'otp': otp}),
     );
     final verifyResponse =

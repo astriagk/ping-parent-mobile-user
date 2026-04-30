@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skolo/widgets/app_snack_bar.dart';
 import '../../api/models/trip_tracking_response.dart';
 import '../../api/services/trip_tracking_service.dart';
 import '../../api/services/trip_websocket_service.dart';
@@ -266,13 +267,11 @@ class TripTrackingProvider extends ChangeNotifier with WidgetsBindingObserver {
     final messenger = scaffoldMessengerKey.currentState;
     if (messenger == null) return;
 
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isMyStudent ? Colors.green : Colors.blue,
-        duration: Duration(seconds: isMyStudent ? 5 : 3),
-        behavior: SnackBarBehavior.floating,
-      ),
+    AppSnackBar.showOnMessenger(
+      messenger,
+      message,
+      type: isMyStudent ? SnackBarType.success : SnackBarType.info,
+      duration: Duration(seconds: isMyStudent ? 5 : 3),
     );
   }
 

@@ -67,19 +67,10 @@ class _ProfileScreenState extends State<ProfileScreen> with AutoRefreshMixin {
 
     if (mounted) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: TextWidgetCommon(text: 'Profile updated successfully')),
-        );
+        AppSnackBar.success(context, 'Profile updated successfully');
         route.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: TextWidgetCommon(
-              text: userProvider.errorMessage ?? 'Failed to update profile',
-            ),
-          ),
-        );
+        AppSnackBar.error(context, userProvider.errorMessage ?? 'Failed to update profile');
       }
     }
   }

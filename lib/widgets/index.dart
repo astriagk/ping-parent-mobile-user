@@ -17,3 +17,4 @@ export 'package:skolo/widgets/country_picker_custom/country_picker_custom.dart';
 export 'package:skolo/widgets/country_picker_custom/layouts/country_theme.dart';
 export 'package:skolo/widgets/auth_check_widget.dart';
 export 'package:skolo/widgets/error/index.dart';
+export 'package:skolo/widgets/app_snack_bar.dart';

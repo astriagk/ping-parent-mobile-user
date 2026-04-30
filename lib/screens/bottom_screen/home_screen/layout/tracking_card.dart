@@ -14,129 +14,20 @@ class TrackingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<HomeScreenProvider, DashBoardProvider>(
       builder: (context, homeCtrl, bottomCtrl, child) {
-        return Container(
-          decoration: BoxDecoration(
-            color: appColor(context).appTheme.white,
-            borderRadius: BorderRadius.circular(Sizes.s12),
-            boxShadow: [
-              BoxShadow(
-                color:
-                    appColor(context).appTheme.primary.withValues(alpha: 0.04),
-                blurRadius: 12,
-                spreadRadius: 4,
-              )
-            ],
-          ),
-          margin: EdgeInsets.symmetric(vertical: Sizes.s15),
-          child: Row(
-            children: [
-              // Left side - Tracking info
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(Sizes.s16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Header
-                      TextWidgetCommon(
-                        text: 'View Your Tracking',
-                        style: AppCss.lexendBold16
-                            .textColor(appColor(context).appTheme.darkText),
-                      ),
-                      VSpace(Sizes.s8),
-                      // Description
-                      TextWidgetCommon(
-                        text: 'Tap to see real-time tracking details',
-                        style: AppCss.lexendRegular13
-                            .textColor(appColor(context).appTheme.hintText),
-                      ),
-                      VSpace(Sizes.s12),
-                      // Tap indicator
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: Sizes.s14,
-                            color: appColor(context).appTheme.primary,
-                          ),
-                          HSpace(Sizes.s6),
-                          TextWidgetCommon(
-                            text: 'View Tracking',
-                            style: AppCss.lexendMedium13
-                                .textColor(appColor(context).appTheme.primary),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Right side - Small map
-              Container(
-                width: Sizes.s110,
-                height: Sizes.s140,
-                margin: EdgeInsets.only(right: Sizes.s4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(Sizes.s12),
-                    bottomRight: Radius.circular(Sizes.s12),
-                  ),
-                  color: appColor(context)
-                      .appTheme
-                      .hintText
-                      .withValues(alpha: 0.1),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(Sizes.s12),
-                    bottomRight: Radius.circular(Sizes.s12),
-                  ),
-                  child: Stack(
-                    children: [
-                      // Map image
-                      Image.asset(
-                        imageAssets.trackingMap,
-                        fit: BoxFit.cover,
-                        width: Sizes.s120,
-                        height: Sizes.s140,
-                      ),
-                      // Overlay with slight opacity
-                      Container(
-                        decoration: BoxDecoration(
-                          color: appColor(context)
-                              .appTheme
-                              .primary
-                              .withValues(alpha: 0.1),
-                        ),
-                      ),
-                      // Center indicator
-                      Center(
-                        child: Container(
-                          width: Sizes.s30,
-                          height: Sizes.s30,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: appColor(context)
-                                .appTheme
-                                .primary
-                                .withValues(alpha: 0.8),
-                          ),
-                          child: Icon(
-                            Icons.location_on,
-                            color: appColor(context).appTheme.white,
-                            size: Sizes.s16,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ).inkWell(onTap: () => _onTap(context, homeCtrl, bottomCtrl));
+        return Consumer<TripTrackingProvider>(
+          builder: (context, tripCtrl, _) {
+            return _CardShell(
+              onTap: () => _onTap(context, homeCtrl, bottomCtrl),
+              child: tripCtrl.isLoading
+                  ? _LoadingState()
+                  : tripCtrl.activeTrips.isEmpty
+                      ? _NoTripsState()
+                      : tripCtrl.activeTrips.length == 1
+                          ? _SingleTripState(trip: tripCtrl.activeTrips.first)
+                          : _MultiTripState(trips: tripCtrl.activeTrips),
+            );
+          },
+        );
       },
     );
   }
@@ -178,12 +69,7 @@ class TrackingCard extends StatelessWidget {
 
       if (!context.mounted) return;
 
-      if (activeTrips.isEmpty) {
-        _showDialog(context,
-            title: 'No Trips Available',
-            message: 'There are no trips to track at the moment');
-        return;
-      }
+      if (activeTrips.isEmpty) return;
 
       final acceptRideCtrl = context.read<AcceptRideProvider>();
       await acceptRideCtrl.loadCurrentUserId();
@@ -230,7 +116,6 @@ class TrackingCard extends StatelessWidget {
             ),
             child: Column(
               children: [
-                // Drag handle
                 Container(
                   width: Sizes.s40,
                   height: Sizes.s4,
@@ -243,7 +128,6 @@ class TrackingCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(Sizes.s2),
                   ),
                 ),
-                // Header banner
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: Sizes.s20),
                   padding: EdgeInsets.symmetric(
@@ -300,7 +184,6 @@ class TrackingCard extends StatelessWidget {
                   ),
                 ),
                 VSpace(Sizes.s16),
-                // Trip list
                 Expanded(
                   child: ListView.separated(
                     controller: scrollController,
@@ -314,7 +197,6 @@ class TrackingCard extends StatelessWidget {
                           .where((n) => n.isNotEmpty)
                           .join(', ');
                       final driverName = trip.driver?.name ?? 'Unknown Driver';
-                      // Find the parent's waypoint for ETA
                       final parentWaypoint = currentUserId != null
                           ? trip.optimizedRouteData?.waypoints
                               .cast<Waypoint?>()
@@ -360,11 +242,6 @@ class TrackingCard extends StatelessWidget {
       builder: (BuildContext dialogContext) {
         return CustomConfirmationDialog(
           message: message,
-          // content: TextWidgetCommon(
-          //   text: message,
-          //   style: AppCss.lexendRegular14
-          //       .textColor(appColor(dialogContext).appTheme.hintText),
-          // ),
           onConfirm: () {
             Navigator.of(dialogContext).pop();
           },
@@ -373,6 +250,411 @@ class TrackingCard extends StatelessWidget {
     );
   }
 }
+
+// ─── Card shell ──────────────────────────────────────────────────────────────
+
+class _CardShell extends StatefulWidget {
+  final Widget child;
+  final Future<void> Function() onTap;
+
+  const _CardShell({required this.child, required this.onTap});
+
+  @override
+  State<_CardShell> createState() => _CardShellState();
+}
+
+class _CardShellState extends State<_CardShell> {
+  bool _processing = false;
+
+  Future<void> _handleTap() async {
+    if (_processing) return;
+    setState(() => _processing = true);
+    try {
+      await widget.onTap();
+    } finally {
+      if (mounted) setState(() => _processing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: Sizes.s16),
+      decoration: BoxDecoration(
+        color: appColor(context).appTheme.white,
+        borderRadius: BorderRadius.circular(Sizes.s16),
+        boxShadow: [
+          BoxShadow(
+            color: appColor(context).appTheme.primary.withValues(alpha: 0.06),
+            blurRadius: 16,
+            spreadRadius: 2,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(Sizes.s16),
+        child: InkWell(
+          onTap: _processing ? null : _handleTap,
+          borderRadius: BorderRadius.circular(Sizes.s16),
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Loading state ────────────────────────────────────────────────────────────
+
+class _LoadingState extends StatelessWidget {
+  const _LoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(Sizes.s12),
+      child: Row(
+        children: [
+          SizedBox(
+            width: Sizes.s18,
+            height: Sizes.s18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: appColor(context).appTheme.primary,
+            ),
+          ),
+          HSpace(Sizes.s12),
+          TextWidgetCommon(
+            text: 'Checking for active trips…',
+            style: AppCss.lexendRegular13
+                .textColor(appColor(context).appTheme.hintText),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── No trips state ───────────────────────────────────────────────────────────
+
+class _NoTripsState extends StatelessWidget {
+  const _NoTripsState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: Sizes.s12, vertical: Sizes.s12),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(Sizes.s12),
+            decoration: BoxDecoration(
+              color: appColor(context).appTheme.bgBox,
+              borderRadius: BorderRadius.circular(Sizes.s12),
+            ),
+            child: Icon(
+              Icons.directions_bus_outlined,
+              size: Sizes.s24,
+              color: appColor(context).appTheme.hintText,
+            ),
+          ),
+          HSpace(Sizes.s14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextWidgetCommon(
+                  text: 'No active trips',
+                  style: AppCss.lexendSemiBold16
+                      .textColor(appColor(context).appTheme.darkText),
+                ),
+                VSpace(Sizes.s4),
+                TextWidgetCommon(
+                  text: 'Live tracking will appear here when a trip starts',
+                  style: AppCss.lexendRegular12
+                      .textColor(appColor(context).appTheme.hintText),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Single active trip ───────────────────────────────────────────────────────
+
+class _SingleTripState extends StatelessWidget {
+  final Trip trip;
+
+  const _SingleTripState({required this.trip});
+
+  @override
+  Widget build(BuildContext context) {
+    final isPickup = trip.tripType == TripType.pickup;
+    final typeColor = isPickup
+        ? appColor(context).appTheme.success
+        : appColor(context).appTheme.yellowIcon;
+    final typeLabel = isPickup ? 'Pickup' : 'Drop-off';
+
+    final studentNames = trip.students
+        .map((s) => s.studentName ?? '')
+        .where((n) => n.isNotEmpty)
+        .join(', ');
+
+    final driverName = trip.driver?.name;
+
+    final isLive = trip.tripStatus == TripStatus.started ||
+        trip.tripStatus == TripStatus.inProgress;
+
+    return Padding(
+      padding: EdgeInsets.all(Sizes.s12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Left content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Type badge + live indicator
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Sizes.s8, vertical: Sizes.s3),
+                      decoration: BoxDecoration(
+                        color: typeColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(Sizes.s20),
+                      ),
+                      child: TextWidgetCommon(
+                        text: typeLabel,
+                        style: AppCss.lexendMedium10.textColor(typeColor),
+                      ),
+                    ),
+                    if (isLive) ...[
+                      HSpace(Sizes.s8),
+                      _LiveDot(),
+                      HSpace(Sizes.s4),
+                      TextWidgetCommon(
+                        text: 'Live',
+                        style: AppCss.lexendMedium10
+                            .textColor(appColor(context).appTheme.success),
+                      ),
+                    ],
+                  ],
+                ),
+                VSpace(Sizes.s8),
+                // Student name
+                Text(
+                  studentNames.isNotEmpty ? studentNames : 'Your child',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppCss.lexendBold16
+                      .textColor(appColor(context).appTheme.darkText),
+                ),
+                if (driverName != null) ...[
+                  VSpace(Sizes.s4),
+                  Row(
+                    children: [
+                      Icon(Icons.person_outline_rounded,
+                          size: Sizes.s13,
+                          color: appColor(context).appTheme.hintText),
+                      HSpace(Sizes.s4),
+                      Expanded(
+                        child: Text(
+                          driverName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppCss.lexendRegular12
+                              .textColor(appColor(context).appTheme.hintText),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                VSpace(Sizes.s12),
+                // CTA row
+                Row(
+                  children: [
+                    TextWidgetCommon(
+                      text: 'Track now',
+                      style: AppCss.lexendSemiBold14
+                          .textColor(appColor(context).appTheme.primary),
+                    ),
+                    HSpace(Sizes.s4),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      size: Sizes.s14,
+                      color: appColor(context).appTheme.primary,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Right: map thumbnail
+          _MapThumbnail(),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Multiple active trips ────────────────────────────────────────────────────
+
+class _MultiTripState extends StatelessWidget {
+  final List<Trip> trips;
+
+  const _MultiTripState({required this.trips});
+
+  @override
+  Widget build(BuildContext context) {
+    final allStudents = trips
+        .expand((t) => t.students)
+        .map((s) => s.studentName ?? '')
+        .where((n) => n.isNotEmpty)
+        .toSet()
+        .join(', ');
+
+    return Padding(
+      padding: EdgeInsets.all(Sizes.s12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    _LiveDot(),
+                    HSpace(Sizes.s6),
+                    TextWidgetCommon(
+                      text: '${trips.length} active trips',
+                      style: AppCss.lexendSemiBold16
+                          .textColor(appColor(context).appTheme.darkText),
+                    ),
+                  ],
+                ),
+                if (allStudents.isNotEmpty) ...[
+                  VSpace(Sizes.s6),
+                  Row(
+                    children: [
+                      Icon(Icons.group_outlined,
+                          size: Sizes.s13,
+                          color: appColor(context).appTheme.hintText),
+                      HSpace(Sizes.s4),
+                      Expanded(
+                        child: Text(
+                          allStudents,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppCss.lexendRegular12
+                              .textColor(appColor(context).appTheme.hintText),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                VSpace(Sizes.s12),
+                Row(
+                  children: [
+                    TextWidgetCommon(
+                      text: 'View all trips',
+                      style: AppCss.lexendSemiBold14
+                          .textColor(appColor(context).appTheme.primary),
+                    ),
+                    HSpace(Sizes.s4),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      size: Sizes.s14,
+                      color: appColor(context).appTheme.primary,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          _MapThumbnail(),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Shared sub-widgets ───────────────────────────────────────────────────────
+
+class _LiveDot extends StatelessWidget {
+  const _LiveDot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: Sizes.s7,
+      height: Sizes.s7,
+      decoration: BoxDecoration(
+        color: appColor(context).appTheme.success,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class _MapThumbnail extends StatelessWidget {
+  const _MapThumbnail();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: Sizes.s90,
+      height: Sizes.s110,
+      margin: EdgeInsets.only(left: Sizes.s12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Sizes.s12),
+        color: appColor(context).appTheme.bgBox,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(Sizes.s12),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              imageAssets.trackingMap,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color:
+                    appColor(context).appTheme.primary.withValues(alpha: 0.08),
+              ),
+            ),
+            Center(
+              child: Container(
+                width: Sizes.s28,
+                height: Sizes.s28,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: appColor(context).appTheme.primary,
+                ),
+                child: Icon(
+                  Icons.location_on_rounded,
+                  color: appColor(context).appTheme.white,
+                  size: Sizes.s15,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Trip tile (bottom sheet) ─────────────────────────────────────────────────
 
 class _TripTile extends StatelessWidget {
   final String studentNames;
@@ -420,7 +702,6 @@ class _TripTile extends StatelessWidget {
               EdgeInsets.symmetric(horizontal: Sizes.s14, vertical: Sizes.s14),
           child: Row(
             children: [
-              // Bus icon
               Container(
                 padding: EdgeInsets.all(Sizes.s10),
                 decoration: BoxDecoration(
@@ -434,12 +715,10 @@ class _TripTile extends StatelessWidget {
                 ),
               ),
               HSpace(Sizes.s12),
-              // Trip info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Student names + type badge
                     Row(
                       children: [
                         Expanded(
@@ -467,7 +746,6 @@ class _TripTile extends StatelessWidget {
                       ],
                     ),
                     VSpace(Sizes.s4),
-                    // Driver name
                     Row(
                       children: [
                         Icon(
@@ -484,7 +762,6 @@ class _TripTile extends StatelessWidget {
                       ],
                     ),
                     VSpace(Sizes.s4),
-                    // Student count + ETA
                     Row(
                       children: [
                         Icon(
@@ -511,7 +788,6 @@ class _TripTile extends StatelessWidget {
                   ],
                 ),
               ),
-              // Arrow
               Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: Sizes.s14,

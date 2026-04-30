@@ -6,7 +6,7 @@ class Endpoints {
   // For Physical Device: use your computer's network IP (check with ipconfig/ifconfig)
   static const String baseUrl =
       'https://ping-parent-backend-m8yc.onrender.com/api';
-  // static const String baseUrl = 'http://192.168.0.126:3000/api';
+  // static const String baseUrl = 'http://192.168.1.8:3000/api';
 
   // static const String getUser = '$baseUrl/user';
 
@@ -18,6 +18,8 @@ class Endpoints {
   static const String verifyOtp = '$baseUrl/auth/login/verify-otp';
   static const String registerSendOtp = '$baseUrl/auth/register/send-otp';
   static const String registerVerifyOtp = '$baseUrl/auth/register/verify-otp';
+  static const String loginResendOtp = '$baseUrl/auth/login/resend-otp';
+  static const String registerResendOtp = '$baseUrl/auth/register/resend-otp';
 
 // Profile Endpoints
   static const String parentProfile = '$baseUrl/parent/profile';

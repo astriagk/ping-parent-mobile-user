@@ -192,12 +192,7 @@ class _StudentListScreenState extends State<StudentListScreen>
                 ),
               );
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content:
-                      TextWidgetCommon(text: appFonts.driverIdNotAvailable),
-                ),
-              );
+              AppSnackBar.error(context, appFonts.driverIdNotAvailable);
             }
           },
         ),

@@ -1,5 +1,6 @@
 import 'package:skolo/config.dart';
 import 'package:skolo/screens/app_pages/notification/notification_widgets.dart';
+import 'package:skolo/widgets/skeletons/notification_skeleton.dart';
 import '../../../widgets/auto_refresh_mixin.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _NotificationScreenState extends State<NotificationScreen>
             ]).padding(top: Sizes.s50, bottom: Sizes.s20),
             Expanded(
               child: notificationCtrl.isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const NotificationListSkeleton()
                   : notificationCtrl.notifications.isEmpty
                       ? Center(
                           child: TextWidgetCommon(

@@ -20,6 +20,12 @@ class AddStudentProvider extends ChangeNotifier {
   String? errorMessage;
   bool _isInitialized = false;
 
+  // Inline validation errors
+  String? nameError;
+  String? schoolError;
+  String? pickupError;
+  String? classError;
+
   // Edit mode
   bool isEditMode = false;
   int? editIndex;
@@ -173,6 +179,10 @@ class AddStudentProvider extends ChangeNotifier {
     selectedClass = null;
     selectedPhotoFile = null;
     originalPhotoUrl = null;
+    nameError = null;
+    schoolError = null;
+    pickupError = null;
+    classError = null;
     notifyListeners();
   }
 
@@ -207,26 +217,59 @@ class AddStudentProvider extends ChangeNotifier {
   void selectSchool(String? schoolId) {
     if (schoolId == null || schoolId.isEmpty) return;
     selectedSchoolId = schoolId;
+    schoolError = null;
     notifyListeners();
+  }
+
+  void clearNameError() {
+    if (nameError != null) {
+      nameError = null;
+      notifyListeners();
+    }
+  }
+
+  void clearSchoolError() {
+    if (schoolError != null) {
+      schoolError = null;
+      notifyListeners();
+    }
+  }
+
+  void clearPickupError() {
+    if (pickupError != null) {
+      pickupError = null;
+      notifyListeners();
+    }
+  }
+
+  void clearClassError() {
+    if (classError != null) {
+      classError = null;
+      notifyListeners();
+    }
   }
 
   // Create student
   Future<bool> createStudent() async {
-    // Validate required fields
-    if (studentNameController.text.trim().isEmpty) {
-      errorMessage = 'Please enter student name';
-      notifyListeners();
-      return false;
-    }
+    // Validate required fields — collect all errors at once
+    nameError = studentNameController.text.trim().isEmpty
+        ? 'Please enter student name'
+        : null;
+    schoolError = (selectedSchoolId == null || selectedSchoolId!.isEmpty)
+        ? 'Please select a school'
+        : null;
+    pickupError =
+        (selectedPickupAddressId == null || selectedPickupAddressId!.isEmpty)
+            ? 'Please select a pickup address'
+            : null;
+    classError = (selectedClass == null || selectedClass!.isEmpty)
+        ? 'Please select a class'
+        : null;
 
-    if (selectedSchoolId == null || selectedSchoolId!.isEmpty) {
-      errorMessage = 'Please select a school';
-      notifyListeners();
-      return false;
-    }
-
-    if (selectedPickupAddressId == null || selectedPickupAddressId!.isEmpty) {
-      errorMessage = 'Please select a pickup address';
+    if (nameError != null ||
+        schoolError != null ||
+        pickupError != null ||
+        classError != null) {
       notifyListeners();
       return false;
     }

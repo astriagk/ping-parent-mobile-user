@@ -3,6 +3,32 @@ import 'dart:io';
 import '../../../config.dart';
 
 class StudentWidgets {
+  Widget _fieldLabel(context, String? title,
+      {bool isRequired = false}) {
+    if (title == null) return const SizedBox.shrink();
+    if (!isRequired) {
+      return TextWidgetCommon(
+        text: title,
+        style:
+            AppCss.lexendMedium14.textColor(appColor(context).appTheme.darkText),
+      );
+    }
+    return RichText(
+      text: TextSpan(
+        text: title,
+        style:
+            AppCss.lexendMedium14.textColor(appColor(context).appTheme.darkText),
+        children: [
+          TextSpan(
+            text: ' *',
+            style: AppCss.lexendMedium14
+                .textColor(appColor(context).appTheme.alertZone),
+          ),
+        ],
+      ),
+    );
+  }
+
   //common title and text-field layout
   Widget commonTextField(context,
       {String? title,
@@ -12,13 +38,13 @@ class StudentWidgets {
       bool readOnly = false,
       FocusNode? focusNode,
       int? minLines,
-      int? maxLines}) {
+      int? maxLines,
+      String? errorText,
+      ValueChanged<String>? onChanged,
+      bool isRequired = false}) {
+    final hasError = errorText != null && errorText.isNotEmpty;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      TextWidgetCommon(
-        text: title,
-        style: AppCss.lexendMedium14
-            .textColor(appColor(context).appTheme.darkText),
-      ),
+      _fieldLabel(context, title, isRequired: isRequired),
       VSpace(Sizes.s8),
       TextFormField(
         controller: controller,
@@ -29,6 +55,7 @@ class StudentWidgets {
         maxLines: maxLines ?? 1,
         style: AppCss.lexendRegular14,
         textInputAction: TextInputAction.next,
+        onChanged: onChanged,
         decoration: InputDecoration(
           isDense: true,
           filled: true,
@@ -38,17 +65,38 @@ class StudentWidgets {
           hintText: language(context, hintText),
           hintStyle: AppCss.lexendRegular13
               .textColor(appColor(context).appTheme.hintText),
+          errorText: hasError ? errorText : null,
+          errorStyle: AppCss.lexendRegular12
+              .textColor(appColor(context).appTheme.alertZone),
           enabledBorder: OutlineInputBorder(
             borderRadius:
                 SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
-            borderSide:
-                BorderSide(width: 1, color: appColor(context).appTheme.stroke),
+            borderSide: BorderSide(
+                width: 1,
+                color: hasError
+                    ? appColor(context).appTheme.alertZone
+                    : appColor(context).appTheme.stroke),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius:
                 SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
-            borderSide:
-                BorderSide(width: 2, color: appColor(context).appTheme.primary),
+            borderSide: BorderSide(
+                width: 2,
+                color: hasError
+                    ? appColor(context).appTheme.alertZone
+                    : appColor(context).appTheme.primary),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide: BorderSide(
+                width: 1, color: appColor(context).appTheme.alertZone),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide: BorderSide(
+                width: 2, color: appColor(context).appTheme.alertZone),
           ),
           border: OutlineInputBorder(
             borderRadius:
@@ -73,13 +121,12 @@ class StudentWidgets {
       String? hintText,
       dynamic value,
       required List<DropdownMenuItem<dynamic>> itemsList,
-      required ValueChanged onChanged}) {
+      required ValueChanged onChanged,
+      String? errorText,
+      bool isRequired = false}) {
+    final hasError = errorText != null && errorText.isNotEmpty;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      TextWidgetCommon(
-        text: title,
-        style: AppCss.lexendMedium14
-            .textColor(appColor(context).appTheme.darkText),
-      ),
+      _fieldLabel(context, title, isRequired: isRequired),
       VSpace(Sizes.s8),
       DropdownButtonFormField(
         dropdownColor: appColor(context).appTheme.white,
@@ -98,6 +145,9 @@ class StudentWidgets {
           fillColor: appColor(context).appTheme.screenBg,
           contentPadding:
               EdgeInsets.symmetric(horizontal: Sizes.s15, vertical: Sizes.s16),
+          errorText: hasError ? errorText : null,
+          errorStyle: AppCss.lexendRegular12
+              .textColor(appColor(context).appTheme.alertZone),
           border: OutlineInputBorder(
             borderRadius:
                 SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
@@ -107,8 +157,17 @@ class StudentWidgets {
           enabledBorder: OutlineInputBorder(
             borderRadius:
                 SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
-            borderSide:
-                BorderSide(width: 1, color: appColor(context).appTheme.stroke),
+            borderSide: BorderSide(
+                width: 1,
+                color: hasError
+                    ? appColor(context).appTheme.alertZone
+                    : appColor(context).appTheme.stroke),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius:
+                SmoothBorderRadius(cornerRadius: Sizes.s8, cornerSmoothing: 2),
+            borderSide: BorderSide(
+                width: 1, color: appColor(context).appTheme.alertZone),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius:
